@@ -998,3 +998,985 @@ async function abrirPerfilPublico(id){
   const caixa=campo('perfilPublicoConteudo');
   fecharTudo();
   caixa.innerHTML='<div class="esqueleto" style="min-height:180px"></div>';
+  abrir('modalPerfilPublico');
+
+  const {data,error}=await db.rpc('perfil_publico',{p_usuario:id});
+  const p=Array.isArray(data)?data[0]:data;
+  if(error || !p){
+    caixa.innerHTML='<h3>Perfil indisponível</h3><p class="dica">Este perfil não está disponível publicamente.</p>';
+    return;
+  }
+
+  const {data:eventosPerfil}=await db.from('eventos_lista')
+    .select('id,nome,data_evento,hora_evento,cidade,situacao')
+    .eq('criador_id',p.id)
+    .gte('data_evento',dataISO(hoje))
+    .order('data_evento',{ascending:true})
+    .limit(6);
+
+  caixa.innerHTML=
+    '<div class="perfil-publico-cabecalho">'+
+      avatarHtml(p.foto_url,p.nome,'avatar-grande')+
+      '<div><h3>'+escapa(p.nome)+'</h3>'+
+      (p.cidade?'<p class="dica">📍 '+escapa(p.cidade)+'</p>':'')+
+      '<p class="dica">'+Number(p.total_eventos||0)+' evento(s) futuro(s)</p></div>'+
+    '</div>'+
+    (p.bio?'<p class="perfil-publico-bio">'+escapa(p.bio)+'</p>':'<p class="dica">Este usuário ainda não escreveu uma biografia.</p>')+
+    (p.contato?'<div class="linha-info"><b>Contato público</b><span>'+escapa(p.contato)+'</span></div>':'')+
+    '<h4 class="comentarios-titulo" style="margin-top:18px">Próximos eventos</h4>'+
+    ((eventosPerfil||[]).length
+      ? '<div class="perfil-eventos">'+eventosPerfil.map(ev=>
+          '<button class="perfil-evento" data-abrir-evento="'+ev.id+'"><strong>'+escapa(ev.nome)+'</strong><span>'+fmt(dataDe(ev))+' · '+hora(ev)+' · '+escapa(ev.cidade||'')+'</span></button>'
+        ).join('')+'</div>'
+      : '<p class="dica">Nenhum evento futuro publicado.</p>')+
+    (p.id!==meuId()
+      ? '<div class="acoes" style="margin-top:18px"><button class="btn-linha" data-denunciar data-denuncia-tipo="usuario" data-denuncia-id="'+p.id+'" data-denuncia-rotulo="'+escapa(p.nome)+'">Denunciar usuário</button></div>'
+      : '');
+}
+
+document.addEventListener('click',async e=>{
+  const ae=e.target.closest('[data-abrir-evento]');
+  if(ae){ fecharTudo(); await abrirDetalhe(ae.dataset.abrirEvento); }
+});
+
+/* ============================================================
+   COMENTÁRIOS
+
+   Quem apaga o quê é decidido pelo banco (políticas de RLS):
+   o autor apaga o próprio, o dono do evento limpa a página dele
+   e o administrador pode tudo. Aqui só escondemos os botões que
+   a pessoa não usaria — a interface acompanha a regra, não a cria.
+   ============================================================ */
+let eventoComentado = null;
+
+function iniciais(nome){ return (nome||'?').trim().charAt(0).toUpperCase(); }
+
+function avatarHtml(foto, nome, classe){
+  return foto
+    ? '<span class="'+classe+'"><img src="'+escapa(foto)+'" alt=""></span>'
+    : '<span class="'+classe+'">'+escapa(iniciais(nome))+'</span>';
+}
+
+function quandoFoi(iso){
+  const minutos = Math.round((Date.now() - new Date(iso)) / 60000);
+  if(minutos < 1)    return 'agora';
+  if(minutos < 60)   return minutos + ' min';
+  if(minutos < 1440) return Math.round(minutos/60) + ' h';
+  const dias = Math.round(minutos/1440);
+  if(dias < 30) return dias + (dias===1 ? ' dia' : ' dias');
+  return new Date(iso).toLocaleDateString('pt-BR');
+}
+
+async function carregarComentarios(eventoId){
+  eventoComentado = eventoId;
+  const area = campo('areaComentarios');
+  if(!area) return;
+  area.innerHTML = '<div class="esqueleto" style="min-height:56px"></div>';
+
+  const { data, error } = await db.from('comentarios_lista').select('*').eq('evento_id', eventoId).order('criado_em', { ascending:true });
+  if(error){ area.innerHTML = '<p class="dica">Não foi possível carregar os comentários.</p>'; return; }
+
+  const ev = detalheAtual && detalheAtual.id===eventoId ? detalheAtual : EVENTOS.find(x=>x.id===eventoId);
+  const souDonoDoEvento = ev && ev.criador_id === meuId();
+
+  const lista = data.map(c=>{
+    const meu = c.autor_id === meuId();
+    return '<article class="comentario comentario-card-lovable" data-comentario="'+c.id+'">' +
+      avatarHtml(c.autor_foto, c.autor_nome, 'avatar-mini') +
+      '<div class="comentario-corpo">' +
+        '<div class="comentario-topo">' +
+          '<button class="perfil-publico-link comentario-autor" data-perfil-publico="'+c.autor_id+'"><strong>'+escapa(c.autor_nome)+(meu?' (você)':'')+'</strong></button>' +
+          '<span class="comentario-tempo">'+quandoFoi(c.criado_em)+(c.editado_em?' · editado':'')+'</span>' +
+        '</div>' +
+        '<p class="comentario-texto">'+escapa(c.texto)+'</p>' +
+        '<div class="comentario-acoes">' +
+          (meu ? '<button data-editar-coment="'+c.id+'">Editar</button>' : '') +
+          ((meu || souDonoDoEvento) ? '<button data-apagar-coment="'+c.id+'">Apagar</button>' : '') +
+          (!meu ? '<button data-denunciar data-denuncia-tipo="comentario" data-denuncia-id="'+c.id+'" data-denuncia-rotulo="Comentário de '+escapa(c.autor_nome)+'">Denunciar</button>' : '') +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }).join('');
+
+  const form = Sessao.logado()
+    ? '<div class="comentario-form comentario-form-lovable">' +
+        '<textarea id="novoComentario" rows="1" maxlength="1000" placeholder="Escreva um comentário respeitoso"></textarea>' +
+        '<button class="btn-escuro" id="btnComentar">Enviar</button>' +
+      '</div>'
+    : '<p class="dica"><a href="#" data-abrir-login style="color:inherit"><strong>Entre na sua conta</strong></a> para comentar.</p>';
+
+  area.innerHTML =
+    '<h4 class="comentarios-titulo">COMENTÁRIOS · '+data.length+'</h4>' +
+    form +
+    '<div class="comentarios-lista-lovable">'+(data.length ? lista : '<p class="dica comentario-vazio">Ninguém comentou ainda. Seja o primeiro.</p>')+'</div>';
+}
+
+async function enviarComentario(){
+  const caixa = campo('novoComentario');
+  const texto = caixa.value.trim();
+  if(!texto){ avisar('Escreva algo antes de enviar'); return; }
+
+  const btn = campo('btnComentar');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  const { error } = await db.from('comentarios').insert({
+    evento_id: eventoComentado, autor_id: meuId(), texto
+  });
+  btn.disabled = false; btn.textContent = 'Enviar';
+
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  caixa.value = '';
+  await carregarComentarios(eventoComentado);
+  avisar('Comentário publicado');
+}
+
+async function apagarComentario(id){
+  if(!confirm('Apagar este comentário?')) return;
+  const { error } = await db.from('comentarios').delete().eq('id', id);
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  await carregarComentarios(eventoComentado);
+  avisar('Comentário apagado');
+}
+
+async function editarComentario(id){
+  const bloco = document.querySelector('[data-comentario="'+id+'"] .comentario-texto');
+  const atual = bloco ? bloco.textContent : '';
+  const texto = prompt('Editar comentário:', atual);
+  if(texto === null) return;
+  if(!texto.trim()){ avisar('O comentário não pode ficar vazio'); return; }
+
+  const { error } = await db.from('comentarios').update({ texto: texto.trim() }).eq('id', id);
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  await carregarComentarios(eventoComentado);
+  avisar('Comentário atualizado');
+}
+
+document.addEventListener('click', async e=>{
+  if(e.target.closest('#btnComentar')) await enviarComentario();
+
+  const ap = e.target.closest('[data-apagar-coment]');
+  if(ap) await apagarComentario(ap.dataset.apagarComent);
+
+  const ed = e.target.closest('[data-editar-coment]');
+  if(ed) await editarComentario(ed.dataset.editarComent);
+
+  if(e.target.closest('[data-abrir-login]')){ fecharTudo(); abrir('modalLogin'); }
+});
+
+/* ============================================================
+   SENHA FORTE E REGRAS DE CONVIVÊNCIA
+   ============================================================ */
+ligarMedidorDeSenha('c_senha', 'c_senha2');
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('[data-ver-regras]')){
+    e.preventDefault();
+    abrir('modalRegras');
+  }
+  const doc = e.target.closest('[data-doc]');
+  if(doc){
+    e.preventDefault();
+    const modais = { regras:'modalRegras', termos:'modalTermos', privacidade:'modalPrivacidade' };
+    const destino = modais[doc.dataset.doc];
+    if(destino){ fecharTudo(); abrir(destino); }
+  }
+  if(e.target.closest('[data-esqueci]')){
+    e.preventDefault();
+    campo('r_email').value = campo('l_email').value.trim();
+    fecharTudo(); abrir('modalEsqueci');
+  }
+});
+
+campo('btnAceitarRegras').addEventListener('click', ()=>{
+  campo('c_regras').checked = true;
+  fecharTudo(); abrir('modalCadastro');
+  avisar('Regras aceitas');
+});
+
+/* ============================================================
+   ESQUECI MINHA SENHA
+
+   O Supabase envia um link de uso único e com validade. Nós só
+   dizemos para onde ele deve levar depois de validado. A resposta
+   é sempre a mesma, exista ou não a conta: confirmar quais e-mails
+   estão cadastrados entregaria informação a quem estivesse testando.
+   ============================================================ */
+const RECUPERACAO_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutos
+let timerRecuperacao = null;
+
+function chaveCooldownRecuperacao(){
+  const email = (campo('r_email')?.value || '').trim().toLowerCase();
+  return 'role_recuperacao_10min_' + encodeURIComponent(email || 'sem-email');
+}
+
+function formatarCronometro(segundos){
+  const min = Math.floor(segundos / 60);
+  const seg = segundos % 60;
+  return String(min).padStart(2,'0') + ':' + String(seg).padStart(2,'0');
+}
+
+function iniciarCooldownRecuperacao(){
+  localStorage.setItem(chaveCooldownRecuperacao(), String(Date.now()));
+  atualizarCooldownRecuperacao();
+}
+
+function atualizarCooldownRecuperacao(){
+  const btn = campo('btnEnviarRecuperacao');
+  const info = campo('estadoRecuperacao');
+  if(!btn || !info) return;
+
+  clearTimeout(timerRecuperacao);
+
+  const ultimo = Number(localStorage.getItem(chaveCooldownRecuperacao()) || 0);
+  const restante = Math.ceil((RECUPERACAO_COOLDOWN_MS - (Date.now() - ultimo)) / 1000);
+
+  if(restante > 0){
+    const tempo = formatarCronometro(restante);
+    btn.disabled = true;
+    btn.textContent = 'Novo link em ' + tempo;
+    info.dataset.erroPersistente = '';
+    info.textContent = 'Link solicitado. Você poderá pedir outro em ' + tempo + '. Confira também Spam/Lixo eletrônico.';
+    timerRecuperacao = setTimeout(atualizarCooldownRecuperacao, 1000);
+  }else{
+    btn.disabled = false;
+    btn.textContent = 'Enviar link';
+    if(!info.dataset.erroPersistente) info.textContent = '';
+  }
+}
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('[data-esqueci]')){
+    setTimeout(atualizarCooldownRecuperacao, 0);
+  }
+});
+
+campo('r_email').addEventListener('input', atualizarCooldownRecuperacao);
+
+campo('btnEnviarRecuperacao').addEventListener('click', async e=>{
+  const btn = e.currentTarget;
+  const info = campo('estadoRecuperacao');
+  const email = campo('r_email').value.trim();
+  if(!email){ avisar('Informe o e-mail da sua conta'); return; }
+
+  info.dataset.erroPersistente = '';
+  info.textContent = '';
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  const destino = location.origin + location.pathname.replace(/[^/]*$/, '') + 'redefinir.html';
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: destino });
+
+  if(error){
+    const msg = (error.message || '').toLowerCase();
+    const codigo = String(error.code || '').toLowerCase();
+    const limiteEmail = codigo.includes('over_email_send_rate_limit') ||
+                        msg.includes('email rate limit') ||
+                        msg.includes('rate limit');
+
+    if(limiteEmail){
+      info.dataset.erroPersistente = '';
+      iniciarCooldownRecuperacao();
+      avisar('Limite de e-mails atingido. Uma nova tentativa ficará disponível em 10 minutos.');
+      return;
+    }
+
+    btn.disabled = false; btn.textContent = 'Enviar link';
+    avisar(traduzirErro(error));
+    return;
+  }
+
+  info.dataset.erroPersistente = '';
+  iniciarCooldownRecuperacao();
+  avisar('Se existir conta com esse e-mail, o link foi solicitado. Confira a caixa de entrada e o spam.');
+});
+
+/* ============================================================
+   NOTIFICAÇÕES
+   ============================================================ */
+let canalNotificacoes = null;
+
+async function carregarNotificacoes({abrirLista=false}={}){
+  if(!Sessao.logado()) return;
+
+  const { data, error } = await db.from('notificacoes')
+    .select('*').order('criado_em', { ascending:false }).limit(30);
+  if(error) return;
+
+  const naoLidas = data.filter(n=>!n.lida).length;
+  const badge = campo('badgeNotificacoes');
+  badge.hidden = naoLidas === 0;
+  badge.textContent = naoLidas;
+
+  campo('listaNotificacoes').innerHTML = data.length
+    ? data.map(n=>{
+        const tipo = n.denuncia_id ? 'denuncia' : /coment/i.test(n.titulo || '') ? 'comentario' : /adiad|cancelad|evento/i.test((n.titulo||'')+' '+(n.mensagem||'')) ? 'evento' : 'geral';
+        const icones = { denuncia:'⚑', comentario:'□', evento:'▣', geral:'○' };
+        return '<article class="notificacao-card-lovable'+(n.lida?'':' nova')+'">' +
+          '<div class="notificacao-icone">'+icones[tipo]+'</div>' +
+          '<div class="notificacao-corpo">' +
+            '<strong>'+escapa(n.titulo)+'</strong>' +
+            '<p>'+escapa(n.mensagem)+'</p>' +
+            '<span class="notificacao-tempo">'+quandoFoi(n.criado_em)+'</span>' +
+          '</div>' +
+          (!n.lida ? '<span class="notificacao-ponto" aria-hidden="true"></span>' : '') +
+        '</article>';
+      }).join('')
+    : '<p class="dica">Nenhuma notificação por aqui.</p>';
+
+  if(abrirLista) abrir('modalNotificacoes');
+}
+
+campo('btnNotificacoes').addEventListener('click', ()=>carregarNotificacoes({abrirLista:true}));
+
+campo('btnLerTodas').addEventListener('click', async ()=>{
+  const { error } = await db.from('notificacoes')
+    .update({ lida:true }).eq('usuario_id', meuId()).eq('lida', false);
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  await carregarNotificacoes();
+  avisar('Notificações marcadas como lidas');
+});
+
+const STATUS_DENUNCIA_USUARIO = {
+  recebida:'Recebida',
+  em_analise:'Em análise',
+  aguardando_info:'Aguardando informações',
+  resolvida:'Resolvida',
+  em_recurso:'Em recurso',
+  arquivada:'Arquivada'
+};
+
+async function carregarMinhasDenuncias(){
+  if(!Sessao.logado()){ abrir('modalLogin'); return; }
+
+  const caixa = campo('listaMinhasDenuncias');
+  caixa.innerHTML = '<p class="dica">Carregando...</p>';
+  fecharTudo(); abrir('modalMinhasDenuncias');
+
+  const { data, error } = await db.from('denuncias')
+    .select('id, numero, motivo, descricao, status, resposta, criado_em, resolvida_em, prazo_recurso, recurso_texto, recurso_em, recurso_decisao, recurso_resposta, recurso_decidido_em, info_solicitada, info_resposta, info_respondida_em')
+    .eq('usuario_id', meuId())
+    .order('criado_em', { ascending:false });
+
+  if(error){
+    caixa.innerHTML = '<p class="dica">Não foi possível carregar suas denúncias.</p>';
+    return;
+  }
+
+  if(!data || !data.length){
+    caixa.innerHTML = '<p class="dica">Você ainda não enviou nenhuma denúncia.</p>';
+    return;
+  }
+
+  const agora = new Date();
+  caixa.innerHTML = data.map(d=>{
+    const prazo = d.prazo_recurso ? new Date(d.prazo_recurso) : null;
+    const podeRecorrer = d.status === 'resolvida' && !d.recurso_texto && prazo && prazo > agora;
+    const dias = prazo ? Math.max(0, Math.ceil((prazo - agora) / 86400000)) : null;
+    const aguardandoInfo = d.status === 'aguardando_info';
+    const decisaoRecurso = d.recurso_decisao === 'aceito' ? 'ACEITO' : d.recurso_decisao === 'negado' ? 'NEGADO' : null;
+
+    return '<div class="ficha" style="margin-bottom:12px">' +
+      '<div class="corpo">' +
+        '<h4>Denúncia #'+d.numero+'</h4>' +
+        '<div class="meta">' +
+          'STATUS: '+escapa(STATUS_DENUNCIA_USUARIO[d.status] || d.status)+'<br>' +
+          'MOTIVO: '+escapa(d.motivo || '')+'<br>' +
+          'ENVIADA: '+new Date(d.criado_em).toLocaleString('pt-BR')+'<br>' +
+          (d.resposta ? '<span class="descricao-denuncia">RESPOSTA DA MODERAÇÃO: '+escapa(d.resposta)+'</span><br>' : '') +
+          (dias !== null && d.status === 'resolvida' && !d.recurso_texto ? 'PRAZO DE RECURSO: '+dias+' DIA(S)<br>' : '') +
+        '</div>' +
+        (d.info_solicitada ? '<div class="alerta"><strong>Informações solicitadas pela moderação</strong><p>'+escapa(d.info_solicitada)+'</p></div>' : '') +
+        (d.info_resposta ? '<div class="alerta"><strong>Sua resposta</strong><p>'+escapa(d.info_resposta)+'</p></div>' : '') +
+        (aguardandoInfo && !d.info_resposta
+          ? '<div class="campo" style="margin-top:10px"><label for="info-'+d.id+'">Enviar informações</label><textarea id="info-'+d.id+'" maxlength="2000" placeholder="Responda ao que a moderação solicitou"></textarea></div>' +
+            '<button class="mini" data-enviar-info="'+d.id+'">Enviar informações</button>'
+          : '') +
+        (d.recurso_texto
+          ? '<div class="alerta"><strong>Recurso enviado'+(decisaoRecurso?' · '+decisaoRecurso:'')+'</strong><p>'+escapa(d.recurso_texto)+'</p>'+
+            (d.recurso_resposta?'<p><strong>Resposta da moderação:</strong> '+escapa(d.recurso_resposta)+'</p>':'')+'</div>'
+          : '') +
+        (podeRecorrer
+          ? '<div class="campo" style="margin-top:10px"><label for="recurso-'+d.id+'">Recurso</label><textarea id="recurso-'+d.id+'" maxlength="1500" placeholder="Explique por que deseja que a decisão seja revista"></textarea></div>' +
+            '<button class="mini" data-enviar-recurso="'+d.id+'">Enviar recurso</button>'
+          : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+campo('btnMinhasDenuncias').addEventListener('click', carregarMinhasDenuncias);
+
+document.addEventListener('click', async e=>{
+  const btnRecurso = e.target.closest('[data-enviar-recurso]');
+  if(btnRecurso){
+    const id = btnRecurso.dataset.enviarRecurso;
+    const textarea = campo('recurso-'+id);
+    const texto = textarea ? textarea.value.trim() : '';
+    if(texto.length < 10){ avisar('Explique o recurso com pelo menos 10 caracteres'); return; }
+
+    btnRecurso.disabled = true; btnRecurso.textContent = 'Enviando...';
+    const { error } = await db.rpc('enviar_recurso_denuncia', { p_denuncia:id, p_texto:texto });
+    btnRecurso.disabled = false; btnRecurso.textContent = 'Enviar recurso';
+    if(error){ avisar('Não foi possível enviar o recurso: ' + error.message); return; }
+    avisar('Recurso enviado. A denúncia voltou para a fila da moderação.');
+    await carregarMinhasDenuncias();
+    return;
+  }
+
+  const btnInfo = e.target.closest('[data-enviar-info]');
+  if(btnInfo){
+    const id = btnInfo.dataset.enviarInfo;
+    const textarea = campo('info-'+id);
+    const texto = textarea ? textarea.value.trim() : '';
+    if(texto.length < 5){ avisar('Escreva as informações solicitadas'); return; }
+
+    btnInfo.disabled = true; btnInfo.textContent = 'Enviando...';
+    const { error } = await db.rpc('enviar_informacoes_denuncia', { p_denuncia:id, p_texto:texto });
+    btnInfo.disabled = false; btnInfo.textContent = 'Enviar informações';
+    if(error){ avisar('Não foi possível enviar: ' + error.message); return; }
+    avisar('Informações enviadas. A denúncia voltou para análise.');
+    await carregarMinhasDenuncias();
+  }
+});
+
+/* avisa na hora quando o administrador mexe numa denúncia sua */
+function acompanharNotificacoes(){
+  if(canalNotificacoes){ db.removeChannel(canalNotificacoes); canalNotificacoes = null; }
+  if(!Sessao.logado()) return;
+
+  canalNotificacoes = db.channel('minhas-notificacoes')
+    .on('postgres_changes', {
+      event:'INSERT', schema:'public', table:'notificacoes',
+      filter:'usuario_id=eq.'+meuId()
+    }, payload=>{
+      avisar(payload.new.titulo + ': ' + payload.new.mensagem);
+      carregarNotificacoes();
+    })
+    .subscribe();
+}
+
+/* ============================================================
+   EXCLUSÃO DE CONTA
+
+   Três barreiras de propósito: a caixa de ciência, o texto
+   digitado por extenso e a confirmação final. A intenção é que
+   ninguém apague a conta por acidente ou por um clique impulsivo.
+   ============================================================ */
+const FRASE_EXCLUSAO = 'EXCLUIR MINHA CONTA';
+
+function validarExclusao(){
+  const ok = campo('x_ciente').checked &&
+             campo('x_senha').value.length > 0 &&
+             campo('x_confirmacao').value.trim().toUpperCase() === FRASE_EXCLUSAO;
+  campo('btnConfirmarExclusao').disabled = !ok;
+}
+
+campo('btnAbrirExclusao').addEventListener('click', async ()=>{
+  campo('x_ciente').checked = false;
+  campo('x_senha').value = '';
+  campo('x_confirmacao').value = '';
+  validarExclusao();
+
+  // mostra o tamanho do estrago antes de perguntar
+  const [ev, co] = await Promise.all([
+    db.from('eventos').select('id', { count:'exact', head:true }).eq('criador_id', meuId()),
+    db.from('comentarios').select('id', { count:'exact', head:true }).eq('autor_id', meuId())
+  ]);
+  campo('resumoExclusao').innerHTML =
+    '<li>seu perfil e sua foto</li>' +
+    '<li><strong>'+(ev.count||0)+'</strong> evento(s) que você publicou</li>' +
+    '<li><strong>'+(co.count||0)+'</strong> comentário(s) seus</li>' +
+    '<li>seus favoritos e interesses</li>';
+
+  fecharTudo(); abrir('modalExcluirConta');
+});
+
+campo('x_ciente').addEventListener('change', validarExclusao);
+campo('x_senha').addEventListener('input', validarExclusao);
+campo('x_confirmacao').addEventListener('input', validarExclusao);
+
+campo('btnConfirmarExclusao').addEventListener('click', async e=>{
+  if(!confirm('Confirmar o pedido de exclusão? Você terá 7 dias para cancelar.')) return;
+
+  const btn = e.currentTarget;
+  btn.disabled = true; btn.textContent = 'Confirmando...';
+
+  try{
+    const senha = campo('x_senha').value;
+    const email = Sessao.usuario && Sessao.usuario.email;
+    if(!email) throw new Error('Sessão inválida');
+
+    // Reautenticação: quem pegou uma sessão aberta ainda precisa saber a senha.
+    const reauth = await db.auth.signInWithPassword({ email, password: senha });
+    if(reauth.error) throw new Error('Senha atual incorreta');
+
+    const { data: prazo, error } = await db.rpc('solicitar_exclusao_conta');
+    if(error) throw error;
+
+    await db.auth.signOut();
+    fecharTudo();
+    const quando = prazo ? new Date(prazo).toLocaleString('pt-BR') : 'daqui a 7 dias';
+    avisar('Pedido registrado. A exclusão definitiva está prevista para ' + quando + '.');
+    setTimeout(()=>location.reload(), 2500);
+  }catch(err){
+    avisar(err.message || 'Não foi possível iniciar a exclusão');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Iniciar exclusão (7 dias)';
+  }
+});
+
+campo('btnCancelarExclusao').addEventListener('click', async ()=>{
+  const { error } = await db.rpc('cancelar_exclusao_conta');
+  if(error){ avisar('Não foi possível cancelar: ' + error.message); return; }
+
+  if(Sessao.perfil){
+    Sessao.perfil.exclusao_pedida_em = null;
+    Sessao.perfil.exclusao_prevista = null;
+  }
+  fecharTudo();
+  atualizarTopo();
+  avisar('Exclusão cancelada. Sua conta continua ativa.');
+  await window.aoMudarSessao();
+});
+
+campo('btnManterExclusao').addEventListener('click', async ()=>{
+  await db.auth.signOut();
+  fecharTudo();
+  avisar('Pedido mantido. Você ainda pode voltar antes do prazo entrando novamente.');
+});
+
+/* ============================================================
+   PERFIL DO USUÁRIO
+   ============================================================ */
+function abrirPerfil(){
+  if(!Sessao.logado()){ abrir('modalLogin'); return; }
+  const p = Sessao.perfil || {};
+  campo('p_nome').value    = p.nome || '';
+  campo('p_bio').value     = p.bio || '';
+  campo('p_cidade').value  = p.cidade || '';
+  campo('p_contato').value = p.contato || '';
+  campo('p_nascimento').value = p.data_nascimento || '';
+  campo('p_email').textContent = p.email || '';
+  campo('p_foto').value = '';
+  campo('p_bioContador').textContent = (p.bio || '').length + '/300';
+  mostrarFotoPerfil(p.foto_url, p.nome);
+  abrir('modalPerfil');
+}
+
+function mostrarFotoPerfil(url, nome){
+  campo('p_previa').innerHTML = url
+    ? '<img src="'+escapa(url)+'" alt="">'
+    : escapa(iniciais(nome));
+}
+
+campo('p_bio').addEventListener('input', e=>{
+  campo('p_bioContador').textContent = e.target.value.length + '/300';
+});
+
+campo('p_foto').addEventListener('change', e=>{
+  const arquivo = e.target.files[0];
+  if(arquivo) mostrarFotoPerfil(URL.createObjectURL(arquivo), Sessao.perfil && Sessao.perfil.nome);
+});
+
+async function enviarAvatar(arquivo){
+  if(!arquivo) return null;
+  if(arquivo.size > 3*1024*1024) throw new Error('A foto precisa ter no máximo 3 MB');
+  if(!['image/jpeg','image/png','image/webp'].includes(arquivo.type)) throw new Error('Use uma foto JPG, PNG ou WebP');
+  const ext = (arquivo.name.split('.').pop()||'jpg').toLowerCase();
+  const caminho = meuId()+'/'+Date.now()+'.'+ext;
+  const { error } = await db.storage.from('avatares').upload(caminho, arquivo, { upsert:false });
+  if(error) throw error;
+  return { caminho, url:db.storage.from('avatares').getPublicUrl(caminho).data.publicUrl };
+}
+
+campo('btnSalvarPerfil').addEventListener('click', async e=>{
+  const btn = e.currentTarget;
+  const nome = campo('p_nome').value.trim();
+  if(nome.length < 2){ avisar('Informe seu nome'); return; }
+
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  let fotoNova=null;
+  const fotoAntiga=Sessao.perfil && Sessao.perfil.foto_url;
+  try{
+    fotoNova = await enviarAvatar(campo('p_foto').files[0]);
+    const dados = {
+      nome,
+      bio: campo('p_bio').value.trim() || null,
+      cidade: campo('p_cidade').value.trim() || null,
+      contato: campo('p_contato').value.trim() || null
+    };
+    if(campo('p_nascimento').value) dados.data_nascimento = campo('p_nascimento').value;
+    if(fotoNova) dados.foto_url = fotoNova.url;
+
+    const { data, error } = await db.from('perfis').update(dados).eq('id', meuId()).select().single();
+    if(error) throw error;
+
+    if(fotoNova && fotoAntiga && fotoAntiga!==fotoNova.url) await removerArquivoPublico('avatares',fotoAntiga);
+    Sessao.perfil = { ...Sessao.perfil, ...data };
+    atualizarTopo();
+    fecharTudo();
+    avisar('Perfil atualizado');
+    await atualizarConsultaAtual();
+  }catch(err){
+    if(fotoNova) await db.storage.from('avatares').remove([fotoNova.caminho]);
+    avisar(err.message && err.message.includes('18 anos')
+      ? 'A plataforma é restrita a maiores de 18 anos'
+      : traduzirErroBanco(err));
+  }finally{
+    btn.disabled = false; btn.textContent = 'Salvar alterações';
+  }
+});
+
+campo('btnRemoverFoto').addEventListener('click', async ()=>{
+  const antiga=Sessao.perfil && Sessao.perfil.foto_url;
+  const { error } = await db.from('perfis').update({ foto_url: null }).eq('id', meuId());
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  if(antiga) await removerArquivoPublico('avatares',antiga);
+  Sessao.perfil.foto_url = null;
+  mostrarFotoPerfil(null, Sessao.perfil.nome);
+  atualizarTopo();
+  avisar('Foto removida');
+});
+
+ligarMedidorDeSenha('ps_senha','ps_senha2',{
+  barra:'ps_forcaBarra', preenchida:'ps_forcaPreenchida', rotulo:'ps_forcaRotulo',
+  lista:'ps_requisitosSenha', conferencia:'ps_conferenciaSenha'
+});
+
+campo('btnTrocarSenha').addEventListener('click', ()=>{
+  campo('ps_senha').value = '';
+  campo('ps_senha2').value = '';
+  fecharTudo(); abrir('modalTrocarSenha');
+});
+
+campo('btnSalvarNovaSenha').addEventListener('click', async e=>{
+  const btn=e.currentTarget;
+  const nova=campo('ps_senha').value;
+  const conf=campo('ps_senha2').value;
+  const analise=analisarSenha(nova);
+  if(!analise.aprovada){ avisar('A senha ainda não cumpre todos os requisitos'); return; }
+  if(nova!==conf){ avisar('As senhas não são iguais'); return; }
+
+  btn.disabled=true; btn.textContent='Salvando...';
+  const { error } = await db.auth.updateUser({ password:nova });
+  btn.disabled=false; btn.textContent='Salvar nova senha';
+  if(error){ avisar(traduzirErro(error)); return; }
+  fecharTudo(); avisar('Senha alterada com segurança');
+});
+
+campo('btnPerfil').addEventListener('click', ()=>{ location.href = 'perfil.html'; });
+
+/* ============================================================
+   FAVORITOS E INTERESSES — ATUALIZAÇÃO OTIMISTA
+   ============================================================ */
+async function alternarFav(id){
+  if(!Sessao.logado()){ avisar('Entre na sua conta para favoritar'); abrir('modalLogin'); return; }
+  const tinha=favoritos.has(id);
+  tinha?favoritos.delete(id):favoritos.add(id);
+  renderMural();
+
+  const {error}=tinha
+    ? await db.from('favoritos').delete().eq('usuario_id',meuId()).eq('evento_id',id)
+    : await db.from('favoritos').insert({usuario_id:meuId(),evento_id:id});
+  if(error){
+    tinha?favoritos.add(id):favoritos.delete(id); renderMural(); avisar(traduzirErroBanco(error)); return;
+  }
+  avisar(tinha?'Removido dos favoritos':'Salvo nos favoritos');
+  if(estado.aba==='favoritos') await atualizarConsultaAtual();
+}
+
+async function alternarInteresse(id){
+  if(!Sessao.logado()){ avisar('Entre na sua conta para marcar interesse'); abrir('modalLogin'); return; }
+  let ev=EVENTOS.find(x=>x.id===id);
+  if(!ev){ const r=await db.from('eventos_lista').select('*').eq('id',id).single(); if(r.error) return; ev=r.data; }
+  const tinha=interesses.has(id);
+  tinha?interesses.delete(id):interesses.add(id);
+  ev.total_interessados=Math.max(0,(ev.total_interessados||0)+(tinha?-1:1));
+  renderMural(); montarDetalhe(ev);
+
+  const {error}=tinha
+    ? await db.from('interesses').delete().eq('usuario_id',meuId()).eq('evento_id',id)
+    : await db.from('interesses').insert({usuario_id:meuId(),evento_id:id});
+  if(error){
+    tinha?interesses.add(id):interesses.delete(id);
+    ev.total_interessados=Math.max(0,(ev.total_interessados||0)+(tinha?1:-1));
+    renderMural(); montarDetalhe(ev); avisar(traduzirErroBanco(error)); return;
+  }
+  avisar(tinha?'Interesse removido':'Interesse registrado');
+  if(estado.aba==='interesse') await atualizarConsultaAtual();
+}
+
+/* ============================================================
+   AUTENTICAÇÃO — BOTÕES DA TELA
+   ============================================================ */
+if(campo('btnCadastroTopo')) campo('btnCadastroTopo').addEventListener('click',()=>{ fecharTudo(); abrir('modalCadastro'); });
+
+campo('btnEntrar').addEventListener('click',()=>{
+  abrir('modalLogin');
+});
+if(campo('btnSair')) campo('btnSair').addEventListener('click',async()=>{
+  await sair(); favoritos.clear(); interesses.clear(); estado.aba='todos';
+  document.querySelectorAll('.aba').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.aba==='todos')));
+  campo('tituloLista').textContent='Próximos eventos';
+  avisar('Você saiu da conta');
+});
+
+campo('btnLogar').addEventListener('click',async e=>{
+  const btn=e.currentTarget, email=campo('l_email').value.trim(), senha=campo('l_senha').value;
+  if(!email||!senha){ avisar('Preencha e-mail e senha'); return; }
+  btn.disabled=true; btn.textContent='Entrando...';
+  try{
+    const login = await entrar(email,senha);
+    campo('l_senha').value='';
+
+    const id = login && login.user && login.user.id;
+    const perfil = id ? await carregarPerfil(id) : null;
+    if(perfil){ Sessao.perfil = perfil; }
+
+    if(perfil && perfil.exclusao_prevista){
+      mostrarExclusaoPendente();
+      avisar('Sua conta ainda pode ser recuperada antes do prazo.');
+    }else{
+      fecharTudo();
+      avisar('Bem-vindo de volta!');
+
+      // Se o login foi aberto porque a pessoa veio do perfil para publicar,
+      // abre o formulário depois que o modal de login fechar.
+      const parametros = new URLSearchParams(location.search);
+      if(parametros.get('criar') === '1'){
+        parametros.delete('criar');
+        const novaBusca = parametros.toString();
+        history.replaceState({}, '', location.pathname + (novaBusca ? '?' + novaBusca : '') + location.hash);
+        setTimeout(()=>campo('btnCriar') && campo('btnCriar').click(), 120);
+      }
+    }
+  }
+  catch(err){ avisar(traduzirErro(err)); }
+  finally{ btn.disabled=false; btn.textContent='Entrar'; }
+});
+
+campo('btnCadastrar').addEventListener('click',async e=>{
+  const btn=e.currentTarget, nome=campo('c_nome').value.trim(), email=campo('c_email').value.trim(),
+        senha=campo('c_senha').value, senha2=campo('c_senha2').value, nascimento=campo('c_nascimento').value;
+
+  if(!nome||!email){ avisar('Preencha nome e e-mail'); return; }
+  if(!nascimento){ avisar('Informe sua data de nascimento'); return; }
+
+  const analise = analisarSenha(senha);
+  if(!analise.aprovada){ avisar('A senha ainda não cumpre todos os requisitos'); return; }
+  if(senha !== senha2){ avisar('As senhas não são iguais'); return; }
+  if(!campo('c_regras').checked){ avisar('É preciso aceitar as regras de convivência'); return; }
+
+  btn.disabled=true; btn.textContent='Criando...';
+  try{
+    const cadastro = await cadastrar(nome,email,senha,nascimento,true);
+    fecharTudo();
+    if(cadastro && cadastro.session){
+      avisar('Conta criada. Bem-vindo, '+nome+'!');
+    }else{
+      avisar('Conta criada. Confira seu e-mail e clique no link de confirmação antes de entrar.');
+    }
+    campo('c_senha').value=''; campo('c_senha2').value=''; campo('c_regras').checked=false;
+  }
+  catch(err){ avisar(traduzirErro(err)); }
+  finally{ btn.disabled=false; btn.textContent='Criar conta'; }
+});
+
+/* ============================================================
+   PUBLICAR / EDITAR / EXCLUIR
+   ============================================================ */
+function limparFormulario(){
+  ['f_nome','f_desc','f_cep','f_end','f_numero','f_complemento','f_bairro','f_cidade','f_vagas','f_contato'].forEach(id=>campo(id).value='');
+  numeroAnterior='';
+  campo('cepStatus').textContent='';
+  campo('f_preco').value=''; campo('f_hora').value='19:00'; campo('f_situacao').value='agendado'; campo('f_img').value='';
+  const d=new Date(); d.setDate(d.getDate()+7); campo('f_data').value=dataISO(d);
+  limparPontoFormulario();
+}
+
+campo('btnCriar').addEventListener('click',()=>{
+  if(!Sessao.logado()){ avisar('Entre na sua conta para publicar'); abrir('modalLogin'); return; }
+  editando=null; limparFormulario(); campo('tituloForm').textContent='Publicar um evento'; campo('btnPublicar').textContent='Publicar';
+  abrir('modalCriar'); prepararMapaFormulario();
+});
+
+async function abrirEdicao(id){
+  let ev=EVENTOS.find(e=>e.id===id);
+  if(!ev){
+    const r=await db.from('eventos_lista').select('*').eq('id',id).single();
+    if(r.error){ avisar('Não foi possível carregar o evento para edição'); return; }
+    ev=r.data;
+  }
+  editando=id;
+  limparPontoFormulario();
+  campo('f_nome').value=ev.nome; campo('f_desc').value=ev.descricao||''; campo('f_cat').value=ev.categoria_id;
+  campo('f_data').value=ev.data_evento; campo('f_hora').value=hora(ev); campo('f_end').value=ev.endereco||'';
+  campo('f_numero').value=ev.numero||''; campo('f_complemento').value=ev.complemento||'';
+  campo('f_cep').value=ev.cep?formatarCep(ev.cep):''; campo('cepStatus').textContent='';
+  campo('f_bairro').value=ev.bairro||''; campo('f_cidade').value=ev.cidade||''; campo('f_preco').value=ev.gratuito?0:ev.valor;
+  campo('f_situacao').value=ev.situacao||'agendado';
+  campo('f_vagas').value=ev.max_participantes||''; campo('f_contato').value=ev.contato||''; campo('f_img').value='';
+  campo('f_lat').value=ev.latitude==null?'':ev.latitude; campo('f_lng').value=ev.longitude==null?'':ev.longitude;
+  campo('tituloForm').textContent='Editar evento'; campo('btnPublicar').textContent='Salvar alterações';
+  fecharTudo(); abrir('modalCriar'); prepararMapaFormulario();
+}
+
+async function enviarImagem(arquivo){
+  if(!arquivo) return null;
+  if(arquivo.size>5*1024*1024) throw new Error('Imagem muito grande (máximo 5 MB)');
+  if(!['image/jpeg','image/png','image/webp'].includes(arquivo.type)) throw new Error('Use uma imagem JPG, PNG ou WebP');
+  const ext=(arquivo.name.split('.').pop()||'jpg').toLowerCase(), caminho=meuId()+'/'+Date.now()+'.'+ext;
+  const {error}=await db.storage.from('eventos').upload(caminho,arquivo,{upsert:false});
+  if(error) throw error;
+  return { caminho, url:db.storage.from('eventos').getPublicUrl(caminho).data.publicUrl };
+}
+
+function coordOuNull(id){
+  const valor=campo(id).value.trim(); if(!valor) return null;
+  const n=Number(valor); return Number.isFinite(n)?n:null;
+}
+
+campo('btnPublicar').addEventListener('click',async e=>{
+  const btn=e.currentTarget, nome=campo('f_nome').value.trim(), data=campo('f_data').value, cidade=campo('f_cidade').value.trim(), valor=Number(campo('f_preco').value)||0;
+  if(nome.length<3){ avisar('O nome precisa ter pelo menos 3 letras'); return; }
+  if(!data){ avisar('Escolha a data do evento'); return; }
+  if(!cidade){ avisar('Informe a cidade'); return; }
+  const rotulo=btn.textContent; btn.disabled=true; btn.textContent='Salvando...';
+
+  let imagemNova=null;
+  const eventoAnterior=editando ? EVENTOS.find(x=>x.id===editando) : null;
+  const imagemAntiga=eventoAnterior && eventoAnterior.imagem_url;
+  try{
+    imagemNova=await enviarImagem(campo('f_img').files[0]);
+    const dados={
+      nome, descricao:campo('f_desc').value.trim()||null, categoria_id:campo('f_cat').value,
+      data_evento:data, hora_evento:campo('f_hora').value||'19:00', endereco:campo('f_end').value.trim()||null,
+      numero:campo('f_numero').value.trim()||null, complemento:campo('f_complemento').value.trim()||null,
+      cep:soDigitos(campo('f_cep').value)||null,
+      bairro:campo('f_bairro').value.trim()||null, cidade, gratuito:valor===0, valor,
+      max_participantes:Number(campo('f_vagas').value)||null, contato:campo('f_contato').value.trim()||null,
+      situacao:campo('f_situacao').value||'agendado',
+      latitude:coordOuNull('f_lat'), longitude:coordOuNull('f_lng')
+    };
+    if(imagemNova) dados.imagem_url=imagemNova.url;
+    let id;
+    if(editando){
+      const {error}=await db.from('eventos').update(dados).eq('id',editando); if(error) throw error; id=editando;
+    }else{
+      dados.criador_id=meuId();
+      const {data:criado,error}=await db.from('eventos').insert(dados).select('id').single(); if(error) throw error; id=criado.id;
+    }
+    if(imagemNova && imagemAntiga && imagemAntiga!==imagemNova.url) await removerArquivoPublico('eventos',imagemAntiga);
+    fecharTudo(); await carregarEventos(); avisar(editando?'Alterações salvas':'Evento publicado'); editando=null;
+    if(estado.visualizacao==='mapa') await carregarMapa(id);
+    setTimeout(()=>{ const el=document.querySelector('[data-ev="'+id+'"]'); if(el) el.scrollIntoView({block:'center'}); },150);
+  }catch(err){
+    if(imagemNova) await db.storage.from('eventos').remove([imagemNova.caminho]);
+    console.error(err); avisar(traduzirErroBanco(err));
+  }
+  finally{ btn.disabled=false; btn.textContent=rotulo; }
+});
+
+async function excluirEvento(id){
+  if(!confirm('Excluir este evento? Não dá para desfazer.')) return;
+  let ev=EVENTOS.find(x=>x.id===id);
+  if(!ev){
+    const r=await db.from('eventos').select('id,imagem_url').eq('id',id).single();
+    if(!r.error) ev=r.data;
+  }
+  const {error}=await db.from('eventos').delete().eq('id',id);
+  if(error){ avisar(traduzirErroBanco(error)); return; }
+  if(ev && ev.imagem_url) await removerArquivoPublico('eventos',ev.imagem_url);
+  fecharTudo(); await atualizarConsultaAtual(); avisar('Evento excluído');
+}
+
+function traduzirErroBanco(e){
+  const m=(e&&e.message||'').toLowerCase();
+  if(m.includes('row-level security')) return 'Sem permissão para esta ação. Confira se você está logado.';
+  if(m.includes('valor_coerente')) return 'Evento pago precisa de um valor maior que zero';
+  if(m.includes('violates check')) return 'Algum campo está fora do formato esperado';
+  if(m.includes('duplicate')) return 'Esse registro já existe';
+  if(m.includes('failed to fetch')) return 'Sem conexão com o servidor';
+  return 'Erro: '+(e&&e.message||'desconhecido');
+}
+
+/* ============================================================
+   DENÚNCIAS / ADMIN
+   ============================================================ */
+campo('btnEnviarDenuncia').addEventListener('click',async e=>{
+  const btn=e.currentTarget; if(!denunciando) return;
+  btn.disabled=true; btn.textContent='Enviando...';
+  let evidencia=null;
+  const arquivo=campo('d_evidencia').files[0];
+
+  if(arquivo){
+    if(arquivo.size>5*1024*1024){
+      avisar('A evidência precisa ter no máximo 5 MB');
+      btn.disabled=false; btn.textContent='Enviar denúncia'; return;
+    }
+    if(!['image/jpeg','image/png','image/webp'].includes(arquivo.type)){
+      avisar('Use uma imagem JPG, PNG ou WebP como evidência');
+      btn.disabled=false; btn.textContent='Enviar denúncia'; return;
+    }
+    const ext=(arquivo.name.split('.').pop()||'jpg').toLowerCase();
+    const caminho=meuId()+'/'+Date.now()+'.'+ext;
+    const up=await db.storage.from('denuncias').upload(caminho,arquivo);
+    if(up.error){
+      avisar('Não foi possível anexar a evidência: '+up.error.message);
+      btn.disabled=false; btn.textContent='Enviar denúncia'; return;
+    }
+    evidencia=caminho;
+  }
+
+  const {data:numero,error}=await db.rpc('abrir_denuncia',{
+    p_alvo_tipo:denunciando.tipo,
+    p_alvo_id:denunciando.id,
+    p_categoria:campo('d_motivo').value,
+    p_descricao:campo('d_descricao').value.trim()||null,
+    p_evidencia_path:evidencia
+  });
+
+  btn.disabled=false; btn.textContent='Enviar denúncia';
+  if(error){
+    if(evidencia) await db.storage.from('denuncias').remove([evidencia]);
+    avisar(traduzirErroBanco(error));
+    return;
+  }
+
+  denunciando=null;
+  fecharTudo();
+  avisar('Denúncia nº '+numero+' enviada para a moderação.');
+});
+campo('btnAdmin').addEventListener('click',()=>{ location.href='admin.html'; });
+
+/* ============================================================
+   REALTIME
+   ============================================================ */
+function recarregarEmBreve(){
+  clearTimeout(recarregando);
+  recarregando=setTimeout(()=>atualizarConsultaAtual(),400);
+}
+
+db.channel('mural')
+  .on('postgres_changes',{event:'*',schema:'public',table:'eventos'},recarregarEmBreve)
+  .on('postgres_changes',{event:'*',schema:'public',table:'interesses'},recarregarEmBreve)
+  .subscribe();
+
+/* ============================================================
+   INÍCIO
+   ============================================================ */
+(async function iniciar(){
+  await carregarCategorias();
+  await carregarEventos();
+  const parametros = new URLSearchParams(location.search);
+  const eventoDireto = parametros.get('evento');
+  if(eventoDireto) setTimeout(()=>abrirDetalhe(eventoDireto),180);
+})();
+
+window.addEventListener('load', ()=>{
+  const parametros = new URLSearchParams(location.search);
+  if(parametros.get('criar') === '1'){
+    setTimeout(()=>{
+      if(Sessao.logado()) campo('btnCriar').click();
+      else abrir('modalLogin');
+    }, 650);
+  }
+});
