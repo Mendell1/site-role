@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova senha — Rolê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body class="visual-v12">
+
+<header class="topo">
+  <div class="topo-inner">
+    <div class="marca">RO<span>LÊ</span><small>NOVA SENHA</small></div>
+    <div class="direita"><a class="btn" href="index.html">← Voltar ao site</a></div>
+  </div>
+</header>
+
+<!-- link inválido ou vencido -->
+<div id="linkInvalido" class="bloqueio" hidden>
+  <h2>Link expirado</h2>
+  <p id="motivoInvalido">Este link de recuperação não é mais válido. Peça um novo na tela de login.</p>
+  <a class="btn-escuro" href="index.html" style="text-decoration:none;display:inline-block">Voltar ao site</a>
+</div>
+
+<main class="bloqueio" id="formulario" hidden style="text-align:left">
+  <h2 style="text-align:center">Criar nova senha</h2>
+  <p style="text-align:center">Conta: <strong id="emailConta">—</strong></p>
+
+  <div class="campo">
+    <label for="n_senha">Nova senha</label>
+    <input id="n_senha" type="password" autocomplete="new-password" placeholder="mínimo 8 caracteres">
+    <div class="forca" id="forcaBarra" hidden>
+      <div class="forca-trilho"><span id="forcaPreenchida"></span></div>
+      <span class="forca-rotulo" id="forcaRotulo"></span>
+    </div>
+    <ul class="requisitos" id="requisitosSenha">
+      <li data-req="tamanho">8 caracteres ou mais</li>
+      <li data-req="maiuscula">uma letra maiúscula</li>
+      <li data-req="minuscula">uma letra minúscula</li>
+      <li data-req="numero">um número</li>
+      <li data-req="especial">um caractere especial (!@#$...)</li>
+    </ul>
+  </div>
+
+  <div class="campo">
+    <label for="n_senha2">Confirmar nova senha</label>
+    <input id="n_senha2" type="password" autocomplete="new-password" placeholder="repita a senha">
+    <p class="dica" id="conferenciaSenha" style="margin-top:5px"></p>
+  </div>
+
+  <div class="acoes">
+    <button class="btn-escuro" id="btnDefinirSenha">Salvar nova senha</button>
+  </div>
+</main>
+
+<div class="aviso" id="aviso"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/senha.js"></script>
+<script>
+/* ============================================================
+   O link do e-mail traz um token na própria URL. A biblioteca do
+   Supabase troca esse token por uma sessão temporária, e só então
+   updateUser() pode gravar a nova senha. Se o link já venceu ou
+   foi usado, a sessão não aparece e mostramos o aviso.
+   ============================================================ */
+const el = id => document.getElementById(id);
+
+let avisoTimer;
+function avisar(txt){
+  const a = el('aviso');
+  a.textContent = txt; a.classList.add('mostra');
+  clearTimeout(avisoTimer); avisoTimer = setTimeout(()=>a.classList.remove('mostra'), 3600);
+}
+
+function mostrarInvalido(motivo){
+  el('motivoInvalido').textContent = motivo;
+  el('linkInvalido').hidden = false;
+  el('formulario').hidden = true;
+}
+
+// erros vêm no fragmento da URL (#error=...)
+const fragmento = new URLSearchParams(location.hash.replace(/^#/, ''));
+if (fragmento.get('error')) {
+  mostrarInvalido(fragmento.get('error_code') === 'otp_expired'
+    ? 'Este link já venceu. Peça um novo na tela de login.'
+    : 'Não foi possível validar este link. Peça um novo na tela de login.');
+} else {
+  db.auth.onAuthStateChange(async (evento, sessao) => {
+    if (sessao) {
+      el('formulario').hidden = false;
+      el('emailConta').textContent = sessao.user.email;
+    }
+  });
+
+  // se em 3 segundos nenhuma sessão apareceu, o link não presta
+  setTimeout(async () => {
+    const { data:{ session } } = await db.auth.getSession();
+    if (!session) mostrarInvalido('Este link de recuperação não é mais válido. Peça um novo na tela de login.');
+  }, 3000);
+}
+
+ligarMedidorDeSenha('n_senha', 'n_senha2');
+
+el('btnDefinirSenha').addEventListener('click', async e => {
+  const btn = e.currentTarget;
+  const senha = el('n_senha').value;
+  const senha2 = el('n_senha2').value;
+
+  const analise = analisarSenha(senha);
+  if (!analise.aprovada) { avisar('A senha ainda não cumpre todos os requisitos'); return; }
+  if (senha !== senha2)  { avisar('As senhas não são iguais'); return; }
+
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  const { error } = await db.auth.updateUser({ password: senha });
+  btn.disabled = false; btn.textContent = 'Salvar nova senha';
+
+  if (error) { avisar('Não foi possível alterar: ' + error.message); return; }
+
+  avisar('Senha alterada! Redirecionando...');
+  setTimeout(() => location.href = 'index.html', 1800);
+});
+</script>
+</body>
+</html>

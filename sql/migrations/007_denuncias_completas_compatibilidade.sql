@@ -1,0 +1,12 @@
+-- ARQUIVO LEGADO (V7)
+--
+-- Em um Supabase NOVO, NÃO monte o banco com os arquivos 1..10.
+-- Use somente: 0-INSTALACAO-COMPLETA.sql
+-- Ele contém a estrutura final, funções private, RLS, denúncias, auditoria, Storage e Cron.
+--
+-- Em um banco antigo que já passou pelas etapas 1..9, use o arquivo
+-- 10-v9-seguranca-recursos-evidencias-cron.sql para chegar à V9.
+--
+-- O SQL original da etapa 7 continua apenas como referência histórica em
+-- 7-denuncias-completas-original-referencia.sql e não deve ser executado no banco atual.
+select 'Use 0-INSTALACAO-COMPLETA.sql em instalação nova' as orientacao;

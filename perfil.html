@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfil do organizador — Rolê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body class="visual-lovable pagina-perfil-lovable">
+
+<header class="topo">
+  <div class="topo-inner">
+    <a class="marca" href="index.html" aria-label="Ir para a página inicial do Rolê"><span class="marca-role">RO<span>LÊ</span></span><small>MEU PERFIL</small></a>
+    <a class="btn btn-voltar-mural" href="index.html" aria-label="Voltar ao mural principal">← Voltar ao mural</a>
+    <div class="direita">
+      <button class="btn btn-icone sino" id="btnNotificacoes" hidden aria-label="Notificações">
+        <span aria-hidden="true">🔔</span><span class="badge" id="badgeNotificacoes" hidden>0</span>
+      </button>
+      <button class="btn ativo" id="btnPerfil" hidden>Meu perfil</button>
+      <button class="btn" id="btnAdmin" hidden>Moderação</button>
+      <button class="btn btn-forte" id="btnCriar" hidden>＋ Publicar evento</button>
+      <button class="btn" id="btnSair" hidden>Sair</button>
+      <button class="btn btn-entrar" id="btnEntrar">Entrar</button>
+      <button class="btn btn-forte" id="btnCadastroTopo">Criar conta</button>
+    </div>
+  </div>
+</header>
+
+<section class="perfil-hero" id="perfilHero" hidden>
+  <div class="perfil-hero-inner">
+    <span class="perfil-avatar-bloco" id="perfilAvatarBloco">BF</span>
+    <div class="perfil-apresentacao">
+      <p class="perfil-kicker" id="perfilKicker">ORGANIZADOR DO ROLÊ</p>
+      <h1 id="perfilNomeTitulo">Carregando...</h1>
+      <p class="perfil-bio-resumo" id="perfilBioResumo">Carregando dados do seu perfil...</p>
+      <ul class="perfil-metricas">
+        <li>⌖ <span id="perfilCidadeResumo">—</span></li>
+        <li>🗓 <span id="perfilTotalEventos">0 eventos</span></li>
+        <li>👥 <span id="perfilTotalInteresses">0 interessados</span></li>
+        <li id="perfilDesdeResumo">No Rolê desde agora</li>
+      </ul>
+    </div>
+    <div class="perfil-hero-acoes">
+      <button class="btn btn-forte" id="btnCriarHero">Publicar evento</button>
+    </div>
+  </div>
+</section>
+
+<main class="perfil-main" id="perfilMain" hidden>
+  <div class="perfil-abas" role="tablist" aria-label="Seções do perfil">
+    <button class="perfil-aba ativa" data-tab="eventos" role="tab" aria-selected="true">Meus eventos</button>
+    <button class="perfil-aba" data-tab="favoritos" role="tab" aria-selected="false">Favoritos</button>
+    <button class="perfil-aba" data-tab="dados" role="tab" aria-selected="false">Dados públicos</button>
+    <button class="perfil-aba" data-tab="conta" role="tab" aria-selected="false">Conta e segurança</button>
+  </div>
+
+  <section class="perfil-painel" data-pane="eventos">
+    <div class="grade grade-perfil" id="gradeMeusEventos"></div>
+    <div class="vazio perfil-vazio" id="vazioMeusEventos" hidden>
+      <strong>Você ainda não publicou eventos</strong>
+      <p>Publique o primeiro rolê do seu bairro. Leva menos de dois minutos.</p>
+    </div>
+  </section>
+
+  <section class="perfil-painel" data-pane="favoritos" hidden>
+    <div class="grade grade-perfil" id="gradeFavoritos"></div>
+    <div class="vazio perfil-vazio" id="vazioFavoritos" hidden>
+      <strong>Nenhum favorito salvo</strong>
+      <p>Toque na estrela dos cartões para guardar eventos e encontrá-los aqui.</p>
+    </div>
+  </section>
+
+  <section class="perfil-painel" data-pane="dados" hidden>
+    <div class="superficie-lovable max-2col">
+      <div class="bloco-form-lovable">
+        <p class="bloco-kicker">INFORMAÇÕES PÚBLICAS</p>
+        <div class="linha-form-lovable linha-2">
+          <div class="campo"><label for="p_nome">Nome de exibição *</label><input id="p_nome" maxlength="60"></div>
+          <div class="campo"><label for="p_cidade">Cidade</label><input id="p_cidade"></div>
+        </div>
+        <div class="campo">
+          <label for="p_bio">Biografia</label>
+          <textarea id="p_bio" rows="4" maxlength="280"></textarea>
+          <p class="dica">Até 280 caracteres. Aparece no seu perfil público.</p>
+        </div>
+        <div class="campo"><label for="p_contato">Contato público</label><input id="p_contato" placeholder="WhatsApp, Instagram ou site"></div>
+        <div class="campo"><label for="p_foto">Foto de perfil</label><input id="p_foto" type="file" accept="image/*"></div>
+      </div>
+
+      <div class="bloco-form-lovable">
+        <p class="bloco-kicker">AVISOS</p>
+        <p class="dica" style="margin:-8px 0 14px">Escolha quais avisos opcionais deseja receber. As mudanças são salvas ao clicar em <strong>Salvar alterações</strong>.</p>
+        <label class="item-switch-lovable"><span>Mudanças nos eventos que eu marquei interesse</span><input type="checkbox" id="sw_interesse" checked></label>
+        <label class="item-switch-lovable"><span>Comentários nos meus eventos</span><input type="checkbox" id="sw_comentarios" checked></label>
+        <label class="item-switch-lovable"><span>Andamento das minhas denúncias</span><input type="checkbox" id="sw_denuncias" checked></label>
+        <label class="item-switch-lovable"><span>Resumo semanal de eventos no meu bairro</span><input type="checkbox" id="sw_resumo"></label>
+      </div>
+
+      <div class="rodape-form-lovable">
+        <button class="btn-linha" id="btnDescartarDados">Descartar</button>
+        <button class="btn-escuro" id="btnSalvarPerfilPagina">Salvar alterações</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="perfil-painel" data-pane="conta" hidden>
+    <div class="pilha-paineis">
+      <div class="superficie-lovable max-2col bloco-form-lovable">
+        <p class="bloco-kicker">ACESSO</p>
+        <div class="campo"><label for="a_email">E-mail da conta</label><input id="a_email" readonly></div>
+        <p class="dica">Usado para entrar e recuperar a senha.</p>
+        <div class="linha-botoes-lovable">
+          <button class="btn-linha" id="btnTrocarSenhaPagina">Trocar senha</button>
+          <button class="btn-linha" id="btnEncerrarOutrasSessoes">Encerrar outras sessões</button>
+        </div>
+      </div>
+
+      <div class="superficie-lovable max-2col bloco-form-lovable zona-risco-lovable">
+        <p class="bloco-kicker kicker-risco">ZONA DE RISCO</p>
+        <p class="texto-risco">A exclusão fica pendente por 7 dias, período em que pode ser cancelada. Depois disso, os dados são apagados e seus eventos saem do mural.</p>
+        <div class="linha-botoes-lovable">
+          <button class="btn-perigo" id="btnExcluirContaPagina">Excluir minha conta</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="estado-sem-sessao" id="estadoSemSessao" hidden>
+  <div class="superficie-lovable estado-sem-sessao-card">
+    <h2>Entre para ver seu perfil</h2>
+    <p>Você precisa estar logado para acessar essa área.</p>
+    <div class="acoes">
+      <button class="btn-escuro" id="btnEntrarCentro">Entrar</button>
+      <a class="btn-linha link-botao" href="index.html">Voltar ao mural</a>
+    </div>
+  </div>
+</section>
+
+<div class="cortina" id="modalLogin">
+  <div class="folha folha-login" role="dialog" aria-modal="true" style="max-width:400px">
+    <button class="fechar" data-fecha>×</button>
+    <div class="modal-cabecalho">
+      <h3>Entrar</h3>
+      <p class="modal-descricao">Acesse sua conta para publicar eventos e acompanhar seus favoritos.</p>
+    </div>
+    <div class="campo"><label for="l_email">E-mail</label><input id="l_email" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+    <div class="campo"><label for="l_senha">Senha</label><input id="l_senha" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+    <div class="links-login"><a href="#" data-esqueci><strong>Esqueci minha senha</strong></a><span>Sem conta? <a href="#" data-ir-cadastro><strong>Criar agora</strong></a></span></div>
+    <div class="acoes"><button class="btn-linha" data-fecha>Voltar</button><button class="btn-escuro" id="btnLogar">Entrar</button></div>
+  </div>
+</div>
+
+<div class="cortina" id="modalCadastro">
+  <div class="folha" role="dialog" aria-modal="true" style="max-width:400px">
+    <button class="fechar" data-fecha>×</button>
+    <h3>Criar conta</h3>
+    <div class="campo"><label for="c_nome">Nome</label><input id="c_nome" placeholder="Como você quer ser chamado"></div>
+    <div class="campo"><label for="c_email">E-mail</label><input id="c_email" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+    <div class="campo">
+      <label for="c_senha">Senha</label>
+      <input id="c_senha" type="password" autocomplete="new-password" placeholder="mínimo 8 caracteres">
+      <div class="forca" id="forcaBarra" hidden>
+        <div class="forca-trilho"><span id="forcaPreenchida"></span></div>
+        <span class="forca-rotulo" id="forcaRotulo"></span>
+      </div>
+      <ul class="requisitos" id="requisitosSenha">
+        <li data-req="tamanho">8 caracteres ou mais</li>
+        <li data-req="maiuscula">uma letra maiúscula</li>
+        <li data-req="minuscula">uma letra minúscula</li>
+        <li data-req="numero">um número</li>
+        <li data-req="especial">um caractere especial (!@#$...)</li>
+      </ul>
+    </div>
+    <div class="campo">
+      <label for="c_senha2">Confirmar senha</label>
+      <input id="c_senha2" type="password" autocomplete="new-password" placeholder="repita a senha">
+      <p class="dica" id="conferenciaSenha" style="margin-top:5px"></p>
+    </div>
+    <div class="campo">
+      <label for="c_nascimento">Data de nascimento</label>
+      <input id="c_nascimento" type="date" autocomplete="bday">
+      <p class="dica" style="margin-top:6px">A plataforma é restrita a maiores de 18 anos.</p>
+    </div>
+    <label class="aceite">
+      <input type="checkbox" id="c_regras">
+      <span>Li e aceito as regras de convivência, os termos de uso e a política de privacidade.</span>
+    </label>
+    <div class="acoes"><button class="btn-escuro" id="btnCadastrar">Criar conta</button><button class="btn-linha" data-fecha>Voltar</button></div>
+    <p class="dica">Já tem conta? <a href="#" data-ir-login style="color:inherit"><strong>Entrar</strong></a></p>
+  </div>
+</div>
+
+<div class="cortina" id="modalEsqueci">
+  <div class="folha" role="dialog" aria-modal="true" style="max-width:400px">
+    <button class="fechar" data-fecha>×</button>
+    <h3>Recuperar senha</h3>
+    <p class="dica" style="margin-bottom:14px">Informe o e-mail da sua conta. Enviaremos um link seguro, válido por tempo limitado, para você criar uma nova senha.</p>
+    <div class="campo"><label for="r_email">E-mail</label><input id="r_email" type="email" autocomplete="email" placeholder="voce@email.com"></div>
+    <p class="dica" id="estadoRecuperacao" style="margin-top:10px"></p>
+    <div class="acoes"><button class="btn-escuro" id="btnEnviarRecuperacao">Enviar link</button><button class="btn-linha" data-ir-login>Voltar</button></div>
+  </div>
+</div>
+
+<div class="cortina" id="modalNotificacoes">
+  <div class="folha folha-notificacoes" role="dialog" aria-modal="true" style="max-width:520px">
+    <button class="fechar" data-fecha>×</button>
+    <div class="modal-cabecalho"><h3>Notificações</h3></div>
+    <div id="listaNotificacoes" class="lista-notificacoes-lovable"></div>
+    <div class="acoes acoes-notificacoes">
+      <button class="btn-linha" id="btnMinhasDenuncias">Minhas denúncias</button>
+      <button class="btn-linha" id="btnLerTodas">Marcar todas como lidas</button>
+      <button class="btn-escuro" data-fecha>Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="cortina" id="modalMinhasDenuncias">
+  <div class="folha" role="dialog" aria-modal="true" style="max-width:620px">
+    <button class="fechar" data-fecha>×</button>
+    <h3>Minhas denúncias</h3>
+    <p class="dica" style="margin-bottom:14px">Acompanhe o andamento e, quando uma denúncia for resolvida, envie recurso dentro do prazo indicado.</p>
+    <div id="listaMinhasDenuncias"></div>
+    <div class="acoes"><button class="btn-linha" data-fecha>Fechar</button></div>
+  </div>
+</div>
+
+<div class="cortina" id="modalTrocarSenha">
+  <div class="folha" role="dialog" aria-modal="true" style="max-width:400px">
+    <button class="fechar" data-fecha>×</button>
+    <h3>Trocar senha</h3>
+    <p class="dica" style="margin-bottom:14px">Use uma senha forte diferente das anteriores.</p>
+    <div class="campo">
+      <label for="ps_senha">Nova senha</label>
+      <input id="ps_senha" type="password" autocomplete="new-password" placeholder="mínimo 8 caracteres">
+      <div class="forca" id="ps_forcaBarra" hidden>
+        <div class="forca-trilho"><span id="ps_forcaPreenchida"></span></div>
+        <span class="forca-rotulo" id="ps_forcaRotulo"></span>
+      </div>
+      <ul class="requisitos" id="ps_requisitosSenha">
+        <li data-req="tamanho">8 caracteres ou mais</li>
+        <li data-req="maiuscula">uma letra maiúscula</li>
+        <li data-req="minuscula">uma letra minúscula</li>
+        <li data-req="numero">um número</li>
+        <li data-req="especial">um caractere especial (!@#$...)</li>
+      </ul>
+    </div>
+    <div class="campo">
+      <label for="ps_senha2">Confirmar nova senha</label>
+      <input id="ps_senha2" type="password" autocomplete="new-password" placeholder="repita a senha">
+      <p class="dica" id="ps_conferenciaSenha" style="margin-top:5px"></p>
+    </div>
+    <div class="acoes"><button class="btn-escuro" id="btnSalvarNovaSenha">Salvar nova senha</button><button class="btn-linha" data-fecha>Cancelar</button></div>
+  </div>
+</div>
+
+<div class="cortina" id="modalExcluirConta">
+  <div class="folha" role="dialog" aria-modal="true" style="max-width:440px">
+    <button class="fechar" data-fecha>×</button>
+    <h3>Solicitar exclusão da conta</h3>
+    <div class="alerta">
+      <strong>O pedido inicia um prazo de arrependimento de 7 dias.</strong>
+      <p>Se você não cancelar dentro do prazo, serão apagados:</p>
+      <ul id="resumoExclusao"><li>seu perfil e sua foto</li><li>todos os eventos que você publicou</li><li>seus comentários</li><li>seus favoritos e interesses</li></ul>
+      <p><strong>Suas denúncias</strong> continuam no sistema para controle de reincidência, mas deixam de apontar para você.</p>
+    </div>
+    <div class="campo"><label for="x_senha">Digite sua senha para confirmar que é você</label><input id="x_senha" type="password" autocomplete="current-password" placeholder="sua senha atual"></div>
+    <label class="aceite"><input type="checkbox" id="x_ciente"><span>Entendi que perderei todos os meus dados e que isso não pode ser desfeito.</span></label>
+    <div class="campo"><label for="x_confirmacao">Para confirmar, digite <strong>EXCLUIR MINHA CONTA</strong></label><input id="x_confirmacao" autocomplete="off" placeholder="EXCLUIR MINHA CONTA"></div>
+    <div class="acoes"><button class="btn-perigo" id="btnConfirmarExclusao" disabled>Iniciar exclusão (7 dias)</button><button class="btn-linha" data-fecha>Cancelar, quero ficar</button></div>
+  </div>
+</div>
+
+<div class="aviso" id="aviso"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/senha.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/perfil.js"></script>
+</body>
+</html>
