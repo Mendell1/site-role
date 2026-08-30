@@ -2442,3 +2442,211 @@ body.visual-v12::after,
     opacity .18s ease,
     visibility 0s;
 }
+
+
+/* ============================================================
+   V31 — IDENTIDADE ROLÊ / EDITORIAL DE RUA
+   Mantém toda a lógica. Apenas reforça a linguagem visual:
+   tipografia, contraste, ritmo, categorias e cards.
+   ============================================================ */
+.visual-lovable{
+  --amarelo:#f2b84b;
+  --papel:#f4eee3;
+  --tinta:#201a15;
+  --mural:#15120f;
+  --mural-2:#0d0b09;
+  background:
+    radial-gradient(900px 520px at 76% -15%,rgba(242,184,75,.11),transparent 62%),
+    radial-gradient(680px 480px at 8% 18%,rgba(161,120,192,.055),transparent 68%),
+    linear-gradient(180deg,#17130f 0%,#110e0b 52%,#0c0a08 100%);
+}
+.visual-lovable::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.22;
+  background-image:
+    linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.011) 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:linear-gradient(to bottom,black,transparent 78%);
+}
+
+/* marca e navegação */
+.visual-lovable .topo{
+  background:rgba(13,10,8,.84);
+  border-bottom-color:rgba(244,238,227,.10);
+  box-shadow:0 12px 32px rgba(0,0,0,.12);
+}
+.visual-lovable .topo-inner{height:64px}
+.visual-lovable .marca{
+  position:relative;gap:10px;font-weight:700;letter-spacing:-.025em
+}
+.visual-lovable .marca-role{
+  font-family:'Anton',sans-serif;font-size:29px;font-weight:400;letter-spacing:.035em
+}
+.visual-lovable .marca-role::after{
+  content:"SP";display:inline-grid;place-items:center;width:20px;height:20px;margin-left:7px;
+  border:1px solid rgba(242,184,75,.55);border-radius:50%;
+  font-family:'Space Mono',monospace;font-size:6px;letter-spacing:.04em;color:var(--amarelo);
+  vertical-align:middle;transform:translateY(-2px)
+}
+.visual-lovable .marca small{opacity:.8}
+.visual-lovable .topo .btn{transition:background .18s,border-color .18s,transform .18s}
+.visual-lovable .topo .btn:not(.btn-forte):hover{transform:translateY(-1px)}
+.visual-lovable .topo .btn-forte{
+  border-radius:5px;box-shadow:0 8px 24px -14px rgba(242,184,75,.9)
+}
+
+/* abertura mais editorial e reconhecível */
+.visual-lovable .hero{
+  position:relative;padding-top:82px;padding-bottom:44px;overflow:hidden
+}
+.visual-lovable .hero::before{
+  content:"ROLÊ";position:absolute;right:8px;top:18px;z-index:-1;
+  font-family:'Anton',sans-serif;font-size:clamp(110px,18vw,240px);
+  line-height:.8;letter-spacing:.02em;color:rgba(244,238,227,.022);
+  pointer-events:none;user-select:none
+}
+.visual-lovable .hero-kicker{
+  display:inline-flex;align-items:center;gap:10px;margin-bottom:19px
+}
+.visual-lovable .hero-kicker::before{
+  content:"";display:block;width:34px;height:2px;background:var(--amarelo)
+}
+.visual-lovable .hero h1{
+  max-width:860px;font-family:'Anton',sans-serif;font-weight:400;
+  font-size:clamp(58px,7.6vw,92px);line-height:.88;letter-spacing:.004em
+}
+.visual-lovable .hero h1 em{
+  display:inline-block;position:relative;color:var(--amarelo)
+}
+.visual-lovable .hero h1 em::after{
+  content:"";display:block!important;position:absolute;left:-2%;right:-2%;bottom:2px;
+  height:7px;background:rgba(242,184,75,.20);transform:rotate(-.5deg);z-index:-1
+}
+.visual-lovable .hero-desc{
+  max-width:610px!important;font-size:15px!important;line-height:1.72!important
+}
+.visual-lovable .busca{
+  max-width:760px;margin-top:34px;border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 18px 42px -28px rgba(0,0,0,.95)
+}
+.visual-lovable .busca input{font-size:13px}
+.visual-lovable .busca button{
+  min-width:112px;text-transform:uppercase;letter-spacing:.08em;font-family:'Space Mono',monospace;font-size:9px
+}
+.visual-lovable .atalhos{gap:7px}
+.visual-lovable .chip{
+  border-radius:4px;padding:7px 11px;letter-spacing:.1em
+}
+.visual-lovable .chip[aria-pressed="true"]{box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)}
+
+/* categorias como pequenas placas de programação */
+.visual-lovable .faixa{
+  background:rgba(244,238,227,.018);
+  border-top-color:rgba(244,238,227,.10);
+  border-bottom-color:rgba(244,238,227,.10)
+}
+.visual-lovable .cats{gap:8px;padding-top:14px;padding-bottom:14px}
+.visual-lovable .cat{
+  position:relative;min-height:34px;padding:7px 11px 7px 10px;
+  border-radius:4px;background:rgba(244,238,227,.025);
+  border-color:rgba(244,238,227,.12);overflow:hidden
+}
+.visual-lovable .cat::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--cat-accent,#8e857b);opacity:.75
+}
+.visual-lovable .cat:hover{background:rgba(244,238,227,.065);transform:translateY(-1px)}
+.visual-lovable .cat[aria-pressed="true"]{
+  background:var(--papel);color:var(--tinta);border-color:var(--papel);
+  box-shadow:0 7px 18px -12px rgba(0,0,0,.8)
+}
+.visual-lovable .cat[data-cat="feiras"]{--cat-accent:var(--cat-verde)}
+.visual-lovable .cat[data-cat="musica"]{--cat-accent:var(--cat-lilas)}
+.visual-lovable .cat[data-cat="esportes"]{--cat-accent:var(--cat-azul)}
+.visual-lovable .cat[data-cat="educacao"]{--cat-accent:#77b2d0}
+.visual-lovable .cat[data-cat="cultura"]{--cat-accent:var(--cat-laranja)}
+.visual-lovable .cat[data-cat="gastronomia"]{--cat-accent:var(--cat-amarelo)}
+.visual-lovable .cat[data-cat="games"]{--cat-accent:var(--cat-rosa)}
+.visual-lovable .cat[data-cat="social"]{--cat-accent:#cc7798}
+.visual-lovable .cat[data-cat="profissional"]{--cat-accent:#a69b8b}
+.visual-lovable .cat[data-cat="festas"]{--cat-accent:#db875f}
+
+/* navegação do mural */
+.visual-lovable .mural{padding-top:42px}
+.visual-lovable .mural-toolbar{
+  position:relative;padding:0 0 16px;border-bottom-color:rgba(244,238,227,.12)
+}
+.visual-lovable .mural-toolbar::before{
+  content:"EXPLORAR";position:absolute;left:0;top:-22px;
+  font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.2em;color:rgba(244,238,227,.32)
+}
+.visual-lovable .aba{
+  padding:9px 11px;font-size:11px;border-radius:4px!important;border-bottom:0!important
+}
+.visual-lovable .aba[aria-pressed="true"]{
+  color:#1c160f;background:var(--amarelo)!important
+}
+.visual-lovable .visoes{border-radius:5px;padding:2px}
+.visual-lovable .visao{border-radius:3px}
+.visual-lovable .linha-topo{padding-top:16px;margin-bottom:16px}
+.visual-lovable .contagem{font-size:7.5px;letter-spacing:.18em}
+
+/* cards mais próximos de pôsteres editoriais */
+.visual-lovable .grade{gap:30px 26px}
+.visual-lovable .evento-card{
+  border-radius:4px;border-color:rgba(244,238,227,.12);
+  box-shadow:0 18px 36px -28px rgba(0,0,0,.96);
+  transform:translateZ(0)
+}
+.visual-lovable .evento-card::before{
+  width:52px;height:12px;top:-6px;border:0;
+  background:rgba(237,222,190,.36);transform:translateX(-50%) rotate(-2deg);
+  box-shadow:0 1px 2px rgba(0,0,0,.10)
+}
+.visual-lovable .evento-card:nth-child(3n+2)::before{transform:translateX(-50%) rotate(1.4deg)}
+.visual-lovable .evento-card:nth-child(3n)::before{transform:translateX(-50%) rotate(-.6deg)}
+.visual-lovable .evento-card:hover,.visual-lovable .evento-card:focus-visible{
+  transform:translateY(-5px) rotate(-.15deg);
+  box-shadow:0 28px 52px -32px rgba(0,0,0,.98)
+}
+.visual-lovable .evento-media{border-radius:3px 3px 0 0;aspect-ratio:16/11}
+.visual-lovable .evento-media::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(30,24,19,.08)
+}
+.visual-lovable .evento-conteudo{padding:15px 14px 12px}
+.visual-lovable .evento-card h3{
+  margin-top:11px;font-family:'Anton',sans-serif;font-size:21px;font-weight:400;
+  line-height:1.02;letter-spacing:.006em;text-transform:uppercase
+}
+.visual-lovable .evento-meta{margin-top:11px;gap:6px;font-size:10.5px}
+.visual-lovable .evento-card .tag{border-radius:3px;font-size:6.8px}
+.visual-lovable .data-bloco{
+  left:10px;top:10px;min-width:42px;padding:6px 7px;border-radius:2px;
+  box-shadow:0 4px 12px rgba(0,0,0,.16)
+}
+.visual-lovable .data-bloco strong{font-family:'Anton',sans-serif;font-size:20px;font-weight:400}
+.visual-lovable .preco-badge{border-radius:2px}
+.visual-lovable .evento-rodape{padding-top:11px;margin-top:2px}
+.visual-lovable .interesse-card,.visual-lovable .fav-card{border-radius:3px}
+
+/* rodapé com assinatura visual discreta */
+.visual-lovable .rodape-site{
+  border-top-color:rgba(244,238,227,.10);
+  background:linear-gradient(180deg,rgba(255,255,255,.012),rgba(0,0,0,.08))
+}
+.visual-lovable .rodape-marca{
+  font-family:'Anton',sans-serif;font-size:28px;letter-spacing:.04em
+}
+
+/* mobile: mantém personalidade sem sacrificar leitura */
+@media(max-width:700px){
+  .visual-lovable .hero{padding-top:56px;padding-bottom:34px}
+  .visual-lovable .hero::before{font-size:120px;right:-20px;top:24px}
+  .visual-lovable .hero h1{font-size:clamp(48px,15vw,68px)}
+  .visual-lovable .hero-desc{font-size:13.5px!important}
+  .visual-lovable .busca{margin-top:26px}
+  .visual-lovable .busca button{min-width:86px;padding-inline:13px}
+  .visual-lovable .mural{padding-top:36px}
+  .visual-lovable .evento-card h3{font-size:19px}
+}
