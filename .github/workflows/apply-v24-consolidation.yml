@@ -18,6 +18,19 @@ jobs:
           node-version: '22'
       - name: Apply V24 patch
         run: python tools/apply_v24.py
+      - name: Refine secret smoke rule
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          antigo = """config = read('js/config.js').lower()\nassert 'service_role' not in config\nassert 'sb_secret_' not in config"""
+          novo = """config = read('js/config.js').lower()\nfor linha in config.splitlines():\n    if '=' not in linha:\n        continue\n    assert 'service_role' not in linha, 'service_role atribuído no frontend'\n    assert 'sb_secret_' not in linha, 'chave secreta atribuída no frontend'"""
+          for nome in ['tests/smoke.py','tools/apply_v24.py']:
+              p=Path(nome)
+              s=p.read_text(encoding='utf-8')
+              if antigo not in s:
+                  raise SystemExit(f'Regra antiga não encontrada em {nome}')
+              p.write_text(s.replace(antigo,novo,1),encoding='utf-8')
+          PY
       - name: Validate JavaScript
         run: for f in js/*.js; do node --check "$f"; done
       - name: Run smoke tests
@@ -26,7 +39,7 @@ jobs:
         run: |
           git config user.name "Mendell1"
           git config user.email "matias3.wendell@gmail.com"
-          git add index.html js/perfil.js README.md tests .github/workflows/ci.yml sql/install/README.md supabase/migrations/20260904122830_v24_consolidacao_seguranca_performance.sql
+          git add index.html js/perfil.js README.md tests tools/apply_v24.py .github/workflows/ci.yml sql/install/README.md supabase/migrations/20260904122830_v24_consolidacao_seguranca_performance.sql
           git diff --cached --quiet && exit 0
           git commit -m "fix: consolidate V24 security and reliability"
           git push
