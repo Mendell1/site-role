@@ -25,7 +25,7 @@
   };
 
   async function entrarComGoogle(botao) {
-    if (!window.db || !db.auth) {
+    if (typeof db === 'undefined' || !db.auth) {
       mensagem('A autenticação ainda não está disponível. Atualize a página e tente novamente.');
       return;
     }
@@ -250,7 +250,7 @@
     instalarBotoes();
     instalarModalConclusao();
 
-    if (!window.db || !db.auth) return;
+    if (typeof db === 'undefined' || !db.auth) return;
 
     db.auth.getSession().then(({ data }) => {
       if (data && data.session) verificarOnboarding(data.session.user);
