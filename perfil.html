@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/mobile-responsive.css">
 </head>
 <body class="visual-lovable pagina-perfil-lovable">
 
@@ -15,10 +16,13 @@
   <div class="topo-inner">
     <a class="marca" href="index.html" aria-label="Ir para a página inicial do Rolê"><span class="marca-role">RO<span>LÊ</span></span><small>MEU PERFIL</small></a>
     <a class="btn btn-voltar-mural" href="index.html" aria-label="Voltar ao mural principal">← Voltar ao mural</a>
-    <div class="direita">
+    <div class="topo-mobile-acoes">
       <button class="btn btn-icone sino" id="btnNotificacoes" hidden aria-label="Notificações">
         <span aria-hidden="true">🔔</span><span class="badge" id="badgeNotificacoes" hidden>0</span>
       </button>
+      <button class="btn btn-menu-mobile" id="btnMenuMobile" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menuTopo"><span></span><span></span><span></span></button>
+    </div>
+    <div class="direita" id="menuTopo">
       <button class="btn ativo" id="btnPerfil" hidden>Meu perfil</button>
       <button class="btn" id="btnAdmin" hidden>Moderação</button>
       <button class="btn btn-forte" id="btnCriar" hidden>＋ Publicar evento</button>
@@ -28,6 +32,7 @@
     </div>
   </div>
 </header>
+<a class="voltar-mobile" href="index.html">← Voltar ao mural</a>
 
 <section class="perfil-hero" id="perfilHero" hidden>
   <div class="perfil-hero-inner">
@@ -280,6 +285,7 @@
 <script src="js/config.js"></script>
 <script src="js/senha.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/nav-mobile.js"></script>
 <script src="js/perfil.js"></script>
 </body>
 </html>
