@@ -35,3 +35,16 @@
     if (window.innerWidth > 760) fechar();
   });
 })();
+
+/* Carrega os recursos V23 depois que o app principal terminou de montar a página. */
+(() => {
+  const carregar = () => {
+    if (!document.getElementById('folhaDetalhe') || document.querySelector('script[data-recursos-v23]')) return;
+    const script = document.createElement('script');
+    script.src = 'js/recursos-v23.js';
+    script.dataset.recursosV23 = '1';
+    document.body.appendChild(script);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', carregar, { once:true });
+  else carregar();
+})();
