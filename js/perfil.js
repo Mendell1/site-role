@@ -213,10 +213,8 @@ async function alternarInteresse(id){
     : await db.from('interesses').insert({usuario_id:meuId(), evento_id:id});
   if(error){
     if(tinha) interesses.add(id); else interesses.delete(id);
-    meusEventos = atualizarLista(meusEventos);
-    favoritosEventos = atualizarLista(favoritosEventos);
-    renderCards(meusEventos, 'gradeMeusEventos', 'vazioMeusEventos');
-    renderCards(favoritosEventos, 'gradeFavoritos', 'vazioFavoritos');
+    // Volta para a verdade do banco em vez de aplicar a mesma variação duas vezes.
+    await carregarEventosPerfil();
     avisar(traduzirErroBanco(error));
     return;
   }
@@ -353,14 +351,85 @@ async function carregarMinhasDenuncias(){
 }
 
 const FRASE_EXCLUSAO = 'EXCLUIR MINHA CONTA';
+const GOOGLE_REAUTH_UID = 'role_exclusao_google_uid';
+const GOOGLE_REAUTH_AT = 'role_exclusao_google_reauth_at';
+const REAUTH_JANELA_MS = 10 * 60 * 1000;
+
+function provedoresDaConta(){
+  const u = Sessao.usuario || {};
+  const app = u.app_metadata || {};
+  const lista = Array.isArray(app.providers) ? app.providers.slice() : [];
+  if(app.provider && !lista.includes(app.provider)) lista.push(app.provider);
+  (u.identities || []).forEach(i=>{ if(i.provider && !lista.includes(i.provider)) lista.push(i.provider); });
+  return lista;
+}
+function contaSomenteGoogle(){
+  const p = provedoresDaConta();
+  return p.includes('google') && !p.includes('email');
+}
+function reauthGoogleValida(){
+  const quando = Number(sessionStorage.getItem(GOOGLE_REAUTH_AT) || 0);
+  return quando > 0 && Date.now() - quando <= REAUTH_JANELA_MS;
+}
+function configurarExclusaoPorProvedor(){
+  const senha = campo('x_senha');
+  const blocoSenha = senha && senha.closest('.campo');
+  const acoes = campo('btnConfirmarExclusao') && campo('btnConfirmarExclusao').closest('.acoes');
+  let btnGoogle = campo('btnReautenticarGoogleExclusao');
+  let info = campo('infoReauthGoogleExclusao');
+
+  if(contaSomenteGoogle()){
+    if(blocoSenha) blocoSenha.hidden = true;
+    if(!info){
+      info = document.createElement('div');
+      info.id = 'infoReauthGoogleExclusao';
+      info.className = 'alerta';
+      info.innerHTML = '<strong>Conta conectada pelo Google</strong><p>Antes de excluir, confirme sua identidade novamente com a mesma conta Google.</p>';
+      if(acoes) acoes.parentNode.insertBefore(info, acoes);
+    }
+    if(!btnGoogle && acoes){
+      btnGoogle = document.createElement('button');
+      btnGoogle.type = 'button';
+      btnGoogle.id = 'btnReautenticarGoogleExclusao';
+      btnGoogle.className = 'btn-linha';
+      btnGoogle.textContent = 'Confirmar novamente com Google';
+      btnGoogle.addEventListener('click', reautenticarGoogleParaExclusao);
+      acoes.insertBefore(btnGoogle, campo('btnConfirmarExclusao'));
+    }
+    if(btnGoogle){
+      btnGoogle.hidden = reauthGoogleValida();
+      if(reauthGoogleValida()) info.innerHTML = '<strong>Identidade confirmada</strong><p>Agora marque a confirmação e digite a frase abaixo para continuar.</p>';
+    }
+  }else{
+    if(blocoSenha) blocoSenha.hidden = false;
+    if(btnGoogle) btnGoogle.hidden = true;
+    if(info) info.hidden = true;
+  }
+}
 function validarExclusao(){
-  const ok = campo('x_ciente').checked && campo('x_senha').value.length > 0 && campo('x_confirmacao').value.trim().toUpperCase() === FRASE_EXCLUSAO;
+  const identidadeOk = contaSomenteGoogle() ? reauthGoogleValida() : campo('x_senha').value.length > 0;
+  const ok = campo('x_ciente').checked && identidadeOk && campo('x_confirmacao').value.trim().toUpperCase() === FRASE_EXCLUSAO;
   campo('btnConfirmarExclusao').disabled = !ok;
+}
+async function reautenticarGoogleParaExclusao(){
+  if(!Sessao.usuario) return;
+  sessionStorage.setItem(GOOGLE_REAUTH_UID, Sessao.usuario.id);
+  sessionStorage.removeItem(GOOGLE_REAUTH_AT);
+  const destino = new URL('perfil.html', location.href);
+  destino.search = '';
+  destino.hash = '';
+  destino.searchParams.set('excluir_google','1');
+  const { error } = await db.auth.signInWithOAuth({
+    provider:'google',
+    options:{ redirectTo:destino.href, queryParams:{ prompt:'select_account' } }
+  });
+  if(error) avisar('Não foi possível confirmar pelo Google: '+error.message);
 }
 async function prepararExclusao(){
   campo('x_ciente').checked = false;
   campo('x_senha').value = '';
   campo('x_confirmacao').value = '';
+  configurarExclusaoPorProvedor();
   validarExclusao();
   const [ev, co] = await Promise.all([
     db.from('eventos').select('id', { count:'exact', head:true }).eq('criador_id', meuId()),
@@ -525,18 +594,57 @@ if(campo('btnCadastrar')) campo('btnCadastrar').addEventListener('click', async 
   finally{ btn.disabled=false; btn.textContent='Criar conta'; }
 });
 
+const RECUPERACAO_COOLDOWN_MS_PERFIL = 10 * 60 * 1000;
+let timerRecuperacaoPerfil = null;
+function chaveCooldownRecuperacaoPerfil(){
+  const email = (campo('r_email')?.value || '').trim().toLowerCase();
+  return 'role_recuperacao_10min_' + encodeURIComponent(email || 'sem-email');
+}
+function formatarCronometroPerfil(segundos){
+  const min = Math.floor(segundos/60), seg = segundos%60;
+  return String(min).padStart(2,'0')+':'+String(seg).padStart(2,'0');
+}
+function atualizarCooldownRecuperacaoPerfil(){
+  const btn=campo('btnEnviarRecuperacao'), info=campo('estadoRecuperacao');
+  if(!btn || !info) return;
+  clearTimeout(timerRecuperacaoPerfil);
+  const ultimo=Number(localStorage.getItem(chaveCooldownRecuperacaoPerfil())||0);
+  const restante=Math.ceil((RECUPERACAO_COOLDOWN_MS_PERFIL-(Date.now()-ultimo))/1000);
+  if(restante>0){
+    const tempo=formatarCronometroPerfil(restante);
+    btn.disabled=true; btn.textContent='Novo link em '+tempo;
+    info.textContent='Link solicitado. Você poderá pedir outro em '+tempo+'. Confira também Spam/Lixo eletrônico.';
+    timerRecuperacaoPerfil=setTimeout(atualizarCooldownRecuperacaoPerfil,1000);
+  }else{
+    btn.disabled=false; btn.textContent='Enviar link';
+  }
+}
+function iniciarCooldownRecuperacaoPerfil(){
+  localStorage.setItem(chaveCooldownRecuperacaoPerfil(),String(Date.now()));
+  atualizarCooldownRecuperacaoPerfil();
+}
+if(campo('r_email')) campo('r_email').addEventListener('input', atualizarCooldownRecuperacaoPerfil);
+document.addEventListener('click',e=>{ if(e.target.closest('[data-esqueci]')) setTimeout(atualizarCooldownRecuperacaoPerfil,0); });
+
 if(campo('btnEnviarRecuperacao')) campo('btnEnviarRecuperacao').addEventListener('click', async e=>{
-  const btn = e.currentTarget;
-  const email = campo('r_email').value.trim();
-  const info = campo('estadoRecuperacao');
+  const btn=e.currentTarget, email=campo('r_email').value.trim(), info=campo('estadoRecuperacao');
   if(!email){ avisar('Informe seu e-mail'); return; }
-  info.textContent = '';
-  btn.disabled = true; btn.textContent = 'Enviando...';
-  const destino = location.origin + location.pathname.replace(/[^/]*$/, '') + 'redefinir.html';
-  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: destino });
-  btn.disabled = false; btn.textContent = 'Enviar link';
-  if(error){ avisar(traduzirErro(error)); return; }
-  info.textContent = 'Se existir conta com esse e-mail, o link foi solicitado. Confira a caixa de entrada e o spam.';
+  const ultimo=Number(localStorage.getItem(chaveCooldownRecuperacaoPerfil())||0);
+  if(Date.now()-ultimo < RECUPERACAO_COOLDOWN_MS_PERFIL){ atualizarCooldownRecuperacaoPerfil(); return; }
+  info.textContent=''; btn.disabled=true; btn.textContent='Enviando...';
+  const destino=location.origin+location.pathname.replace(/[^/]*$/,'')+'redefinir.html';
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:destino});
+  if(error){
+    const msg=(error.message||'').toLowerCase();
+    if(msg.includes('rate limit')){
+      iniciarCooldownRecuperacaoPerfil();
+      avisar('Limite de e-mails atingido. Aguarde antes de pedir outro link.');
+      return;
+    }
+    btn.disabled=false; btn.textContent='Enviar link'; avisar(traduzirErro(error)); return;
+  }
+  iniciarCooldownRecuperacaoPerfil();
+  avisar('Se existir conta com esse e-mail, o link foi solicitado. Confira a caixa de entrada e o spam.');
 });
 
 if(campo('btnSalvarNovaSenha')) campo('btnSalvarNovaSenha').addEventListener('click', async e=>{
@@ -558,25 +666,60 @@ if(campo('x_senha')) campo('x_senha').addEventListener('input', validarExclusao)
 if(campo('x_confirmacao')) campo('x_confirmacao').addEventListener('input', validarExclusao);
 if(campo('btnConfirmarExclusao')) campo('btnConfirmarExclusao').addEventListener('click', async e=>{
   if(!confirm('Confirmar o pedido de exclusão? Você terá 7 dias para cancelar.')) return;
-  const btn = e.currentTarget;
-  btn.disabled = true; btn.textContent = 'Confirmando...';
+  const btn=e.currentTarget;
+  btn.disabled=true; btn.textContent='Confirmando...';
   try{
-    const senha = campo('x_senha').value;
-    const email = Sessao.usuario && Sessao.usuario.email;
-    if(!email) throw new Error('Sessão inválida');
-    const reauth = await db.auth.signInWithPassword({ email, password: senha });
-    if(reauth.error) throw new Error('Senha atual incorreta');
-    const { data: prazo, error } = await db.rpc('solicitar_exclusao_conta');
+    if(contaSomenteGoogle()){
+      if(!reauthGoogleValida()) throw new Error('Confirme sua identidade novamente com Google');
+    }else{
+      const senha=campo('x_senha').value;
+      const email=Sessao.usuario && Sessao.usuario.email;
+      if(!email) throw new Error('Sessão inválida');
+      const reauth=await db.auth.signInWithPassword({email,password:senha});
+      if(reauth.error) throw new Error('Senha atual incorreta');
+    }
+
+    const {data:prazo,error}=await db.rpc('solicitar_exclusao_conta');
     if(error) throw error;
+    sessionStorage.removeItem(GOOGLE_REAUTH_UID);
+    sessionStorage.removeItem(GOOGLE_REAUTH_AT);
     await db.auth.signOut();
     fecharTudo();
-    const quando = prazo ? new Date(prazo).toLocaleString('pt-BR') : 'daqui a 7 dias';
-    avisar('Pedido registrado. A exclusão definitiva está prevista para ' + quando + '.');
-    setTimeout(()=>location.href='index.html', 2200);
-  }catch(err){ avisar(err.message || 'Não foi possível iniciar a exclusão'); }
-  finally{ btn.disabled = false; btn.textContent = 'Iniciar exclusão (7 dias)'; }
+    const quando=prazo?new Date(prazo).toLocaleString('pt-BR'):'daqui a 7 dias';
+    avisar('Pedido registrado. A exclusão definitiva está prevista para '+quando+'.');
+    setTimeout(()=>location.href='index.html',2200);
+  }catch(err){
+    const texto=(err && err.message)||'Não foi possível iniciar a exclusão';
+    avisar(texto.includes('Confirme sua identidade novamente') ? 'Sua confirmação expirou. Confirme sua identidade novamente.' : texto);
+    configurarExclusaoPorProvedor();
+    validarExclusao();
+  }finally{
+    btn.disabled=false; btn.textContent='Iniciar exclusão (7 dias)';
+    validarExclusao();
+  }
 });
+
+async function processarRetornoExclusaoGoogle(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('excluir_google')!=='1') return;
+  params.delete('excluir_google');
+  history.replaceState({},'',location.pathname+(params.toString()?'?'+params.toString():'')+location.hash);
+
+  for(let i=0;i<30 && !Sessao.usuario;i++) await new Promise(r=>setTimeout(r,100));
+  const esperado=sessionStorage.getItem(GOOGLE_REAUTH_UID);
+  if(!Sessao.usuario || !esperado || Sessao.usuario.id!==esperado){
+    sessionStorage.removeItem(GOOGLE_REAUTH_UID);
+    sessionStorage.removeItem(GOOGLE_REAUTH_AT);
+    avisar('A conta Google escolhida não corresponde à conta que estava sendo confirmada.');
+    return;
+  }
+  sessionStorage.setItem(GOOGLE_REAUTH_AT,String(Date.now()));
+  sessionStorage.removeItem(GOOGLE_REAUTH_UID);
+  await prepararExclusao();
+  avisar('Identidade confirmada pelo Google.');
+}
 
 /* ----------------- Inicialização ----------------- */
 setTimeout(()=>window.aoMudarSessao && window.aoMudarSessao(), 350);
+setTimeout(processarRetornoExclusaoGoogle, 500);
 definirAba('eventos');

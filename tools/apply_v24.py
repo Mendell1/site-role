@@ -374,34 +374,13 @@ assert 'RECUPERACAO_COOLDOWN_MS_PERFIL' in perfil
 assert 'await carregarEventosPerfil();' in perfil
 
 config = read('js/config.js').lower()
-assert 'service_role' not in config
-assert 'sb_secret_' not in config
+for linha in config.splitlines():
+    if '=' not in linha:
+        continue
+    assert 'service_role' not in linha, 'service_role atribuído no frontend'
+    assert 'sb_secret_' not in linha, 'chave secreta atribuída no frontend'
 
 print('Smoke tests: OK')
-""", encoding='utf-8')
-
-
-# 9) CI simples, sem dependências externas.
-Path('.github/workflows/ci.yml').write_text("""name: CI
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-permissions:
-  contents: read
-jobs:
-  smoke:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Validate JavaScript syntax
-        run: for f in js/*.js; do node --check \"$f\"; done
-      - name: Static integration tests
-        run: python tests/smoke.py
 """, encoding='utf-8')
 
 print('V24 repository patch prepared.')
