@@ -24,6 +24,19 @@
     return url.href;
   };
 
+  function encaminharReautenticacaoExclusao(usuario) {
+    const esperado = sessionStorage.getItem('role_exclusao_google_uid');
+    if (!esperado || !usuario) return false;
+    if (window.location.pathname.endsWith('/perfil.html')) return false;
+
+    const destino = new URL('perfil.html', window.location.href);
+    destino.search = '';
+    destino.hash = '';
+    destino.searchParams.set('excluir_google', '1');
+    window.location.replace(destino.href);
+    return true;
+  }
+
   async function entrarComGoogle(botao) {
     if (typeof db === 'undefined' || !db.auth) {
       mensagem('A autenticação ainda não está disponível. Atualize a página e tente novamente.');
@@ -253,11 +266,15 @@
     if (typeof db === 'undefined' || !db.auth) return;
 
     db.auth.getSession().then(({ data }) => {
-      if (data && data.session) verificarOnboarding(data.session.user);
+      if (data && data.session) {
+        if (encaminharReautenticacaoExclusao(data.session.user)) return;
+        verificarOnboarding(data.session.user);
+      }
     });
 
     db.auth.onAuthStateChange((_evento, sessao) => {
       if (sessao && sessao.user) {
+        if (encaminharReautenticacaoExclusao(sessao.user)) return;
         setTimeout(() => verificarOnboarding(sessao.user), 100);
       }
     });

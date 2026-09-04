@@ -415,10 +415,11 @@ async function reautenticarGoogleParaExclusao(){
   if(!Sessao.usuario) return;
   sessionStorage.setItem(GOOGLE_REAUTH_UID, Sessao.usuario.id);
   sessionStorage.removeItem(GOOGLE_REAUTH_AT);
-  const destino = new URL('perfil.html', location.href);
+  // O Supabase já possui index.html na allowlist de Redirect URLs.
+  // Voltamos por ele e o google-auth.js encaminha para o perfil.
+  const destino = new URL('index.html', location.href);
   destino.search = '';
   destino.hash = '';
-  destino.searchParams.set('excluir_google','1');
   const { error } = await db.auth.signInWithOAuth({
     provider:'google',
     options:{ redirectTo:destino.href, queryParams:{ prompt:'select_account' } }
