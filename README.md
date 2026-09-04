@@ -2,6 +2,24 @@
 
 Plataforma web colaborativa para divulgar e descobrir eventos locais. O projeto reúne eventos que normalmente ficam espalhados em grupos de WhatsApp, redes sociais, cartazes e divulgação boca a boca.
 
+## V25 experimental
+
+A branch `v25-experimental` é a área de desenvolvimento das próximas versões. A V24 permanece preservada em `v24-stable` e o `main` continua como versão estável.
+
+### V25.1 — Comunidade
+
+- seguir e deixar de seguir organizadores;
+- contador de seguidores no perfil público;
+- notificação quando um organizador seguido publica um novo evento;
+- selo de organizador verificado concedido/removido pela moderação;
+- área **Alertas e seguindo** no perfil do usuário;
+- alertas personalizados por categoria, cidade, gratuidade e fim de semana;
+- alertas por distância de 5, 10, 25 ou 50 km usando geolocalização;
+- pausa, reativação e exclusão de alertas;
+- limite de 10 alertas por conta aplicado também no banco;
+- notificação automática quando um novo evento combina com um alerta;
+- RLS para seguidores e alertas, mantendo cada usuário restrito aos próprios dados.
+
 ## Funcionalidades
 
 - mural com busca, categorias e filtros;
