@@ -1,0 +1,75 @@
+name: Apply V25.1 community UI
+
+on:
+  push:
+    branches: [v25-experimental]
+    paths:
+      - '.github/workflows/apply-v25-1-ui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Connect V25.1 to pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          patches = {
+              'organizador.html': (
+                  '<link rel="stylesheet" href="css/recursos-v23.css">',
+                  '<script src="js/organizador.js"></script>'
+              ),
+              'perfil.html': (
+                  '<link rel="stylesheet" href="css/google-auth.css">',
+                  '<script src="js/perfil.js"></script>'
+              ),
+              'admin.html': (
+                  '<link rel="stylesheet" href="css/estilo.css">',
+                  '<script src="js/admin-dashboard.js"></script>'
+              ),
+          }
+
+          for nome, (css_anchor, js_anchor) in patches.items():
+              p = Path(nome)
+              s = p.read_text(encoding='utf-8')
+              if 'css/comunidade-v25.css' not in s:
+                  if css_anchor not in s:
+                      raise SystemExit(f'CSS anchor ausente em {nome}')
+                  s = s.replace(css_anchor, css_anchor + '\n<link rel="stylesheet" href="css/comunidade-v25.css">', 1)
+              if 'js/comunidade-v25.js' not in s:
+                  if js_anchor not in s:
+                      raise SystemExit(f'JS anchor ausente em {nome}')
+                  s = s.replace(js_anchor, js_anchor + '\n<script src="js/comunidade-v25.js"></script>', 1)
+              p.write_text(s, encoding='utf-8')
+
+          p = Path('tests/smoke.py')
+          s = p.read_text(encoding='utf-8')
+          bloco = '''\n# V25.1 — comunidade experimental\nfor pagina_v25 in ['organizador.html','perfil.html','admin.html']:\n    html_v25 = read(pagina_v25)\n    assert 'css/comunidade-v25.css' in html_v25, f'CSS V25 ausente em {pagina_v25}'\n    assert 'js/comunidade-v25.js' in html_v25, f'JS V25 ausente em {pagina_v25}'\n\ncomunidade = read('js/comunidade-v25.js')\nfor marcador in ['perfil_publico_v25','meus_organizadores_seguidos_v25','admin_definir_verificacao_v25','alertas_eventos','seguidores_organizadores']:\n    assert marcador in comunidade, f'Integração V25 ausente: {marcador}'\n\nfor migration_v25 in [\n    'supabase/migrations/20260904125917_v25_1_comunidade_seguidores_alertas_verificacao.sql',\n    'supabase/migrations/20260904132149_v25_1_perfil_publico_comunidade_fix.sql'\n]:\n    assert (root / migration_v25).exists(), f'Migration V25 ausente: {migration_v25}'\n'''
+          if '# V25.1 — comunidade experimental' not in s:
+              s = s.replace("\nprint('Smoke tests: OK')", bloco + "\nprint('Smoke tests: OK')")
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validate JavaScript
+        run: for f in js/*.js; do node --check "$f"; done
+
+      - name: Run smoke tests
+        run: python tests/smoke.py
+
+      - name: Commit V25.1 wiring
+        run: |
+          git config user.name "Mendell1"
+          git config user.email "matias3.wendell@gmail.com"
+          git add organizador.html perfil.html admin.html tests/smoke.py
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: wire V25.1 community features into UI"
+          git push
