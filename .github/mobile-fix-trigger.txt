@@ -1,1 +1,1 @@
-apply-mobile-responsive-v1
+apply-mobile-responsive-v2
