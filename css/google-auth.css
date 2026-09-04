@@ -1,0 +1,125 @@
+/* ============================================================
+   GOOGLE OAUTH — botão social e conclusão do cadastro
+   ============================================================ */
+.oauth-google-area{
+  padding:0 20px 4px;
+}
+.oauth-divisor{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:12px 0;
+  color:rgba(29,24,19,.48);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.oauth-divisor::before,
+.oauth-divisor::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:rgba(29,24,19,.14);
+}
+.btn-google-oauth{
+  width:100%;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  border:1px solid rgba(29,24,19,.18);
+  border-radius:7px;
+  background:#fff;
+  color:#25211d;
+  font-family:'Archivo',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  transition:border-color .18s,box-shadow .18s,transform .18s;
+}
+.btn-google-oauth:hover{
+  border-color:rgba(29,24,19,.32);
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  transform:translateY(-1px);
+}
+.btn-google-oauth:disabled{opacity:.65;cursor:wait;transform:none}
+.google-g{
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ddd;
+  border-radius:50%;
+  background:#fff;
+  color:#4285f4;
+  font-family:Arial,sans-serif;
+  font-size:15px;
+  font-weight:700;
+}
+
+.oauth-cortina{
+  z-index:10050;
+}
+.folha-google-onboarding{
+  width:min(440px,calc(100vw - 28px));
+  max-width:440px;
+  padding:24px;
+  background:#f4eee3;
+  color:#201a15;
+  border-radius:10px;
+  border:1px solid rgba(29,24,19,.14);
+  box-shadow:0 28px 90px rgba(0,0,0,.48);
+}
+.google-onboarding-marca{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:16px;
+  color:rgba(29,24,19,.68);
+  font-size:11px;
+  font-weight:600;
+}
+.folha-google-onboarding h3{
+  margin:0 0 9px;
+  font-family:'Archivo',sans-serif;
+  font-size:22px;
+  line-height:1.15;
+  text-transform:none;
+  letter-spacing:-.02em;
+}
+.google-onboarding-texto{
+  margin:0 0 20px;
+  color:rgba(29,24,19,.68);
+  font-size:13px;
+  line-height:1.55;
+}
+.google-aceite{
+  margin-top:6px;
+}
+.google-onboarding-erro{
+  min-height:18px;
+  margin:10px 0 0;
+  color:#a52822;
+  font-size:12px;
+  line-height:1.4;
+}
+.google-onboarding-acoes{
+  margin-top:14px;
+}
+body.oauth-cadastro-pendente{
+  overflow:hidden;
+}
+
+@media(max-width:520px){
+  .oauth-google-area{padding-left:16px;padding-right:16px}
+  .folha-google-onboarding{padding:20px 18px}
+  .google-onboarding-acoes{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .google-onboarding-acoes button{width:100%}
+}
