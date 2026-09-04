@@ -8,6 +8,7 @@ const Sessao = {
   logado(){ return !!this.usuario; },
   ativa(){
     if(!this.usuario || !this.perfil) return false;
+    if(this.perfil.cadastro_completo === false) return false;
     if(this.perfil.bloqueado) return false;
     if(this.perfil.exclusao_prevista) return false;
     if(this.perfil.suspenso_ate && new Date(this.perfil.suspenso_ate) > new Date()) return false;
@@ -90,7 +91,7 @@ async function sair(){
 async function carregarPerfil(id){
   const { data, error } = await db
     .from('perfis')
-    .select('id, nome, email, papel, bloqueado, foto_url, bio, data_nascimento, cidade, contato, suspenso_ate, advertencias, exclusao_pedida_em, exclusao_prevista, termos_versao, termos_aceitos_em, notif_eventos, notif_comentarios, notif_denuncias, notif_resumo')
+    .select('id, nome, email, papel, bloqueado, foto_url, bio, data_nascimento, cidade, contato, suspenso_ate, advertencias, exclusao_pedida_em, exclusao_prevista, termos_versao, termos_aceitos_em, cadastro_completo, notif_eventos, notif_comentarios, notif_denuncias, notif_resumo')
     .eq('id', id)
     .single();
   if (error) { console.error('Erro ao carregar perfil:', error.message); return null; }
