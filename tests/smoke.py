@@ -33,4 +33,20 @@ for linha in config.splitlines():
     assert 'service_role' not in linha, 'service_role atribuído no frontend'
     assert 'sb_secret_' not in linha, 'chave secreta atribuída no frontend'
 
+# V25.1 — comunidade experimental
+for pagina_v25 in ['organizador.html','perfil.html','admin.html']:
+    html_v25 = read(pagina_v25)
+    assert 'css/comunidade-v25.css' in html_v25, f'CSS V25 ausente em {pagina_v25}'
+    assert 'js/comunidade-v25.js' in html_v25, f'JS V25 ausente em {pagina_v25}'
+
+comunidade = read('js/comunidade-v25.js')
+for marcador in ['perfil_publico_v25','meus_organizadores_seguidos_v25','admin_definir_verificacao_v25','alertas_eventos','seguidores_organizadores']:
+    assert marcador in comunidade, f'Integração V25 ausente: {marcador}'
+
+for migration_v25 in [
+    'supabase/migrations/20260904125917_v25_1_comunidade_seguidores_alertas_verificacao.sql',
+    'supabase/migrations/20260904132149_v25_1_perfil_publico_comunidade_fix.sql'
+]:
+    assert (root / migration_v25).exists(), f'Migration V25 ausente: {migration_v25}'
+
 print('Smoke tests: OK')
