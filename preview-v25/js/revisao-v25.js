@@ -1,5 +1,5 @@
 /* ============================================================
-   ROLÊ V25.5 — revisão de UX e acessibilidade
+   ROLÊ V25.5 — revisão de UX, mobile e acessibilidade
    Não cria novas features; organiza comportamento dos modais.
    ============================================================ */
 (() => {
@@ -9,6 +9,8 @@
   window.__roleV255RevisaoAtiva=true;
 
   const abertos=new Set();
+  const mediaMobile=window.matchMedia('(max-width:760px)');
+  let reposicaoPendente=false;
 
   function melhorarAcessibilidade(){
     const aviso=document.getElementById('aviso');
@@ -32,6 +34,40 @@
     document.querySelectorAll('.cortina [role="dialog"]').forEach(dialog=>{
       dialog.setAttribute('aria-modal','true');
       if(!dialog.hasAttribute('tabindex')) dialog.setAttribute('tabindex','-1');
+    });
+  }
+
+  function reposicionarParticipacao(){
+    const folha=document.getElementById('folhaDetalhe');
+    const card=document.getElementById('participacaoV252');
+    if(!folha || !card) return;
+
+    const principal=folha.querySelector('.detalhe-coluna-principal');
+    const lateral=folha.querySelector('.detalhe-coluna-lateral');
+    if(!principal || !lateral) return;
+
+    if(mediaMobile.matches){
+      const comentarios=principal.querySelector('#areaComentarios');
+      if(!comentarios) return;
+      if(card.parentElement!==principal || card.nextElementSibling!==comentarios){
+        principal.insertBefore(card,comentarios);
+      }
+      card.dataset.v255Posicao='mobile';
+      return;
+    }
+
+    const organizador=lateral.querySelector('#detalheOrganizador');
+    const posicaoCorreta=card.parentElement===lateral && (!organizador || card.nextElementSibling===organizador);
+    if(!posicaoCorreta) lateral.insertBefore(card,organizador || null);
+    card.dataset.v255Posicao='desktop';
+  }
+
+  function agendarReposicaoParticipacao(){
+    if(reposicaoPendente) return;
+    reposicaoPendente=true;
+    requestAnimationFrame(()=>{
+      reposicaoPendente=false;
+      reposicionarParticipacao();
     });
   }
 
@@ -68,10 +104,12 @@
   function iniciar(){
     melhorarAcessibilidade();
     sincronizarModais();
+    agendarReposicaoParticipacao();
 
     const observer=new MutationObserver(()=>{
       melhorarAcessibilidade();
       sincronizarModais();
+      agendarReposicaoParticipacao();
     });
     observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
 
@@ -80,7 +118,13 @@
       if(fecharTopo()) e.preventDefault();
     },true);
 
-    window.addEventListener('pageshow',sincronizarModais);
+    if(typeof mediaMobile.addEventListener==='function') mediaMobile.addEventListener('change',agendarReposicaoParticipacao);
+    else if(typeof mediaMobile.addListener==='function') mediaMobile.addListener(agendarReposicaoParticipacao);
+
+    window.addEventListener('pageshow',()=>{
+      sincronizarModais();
+      agendarReposicaoParticipacao();
+    });
     console.info('[V25.5] revisão de UX ativa');
   }
 
