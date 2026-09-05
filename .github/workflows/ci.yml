@@ -20,4 +20,6 @@ jobs:
       - name: Validate JavaScript syntax
         run: for f in js/*.js; do node --check "$f"; done
       - name: Static integration tests
-        run: python tests/smoke.py
+        run: |
+          python tests/smoke.py
+          python tests/v25_2_static.py
