@@ -67,6 +67,19 @@ Exemplo de busca inteligente:
 
 O sistema transforma a frase em filtros estruturados antes de consultar e ordenar os eventos. A busca comum continua disponível para consultas simples.
 
+### V25.5 — Revisão e acabamento
+
+- carregamento dos módulos V25 limitado às páginas que realmente usam cada recurso;
+- remoção do carregamento duplicado do módulo de comunidade em perfil, organizador e admin;
+- revisão de modais, foco, tecla Escape e regiões `aria-live`;
+- bloqueio correto da rolagem do fundo enquanto um modal está aberto;
+- QR, painel presencial, participação e busca inteligente ajustados para telas pequenas;
+- áreas de toque mínimas e foco visível nos controles adicionados pela V25;
+- suporte a `prefers-reduced-motion`;
+- convite de instalação da PWA menos invasivo e com pausa de 7 dias após dispensar;
+- cache da PWA versionado novamente para evitar arquivos antigos após atualização;
+- checklist de regressão e testes estáticos específicos da V25.5.
+
 ## Funcionalidades
 
 - mural com busca, categorias e filtros;
@@ -103,6 +116,8 @@ Frontend em HTML, CSS e JavaScript, com Leaflet para mapas, Web App Manifest, Se
 - `js/pwa-v25.js` — instalação e estado offline;
 - `js/inteligencia-v25.js` — recomendações e busca inteligente;
 - `js/push-v25.js` — assinatura de notificações por aparelho;
+- `js/revisao-v25.js` — acabamento de UX, foco e modais da V25.5;
+- `css/revisao-v25.css` — ajustes mobile/acessibilidade da V25.5;
 - `supabase/functions/push-notificar-v25-4/` — envio server-side de Web Push;
 - `js/` — autenticação, eventos, perfil, admin e recursos sociais;
 - `css/` — identidade visual e responsividade;
@@ -135,7 +150,9 @@ As tabelas de assinatura e entrega de Push possuem RLS e não recebem acesso dir
 
 ## Testes
 
-O workflow de CI executa validação sintática dos arquivos JavaScript e testes estáticos de integração em `tests/smoke.py`, incluindo os módulos da V25. Antes de uma entrega, também é recomendado testar manualmente os fluxos de e-mail, Google OAuth, publicação, inscrição, fila, ingresso, check-in, instalação PWA, Push, recomendações, busca inteligente, mapa, denúncias, recurso, moderação e exclusão.
+O workflow de CI executa validação sintática dos arquivos JavaScript e os testes estáticos `tests/smoke.py`, `tests/v25_2_static.py` e `tests/v25_5_static.py`. O roteiro manual de entrega está em `tests/V25.5-CHECKLIST.md` e cobre visitante, usuário, capacidade/fila, organizador, admin, PWA/Push, mobile e acessibilidade.
+
+Antes de congelar uma nova versão estável, os fluxos críticos devem ser testados manualmente no preview, principalmente cadastro/login, publicação, inscrição, fila, ingresso, check-in, instalação PWA, Push, recomendações, busca inteligente, mapa, denúncias, moderação e exclusão.
 
 ## Deploy
 
