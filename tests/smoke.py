@@ -62,15 +62,49 @@ assert 'js/participacao-v25.js' in read('js/config.js')
 
 # V25.3 — ingresso QR, check-in e painel presencial
 for rel in [
-    'js/checkin-v25.js','css/checkin-v25.css',
+    'js/checkin-v25.js','css/checkin-v25.css','js/qr-compat-v25.js',
     'supabase/migrations/20260905012657_v25_3_ingresso_qr_checkin.sql'
 ]:
     assert (root / rel).exists(), f'Arquivo V25.3 ausente: {rel}'
 checkin = read('js/checkin-v25.js')
-for marcador in ['meu_ingresso_v25_3','checkin_ingresso_v25_3','painel_evento_v25_3','participantes_evento_v25_3','desfazer_checkin_v25_3','BarcodeDetector','qrcode@1.5.4']:
+for marcador in ['meu_ingresso_v25_3','checkin_ingresso_v25_3','painel_evento_v25_3','participantes_evento_v25_3','desfazer_checkin_v25_3','BarcodeDetector']:
     assert marcador in checkin, f'Integração V25.3 ausente: {marcador}'
 config_original = read('js/config.js')
-assert 'js/checkin-v25.js' in config_original
-assert 'css/checkin-v25.css' in config_original
+for marcador in ['js/checkin-v25.js','css/checkin-v25.css','js/qr-compat-v25.js']:
+    assert marcador in config_original, f'Loader V25.3 ausente: {marcador}'
+
+# V25.4 — PWA, recomendações e busca inteligente
+for rel in [
+    'manifest.webmanifest','sw-v25.js',
+    'assets/icon-192.png','assets/icon-512.png',
+    'js/pwa-v25.js','css/pwa-v25.css',
+    'js/inteligencia-v25.js','css/inteligencia-v25.css',
+    'supabase/migrations/20260905023311_v25_4_recomendacoes_busca_inteligente.sql'
+]:
+    assert (root / rel).exists(), f'Arquivo V25.4 ausente: {rel}'
+
+manifest = read('manifest.webmanifest')
+for marcador in ['"display": "standalone"','assets/icon-192.png','assets/icon-512.png']:
+    assert marcador in manifest, f'Manifest PWA incompleto: {marcador}'
+
+pwa = read('js/pwa-v25.js')
+for marcador in ['beforeinstallprompt','serviceWorker.register','manifest.webmanifest','appinstalled']:
+    assert marcador in pwa, f'Integração PWA ausente: {marcador}'
+
+sw = read('sw-v25.js')
+for marcador in ['CACHE_ATUAL','request.method','requisicaoPrivadaOuApi','notificationclick']:
+    assert marcador in sw, f'Service Worker V25.4 incompleto: {marcador}'
+assert "url.origin !== self.location.origin" in sw, 'Service Worker não protege chamadas externas do Supabase'
+
+inteligencia = read('js/inteligencia-v25.js')
+for marcador in ['buscar_eventos_inteligente_v25_4','recomendacoes_v25_4','Para você','BUSCA INTELIGENTE']:
+    assert marcador in inteligencia, f'Integração inteligente V25.4 ausente: {marcador}'
+
+migration_v254 = read('supabase/migrations/20260905023311_v25_4_recomendacoes_busca_inteligente.sql')
+for marcador in ['buscar_eventos_inteligente_v25_4','recomendacoes_v25_4_impl','extensions.similarity','seguidores_organizadores','alertas_eventos']:
+    assert marcador in migration_v254, f'Migration inteligente V25.4 incompleta: {marcador}'
+
+for marcador in ['js/pwa-v25.js','css/pwa-v25.css','js/inteligencia-v25.js','css/inteligencia-v25.css']:
+    assert marcador in config_original, f'Loader V25.4 ausente: {marcador}'
 
 print('Smoke tests: OK')
