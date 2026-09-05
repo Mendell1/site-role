@@ -73,13 +73,17 @@ config_original = read('js/config.js')
 for marcador in ['js/checkin-v25.js','css/checkin-v25.css','js/qr-compat-v25.js']:
     assert marcador in config_original, f'Loader V25.3 ausente: {marcador}'
 
-# V25.4 — PWA, recomendações e busca inteligente
+# V25.4 — PWA, recomendações, busca inteligente e Web Push
 for rel in [
     'manifest.webmanifest','sw-v25.js',
     'assets/icon-192.png','assets/icon-512.png',
     'js/pwa-v25.js','css/pwa-v25.css',
     'js/inteligencia-v25.js','css/inteligencia-v25.css',
-    'supabase/migrations/20260905023311_v25_4_recomendacoes_busca_inteligente.sql'
+    'js/push-v25.js','css/push-v25.css',
+    'supabase/migrations/20260905023311_v25_4_recomendacoes_busca_inteligente.sql',
+    'supabase/migrations/20260905023719_v25_4_web_push.sql',
+    'supabase/migrations/20260905023953_v25_4_push_remover_fix.sql',
+    'supabase/functions/push-notificar-v25-4/index.ts'
 ]:
     assert (root / rel).exists(), f'Arquivo V25.4 ausente: {rel}'
 
@@ -92,7 +96,7 @@ for marcador in ['beforeinstallprompt','serviceWorker.register','manifest.webman
     assert marcador in pwa, f'Integração PWA ausente: {marcador}'
 
 sw = read('sw-v25.js')
-for marcador in ['CACHE_ATUAL','request.method','requisicaoPrivadaOuApi','notificationclick']:
+for marcador in ['CACHE_ATUAL','request.method','requisicaoPrivadaOuApi','notificationclick','showNotification']:
     assert marcador in sw, f'Service Worker V25.4 incompleto: {marcador}'
 assert "url.origin !== self.location.origin" in sw, 'Service Worker não protege chamadas externas do Supabase'
 
@@ -104,7 +108,32 @@ migration_v254 = read('supabase/migrations/20260905023311_v25_4_recomendacoes_bu
 for marcador in ['buscar_eventos_inteligente_v25_4','recomendacoes_v25_4_impl','extensions.similarity','seguidores_organizadores','alertas_eventos']:
     assert marcador in migration_v254, f'Migration inteligente V25.4 incompleta: {marcador}'
 
-for marcador in ['js/pwa-v25.js','css/pwa-v25.css','js/inteligencia-v25.js','css/inteligencia-v25.css']:
+push = read('js/push-v25.js')
+for marcador in ['PushManager','Notification.requestPermission','pushManager.subscribe','salvar_push_v25_4','remover_push_v25_4']:
+    assert marcador in push, f'Integração Web Push ausente: {marcador}'
+
+push_migration = read('supabase/migrations/20260905023719_v25_4_web_push.sql')
+for marcador in ['push_assinaturas_v25_4','push_entregas_v25_4','push_config_v25_4','trg_notificacao_push_v25_4','net.http_post']:
+    assert marcador in push_migration, f'Migration Web Push incompleta: {marcador}'
+# Segredos reais nunca devem aparecer na migration ou no frontend.
+assert 'private_key text' in push_migration
+assert 'webhook_secret text' in push_migration
+assert 'insert into private.push_config_v25_4' not in push_migration.lower(), 'Segredo VAPID não deve ser versionado'
+
+push_fix = read('supabase/migrations/20260905023953_v25_4_push_remover_fix.sql')
+assert 'v_count integer' in push_fix and 'row_count' in push_fix
+
+edge = read('supabase/functions/push-notificar-v25-4/index.ts')
+for marcador in ['web-push','push_config_servidor_v25_4','push_assinaturas_v25_4','push_entregas_v25_4','sendNotification']:
+    assert marcador in edge, f'Edge Function de Push incompleta: {marcador}'
+assert 'SUPABASE_SERVICE_ROLE_KEY' in edge
+assert 'webhook_secret' in edge
+
+for marcador in [
+    'js/pwa-v25.js','css/pwa-v25.css',
+    'js/inteligencia-v25.js','css/inteligencia-v25.css',
+    'js/push-v25.js','css/push-v25.css'
+]:
     assert marcador in config_original, f'Loader V25.4 ausente: {marcador}'
 
 print('Smoke tests: OK')
