@@ -1,0 +1,4 @@
+/* ROLÊ V25.4 — Web Push */
+.v254-push-card{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding-top:16px;border-top:1px dashed rgba(26,23,18,.22)}
+.v254-push-card>div{display:grid;gap:4px;min-width:0}.v254-push-card strong{font:700 13px/1.25 Archivo,sans-serif}.v254-push-card span{font:11px/1.4 'Space Mono',monospace;color:#5d5952;max-width:520px}.v254-push-card button{flex:0 0 auto;white-space:nowrap}.v254-push-card button:disabled{opacity:.55;cursor:wait}
+@media(max-width:650px){.v254-push-card{align-items:stretch;flex-direction:column}.v254-push-card button{width:100%}}
