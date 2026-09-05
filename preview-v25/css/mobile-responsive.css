@@ -1,0 +1,361 @@
+/* ROLÊ — refinamentos específicos para celular */
+
+.topo-mobile-acoes{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.btn-menu-mobile{
+  display:none;
+  width:38px;
+  min-width:38px;
+  height:38px;
+  padding:0!important;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:4px;
+  border-radius:6px!important;
+}
+
+.btn-menu-mobile span{
+  display:block;
+  width:17px;
+  height:1.5px;
+  background:currentColor;
+  border-radius:999px;
+  transition:transform .18s ease,opacity .18s ease;
+}
+
+.topo.menu-aberto .btn-menu-mobile span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.topo.menu-aberto .btn-menu-mobile span:nth-child(2){opacity:0}
+.topo.menu-aberto .btn-menu-mobile span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+
+.voltar-mobile{display:none}
+
+/* O sino foi movido para fora do menu principal para continuar visível. */
+.visual-lovable .topo .topo-mobile-acoes .btn-icone{
+  width:38px;
+  min-width:38px;
+  height:38px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.visual-lovable .topo .direita{margin-left:0}
+
+@media (max-width:760px){
+  .visual-lovable .topo{
+    padding:0 16px;
+    overflow:visible;
+  }
+
+  .visual-lovable .topo-inner{
+    width:100%;
+    height:66px;
+    min-height:66px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    position:relative;
+  }
+
+  .visual-lovable .marca{
+    flex:0 0 auto;
+    min-width:0;
+  }
+
+  .visual-lovable .marca small{display:none}
+  .visual-lovable .marca-role{font-size:27px}
+  .visual-lovable .marca-role::after{
+    width:18px;
+    height:18px;
+    margin-left:5px;
+    font-size:5.5px;
+  }
+
+  .topo-mobile-acoes{
+    margin-left:auto;
+    position:relative;
+    z-index:63;
+  }
+
+  .btn-menu-mobile{display:inline-flex}
+
+  .visual-lovable .topo .direita{
+    display:none;
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    z-index:62;
+    width:min(270px,calc(100vw - 32px));
+    padding:9px;
+    flex-direction:column;
+    align-items:stretch;
+    gap:5px;
+    border:1px solid rgba(244,238,227,.14);
+    border-radius:10px;
+    background:rgba(20,16,13,.98);
+    box-shadow:0 24px 55px rgba(0,0,0,.48);
+    backdrop-filter:blur(18px);
+  }
+
+  .visual-lovable .topo.menu-aberto .direita{display:flex}
+
+  .visual-lovable .topo .direita .btn{
+    width:100%;
+    height:auto;
+    min-height:43px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    padding:10px 12px;
+    text-align:left;
+    font-size:12.5px;
+    border-radius:6px;
+  }
+
+  .visual-lovable .topo .direita .btn-forte{
+    justify-content:center;
+    margin:2px 0;
+  }
+
+  /* Hero da home: mantém impacto sem estourar a largura. */
+  .visual-lovable .hero{
+    padding:46px 20px 32px;
+  }
+
+  .visual-lovable .hero-kicker{
+    margin-bottom:16px;
+    font-size:8px;
+    line-height:1.5;
+  }
+
+  .visual-lovable .hero h1{
+    font-size:clamp(48px,13.8vw,62px);
+    line-height:.9;
+  }
+
+  .visual-lovable .hero-desc{
+    margin-top:22px!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+  }
+
+  .visual-lovable .busca{
+    margin-top:26px;
+    min-height:50px;
+  }
+
+  .visual-lovable .busca input{
+    min-width:0;
+    padding:10px 8px;
+    font-size:12.5px;
+  }
+
+  .visual-lovable .busca button{
+    min-width:88px;
+    padding:11px 12px;
+  }
+
+  .visual-lovable .atalhos{
+    justify-content:flex-start;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding:0 1px 5px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .visual-lovable .atalhos::-webkit-scrollbar{display:none}
+  .visual-lovable .chip{flex:0 0 auto}
+
+  /* Categorias: uma linha rolável em vez de cortar ou comprimir. */
+  .visual-lovable .cats{
+    max-width:none;
+    justify-content:flex-start;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding:14px 20px 16px;
+    scroll-padding-inline:20px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .visual-lovable .cats::-webkit-scrollbar{display:none}
+  .visual-lovable .cat{flex:0 0 auto}
+
+  /* Navegação do mural em blocos mais limpos. */
+  .visual-lovable .mural{
+    padding:38px 20px 64px;
+  }
+
+  .visual-lovable .mural-toolbar{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:15px;
+    padding-bottom:15px;
+  }
+
+  .visual-lovable .abas{
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:0 0 4px;
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    gap:4px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .visual-lovable .abas::-webkit-scrollbar{display:none}
+  .visual-lovable .aba{
+    flex:0 0 auto;
+    white-space:nowrap;
+  }
+
+  .visual-lovable .visoes{
+    align-self:flex-start;
+    max-width:100%;
+    overflow-x:auto;
+  }
+
+  .visual-lovable .grade{grid-template-columns:1fr}
+
+  /* PERFIL */
+  .pagina-perfil-lovable .btn-voltar-mural{display:none!important}
+  .pagina-perfil-lovable .voltar-mobile{
+    display:flex;
+    width:max-content;
+    max-width:calc(100% - 40px);
+    margin:14px 20px 0;
+    align-items:center;
+    gap:7px;
+    color:rgba(244,238,227,.72);
+    text-decoration:none;
+    font-size:12px;
+    font-weight:600;
+  }
+  .pagina-perfil-lovable .voltar-mobile:hover{color:var(--papel)}
+
+  .pagina-perfil-lovable .perfil-hero-inner{
+    display:grid!important;
+    grid-template-columns:82px minmax(0,1fr)!important;
+    align-items:start!important;
+    gap:16px!important;
+    padding:26px 20px 24px!important;
+  }
+
+  .pagina-perfil-lovable .perfil-avatar-bloco{
+    width:82px!important;
+    height:82px!important;
+    border-radius:12px!important;
+  }
+
+  .pagina-perfil-lovable .perfil-apresentacao{min-width:0}
+  .pagina-perfil-lovable .perfil-kicker{
+    margin:1px 0 7px;
+    font-size:7px;
+    line-height:1.45;
+    letter-spacing:.14em;
+  }
+  .pagina-perfil-lovable .perfil-hero h1{
+    margin:0;
+    font-size:34px!important;
+    line-height:1;
+    overflow-wrap:anywhere;
+  }
+  .pagina-perfil-lovable .perfil-bio-resumo{
+    margin-top:12px;
+    font-size:12.5px;
+    line-height:1.55;
+  }
+
+  .pagina-perfil-lovable .perfil-metricas{
+    grid-column:1/-1;
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px 14px!important;
+    margin:2px 0 0!important;
+    padding:0;
+    font-size:11px!important;
+  }
+  .pagina-perfil-lovable .perfil-metricas li{
+    min-width:0;
+    line-height:1.4;
+  }
+
+  .pagina-perfil-lovable .perfil-hero-acoes{
+    grid-column:1/-1;
+    width:100%!important;
+    margin:2px 0 0!important;
+  }
+  .pagina-perfil-lovable .perfil-hero-acoes .btn{
+    width:100%;
+    min-height:47px;
+    font-size:13px;
+  }
+
+  .pagina-perfil-lovable .perfil-main{
+    padding:26px 20px 64px!important;
+  }
+
+  .pagina-perfil-lovable .perfil-abas{
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:4px;
+    margin-bottom:28px!important;
+    padding:4px;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .pagina-perfil-lovable .perfil-abas::-webkit-scrollbar{display:none}
+  .pagina-perfil-lovable .perfil-aba{
+    flex:0 0 auto!important;
+    white-space:nowrap;
+    min-height:38px;
+    padding:8px 12px;
+  }
+
+  .pagina-perfil-lovable .perfil-vazio{
+    padding:42px 22px;
+  }
+  .pagina-perfil-lovable .perfil-vazio strong{
+    font-size:19px;
+    line-height:1.25;
+  }
+  .pagina-perfil-lovable .perfil-vazio p{
+    margin-top:10px;
+    font-size:13px;
+    line-height:1.55;
+  }
+}
+
+@media (max-width:430px){
+  .visual-lovable .topo{padding-inline:13px}
+  .visual-lovable .marca-role{font-size:25px}
+  .visual-lovable .hero{padding-inline:16px}
+  .visual-lovable .hero h1{font-size:clamp(45px,13.2vw,56px)}
+  .visual-lovable .mural{padding-inline:16px}
+
+  .pagina-perfil-lovable .voltar-mobile{margin-left:16px;margin-right:16px}
+  .pagina-perfil-lovable .perfil-hero-inner{
+    grid-template-columns:72px minmax(0,1fr)!important;
+    padding-left:16px!important;
+    padding-right:16px!important;
+    gap:13px!important;
+  }
+  .pagina-perfil-lovable .perfil-avatar-bloco{
+    width:72px!important;
+    height:72px!important;
+  }
+  .pagina-perfil-lovable .perfil-hero h1{font-size:30px!important}
+  .pagina-perfil-lovable .perfil-main{padding-left:16px!important;padding-right:16px!important}
+}

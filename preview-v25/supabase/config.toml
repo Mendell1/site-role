@@ -1,0 +1,2 @@
+[functions.role-maintenance]
+verify_jwt = false

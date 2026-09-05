@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administração — Rolê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/comunidade-v25.css">
+</head>
+<body class="visual-v12">
+
+<header class="topo">
+  <div class="topo-inner">
+    <div class="marca">RO<span>LÊ</span><small>PAINEL ADMINISTRATIVO</small></div>
+    <div class="direita">
+      <span class="usuario" id="usuarioNome" hidden></span>
+      <a class="btn" href="index.html">← Voltar ao site</a>
+      <button class="btn" id="btnEntrar">Sair</button>
+    </div>
+  </div>
+</header>
+
+<!-- mostrado quando quem abre não é administrador -->
+<div id="bloqueio" class="bloqueio" hidden>
+  <h2>Área restrita</h2>
+  <p id="bloqueioTexto">Esta página é só para administradores.</p>
+  <a class="btn-escuro" href="index.html" style="text-decoration:none;display:inline-block">Voltar ao site</a>
+</div>
+
+<main class="painel" id="painel" hidden>
+  <div class="painel-abas">
+    <button class="painel-aba" data-painel="denuncias" aria-pressed="true">Denúncias <span class="contador" id="cntDenuncias" hidden>0</span></button>
+    <button class="painel-aba" data-painel="eventos"  aria-pressed="false">Eventos</button>
+    <button class="painel-aba" data-painel="usuarios" aria-pressed="false">Usuários</button>
+    <button class="painel-aba" data-painel="auditoria" aria-pressed="false">Auditoria</button>
+  </div>
+
+  <div class="linha-topo">
+    <h2 id="tituloPainel">Denúncias</h2>
+    <span class="contagem" id="contagemPainel"></span>
+  </div>
+
+  <div id="lista"></div>
+</main>
+
+<div class="aviso" id="aviso"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/admin-dashboard.js"></script>
+<script src="js/comunidade-v25.js"></script>
+</body>
+</html>
