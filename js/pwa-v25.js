@@ -1,13 +1,16 @@
 /* ============================================================
-   ROLÊ V25.4 — PWA instalável
+   ROLÊ V25.5 — PWA instalável
    Manifesto, Service Worker, instalação e estado offline.
    ============================================================ */
 (() => {
   'use strict';
 
-  const PREFIXO='[V25.4/PWA]';
+  const PREFIXO='[V25.5/PWA]';
+  const CHAVE_OCULTO_ATE='role_pwa_oculto_ate';
+  const DIAS_OCULTO=7;
   let promptInstalacao=null;
   let registroSW=null;
+  let timerConvite=null;
 
   function garantirHead(){
     if(!document.querySelector('link[rel="manifest"]')){
@@ -41,10 +44,21 @@
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
 
+  function conviteOculto(){
+    const ate=Number(localStorage.getItem(CHAVE_OCULTO_ATE)||0);
+    return Number.isFinite(ate) && ate>Date.now();
+  }
+
+  function ocultarPorAlgunsDias(){
+    const ate=Date.now()+(DIAS_OCULTO*24*60*60*1000);
+    localStorage.setItem(CHAVE_OCULTO_ATE,String(ate));
+  }
+
   function criarAviso(){
     if(document.getElementById('pwaV254')) return document.getElementById('pwaV254');
     const el=document.createElement('aside');
     el.id='pwaV254'; el.className='v254-pwa'; el.hidden=true;
+    el.setAttribute('aria-label','Instalar Rolê como aplicativo');
     el.innerHTML='<div class="v254-pwa-icone"><img src="assets/icon-192.png" alt=""></div>'+
       '<div class="v254-pwa-texto"><strong>Leve o Rolê com você</strong><span>Instale como aplicativo para abrir direto da tela inicial.</span></div>'+
       '<div class="v254-pwa-acoes"><button type="button" class="v254-pwa-instalar">Instalar</button><button type="button" class="v254-pwa-fechar" aria-label="Agora não">×</button></div>';
@@ -52,14 +66,19 @@
     el.querySelector('.v254-pwa-instalar').addEventListener('click',instalar);
     el.querySelector('.v254-pwa-fechar').addEventListener('click',()=>{
       el.hidden=true;
-      sessionStorage.setItem('role_pwa_oculto','1');
+      ocultarPorAlgunsDias();
     });
     return el;
   }
 
   function mostrarInstalacao(){
-    if(modoStandalone() || !promptInstalacao || sessionStorage.getItem('role_pwa_oculto')==='1') return;
+    if(modoStandalone() || !promptInstalacao || conviteOculto()) return;
     const el=criarAviso(); el.hidden=false;
+  }
+
+  function agendarConvite(){
+    clearTimeout(timerConvite);
+    timerConvite=setTimeout(mostrarInstalacao,4500);
   }
 
   async function instalar(){
@@ -69,6 +88,7 @@
       await promptInstalacao.prompt();
       const escolha=await promptInstalacao.userChoice;
       console.info(PREFIXO,'resultado da instalação',escolha.outcome);
+      if(escolha.outcome!=='accepted') ocultarPorAlgunsDias();
     }catch(err){ console.warn(PREFIXO,err); }
     promptInstalacao=null;
     el.hidden=true;
@@ -78,6 +98,8 @@
     if(document.getElementById('redeV254')) return;
     const el=document.createElement('div');
     el.id='redeV254'; el.className='v254-rede'; el.hidden=navigator.onLine;
+    el.setAttribute('role','status');
+    el.setAttribute('aria-live','polite');
     el.textContent='Sem internet · mostrando o que estiver salvo neste aparelho';
     document.body.appendChild(el);
     window.addEventListener('offline',()=>{ el.hidden=false; });
@@ -99,6 +121,9 @@
           }
         });
       });
+
+      // Procura atualizações sem bloquear a abertura da página.
+      setTimeout(()=>registroSW?.update().catch(()=>{}),2500);
     }catch(err){
       console.warn(PREFIXO,'service worker não pôde ser registrado',err);
     }
@@ -110,11 +135,12 @@
     window.addEventListener('beforeinstallprompt',event=>{
       event.preventDefault();
       promptInstalacao=event;
-      mostrarInstalacao();
+      agendarConvite();
     });
 
     window.addEventListener('appinstalled',()=>{
       promptInstalacao=null;
+      localStorage.removeItem(CHAVE_OCULTO_ATE);
       const el=document.getElementById('pwaV254'); if(el) el.hidden=true;
       console.info(PREFIXO,'Rolê instalado');
     });
