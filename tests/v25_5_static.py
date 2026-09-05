@@ -6,7 +6,7 @@ def read(path):
     return (root / path).read_text(encoding='utf-8')
 
 # Arquivos da revisão
-for rel in ['css/revisao-v25.css', 'js/revisao-v25.js']:
+for rel in ['css/revisao-v25.css', 'js/revisao-v25.js', 'js/qr-evento-v25.js']:
     assert (root / rel).exists(), f'Arquivo V25.5 ausente: {rel}'
 
 config = read('js/config.js')
@@ -26,7 +26,8 @@ for marcador in [
     "eh('index.html')",
     "eh('perfil.html')",
     'css/revisao-v25.css',
-    'js/revisao-v25.js'
+    'js/revisao-v25.js',
+    "script('js/qr-evento-v25.js','v25-event-qr')"
 ]:
     assert marcador in config, f'Loader V25.5 incompleto: {marcador}'
 
@@ -56,12 +57,26 @@ for marcador in [
 ]:
     assert marcador in css, f'Revisão mobile incompleta: {marcador}'
 
+# QR antigo da V23 usava `new QRCode(...)`, enquanto o ingresso usa o adaptador
+# moderno com `toCanvas`. A V25.5 intercepta apenas o botão de QR do evento e
+# usa a mesma API do ingresso para evitar conflito entre as duas implementações.
+qr_evento = read('js/qr-evento-v25.js')
+for marcador in [
+    '[data-v23-qr]',
+    'stopImmediatePropagation',
+    'QRCode.toCanvas',
+    'QR.toCanvas',
+    'qr-compat-v25.js'
+]:
+    assert marcador in qr_evento, f'Correção do QR do evento incompleta: {marcador}'
+
 # O Service Worker precisa invalidar o cache anterior para a revisão aparecer
-# imediatamente, em especial depois de mudanças no config.js e no mobile.
+# imediatamente, em especial depois de mudanças no config.js, mobile e QR.
 sw = read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-5-shell-v2'" in sw
+assert "CACHE_ATUAL = 'role-v25-5-shell-v3'" in sw
 assert './css/revisao-v25.css' in sw
 assert './js/revisao-v25.js' in sw
+assert './js/qr-evento-v25.js' in sw
 assert "url.origin !== self.location.origin" in sw
 
 print('V25.5 static tests: OK')
