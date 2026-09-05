@@ -66,6 +66,17 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
+/* V25.3: adaptador do QR precisa existir antes do módulo de check-in. */
+(() => {
+  if (!document.querySelector('script[data-role-v25-qr-compat]')) {
+    const script = document.createElement('script');
+    script.src = 'js/qr-compat-v25.js';
+    script.async = false;
+    script.dataset.roleV25QrCompat = '1';
+    document.head.appendChild(script);
+  }
+})();
+
 /* V25.3 experimental: ingresso QR, check-in e painel presencial. */
 (() => {
   if (!document.querySelector('link[data-role-v25-3]')) {
