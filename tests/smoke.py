@@ -41,12 +41,36 @@ for pagina_v25 in ['organizador.html','perfil.html','admin.html']:
 
 comunidade = read('js/comunidade-v25.js')
 for marcador in ['perfil_publico_v25','meus_organizadores_seguidos_v25','admin_definir_verificacao_v25','alertas_eventos','seguidores_organizadores']:
-    assert marcador in comunidade, f'Integração V25 ausente: {marcador}'
+    assert marcador in comunidade, f'Integração V25.1 ausente: {marcador}'
 
 for migration_v25 in [
     'supabase/migrations/20260904125917_v25_1_comunidade_seguidores_alertas_verificacao.sql',
     'supabase/migrations/20260904132149_v25_1_perfil_publico_comunidade_fix.sql'
 ]:
-    assert (root / migration_v25).exists(), f'Migration V25 ausente: {migration_v25}'
+    assert (root / migration_v25).exists(), f'Migration V25.1 ausente: {migration_v25}'
+
+# V25.2 — inscrição, vagas e lista de espera
+for rel in [
+    'js/participacao-v25.js','css/participacao-v25.css',
+    'supabase/migrations/20260905004604_v25_2_participacao_vagas_lista_espera.sql'
+]:
+    assert (root / rel).exists(), f'Arquivo V25.2 ausente: {rel}'
+participacao = read('js/participacao-v25.js')
+for marcador in ['participar_evento_v25_2','cancelar_participacao_v25_2','minhas_inscricoes_v25_2','participantes_evento_v25_2']:
+    assert marcador in participacao, f'Integração V25.2 ausente: {marcador}'
+assert 'js/participacao-v25.js' in read('js/config.js')
+
+# V25.3 — ingresso QR, check-in e painel presencial
+for rel in [
+    'js/checkin-v25.js','css/checkin-v25.css',
+    'supabase/migrations/20260905012657_v25_3_ingresso_qr_checkin.sql'
+]:
+    assert (root / rel).exists(), f'Arquivo V25.3 ausente: {rel}'
+checkin = read('js/checkin-v25.js')
+for marcador in ['meu_ingresso_v25_3','checkin_ingresso_v25_3','painel_evento_v25_3','participantes_evento_v25_3','desfazer_checkin_v25_3','BarcodeDetector','qrcode@1.5.4']:
+    assert marcador in checkin, f'Integração V25.3 ausente: {marcador}'
+config_original = read('js/config.js')
+assert 'js/checkin-v25.js' in config_original
+assert 'css/checkin-v25.css' in config_original
 
 print('Smoke tests: OK')
