@@ -2,149 +2,82 @@
    CONFIGURAÇÃO DO SUPABASE
    ------------------------------------------------------------
    No painel do Supabase: Settings > API
-   Copie os dois valores e cole abaixo.
-
-   A chave "anon public" pode ficar visível no código — ela só
-   funciona dentro das regras de segurança (RLS) que criamos na
-   Etapa 2. NUNCA use aqui a chave "service_role".
+   Use somente a URL e a chave pública/publishable.
+   NUNCA coloque service_role ou segredos no frontend.
    ============================================================ */
 
 const SUPABASE_URL = 'https://wguayxwgxjvrtyowkzyz.supabase.co';
-
 const SUPABASE_ANON = 'sb_publishable_Nrx0t9ApDVC2RfqPmlyKSA_9-kgVHpc';
-
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-// aviso amigável enquanto as chaves não forem preenchidas
+
 if (SUPABASE_URL.startsWith('COLE')) {
   console.warn('Configure js/config.js com a URL e a chave do seu projeto Supabase.');
 }
 
-/* V25 experimental: módulo comunitário carregado de forma isolada. */
+/* ============================================================
+   V25 — carregamento por página
+   Evita módulos duplicados e reduz código desnecessário em telas
+   que não usam participação, check-in, inteligência ou Push.
+   ============================================================ */
 (() => {
-  if (!document.querySelector('link[data-role-v25]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/comunidade-v25.css';
-    link.dataset.roleV25 = '1';
+  'use strict';
+
+  const pagina = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  const eh = (...nomes) => nomes.includes(pagina);
+
+  function estilo(href, marcador){
+    if(document.querySelector(`link[href="${href}"]`) || document.querySelector(`link[data-role-${marcador}]`)) return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=href;
+    link.dataset[`role${marcador.replace(/-([a-z0-9])/g,(_,c)=>c.toUpperCase())}`]='1';
     document.head.appendChild(link);
   }
-  if (!document.querySelector('script[data-role-v25]')) {
-    const script = document.createElement('script');
-    script.src = 'js/comunidade-v25.js';
-    script.async = false;
-    script.dataset.roleV25 = '1';
-    document.head.appendChild(script);
-  }
-})();
 
-/* V25: correção de estabilidade precisa carregar antes dos módulos dinâmicos. */
-(() => {
-  if (!document.querySelector('script[data-role-v25-stability]')) {
-    const script = document.createElement('script');
-    script.src = 'js/estabilidade-v25.js';
-    script.async = false;
-    script.dataset.roleV25Stability = '1';
-    document.head.appendChild(script);
+  function script(src, marcador){
+    if(document.querySelector(`script[src="${src}"]`) || document.querySelector(`script[data-role-${marcador}]`)) return;
+    const s=document.createElement('script');
+    s.src=src;
+    s.async=false;
+    s.dataset[`role${marcador.replace(/-([a-z0-9])/g,(_,c)=>c.toUpperCase())}`]='1';
+    document.head.appendChild(s);
   }
-})();
 
-/* V25.2 experimental: inscrição, vagas e lista de espera. */
-(() => {
-  if (!document.querySelector('link[data-role-v25-2]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/participacao-v25.css';
-    link.dataset.roleV252 = '1';
-    document.head.appendChild(link);
-  }
-  if (!document.querySelector('script[data-role-v25-2]')) {
-    const script = document.createElement('script');
-    script.src = 'js/participacao-v25.js';
-    script.async = false;
-    script.dataset.roleV252 = '1';
-    document.head.appendChild(script);
-  }
-})();
+  /* V25.1 — comunidade.
+     perfil/admin/organizador já incluem o módulo diretamente no HTML.
+     Não injetar aqui evita a execução duplicada encontrada na V25.5. */
 
-/* V25.3: adaptador do QR precisa existir antes do módulo de check-in. */
-(() => {
-  if (!document.querySelector('script[data-role-v25-qr-compat]')) {
-    const script = document.createElement('script');
-    script.src = 'js/qr-compat-v25.js';
-    script.async = false;
-    script.dataset.roleV25QrCompat = '1';
-    document.head.appendChild(script);
+  /* V25.2 — participação: detalhe do evento e Minhas inscrições. */
+  if(eh('index.html','perfil.html')){
+    estilo('css/participacao-v25.css','v25-2');
+    script('js/participacao-v25.js','v25-2');
   }
-})();
 
-/* V25.3 experimental: ingresso QR, check-in e painel presencial. */
-(() => {
-  if (!document.querySelector('link[data-role-v25-3]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/checkin-v25.css';
-    link.dataset.roleV253 = '1';
-    document.head.appendChild(link);
+  /* V25.3 — ingresso/check-in. O adaptador de QR entra antes. */
+  if(eh('index.html','perfil.html')){
+    if(eh('index.html')) script('js/estabilidade-v25.js','v25-stability');
+    script('js/qr-compat-v25.js','v25-qr-compat');
+    estilo('css/checkin-v25.css','v25-3');
+    script('js/checkin-v25.js','v25-3');
   }
-  if (!document.querySelector('script[data-role-v25-3]')) {
-    const script = document.createElement('script');
-    script.src = 'js/checkin-v25.js';
-    script.async = false;
-    script.dataset.roleV253 = '1';
-    document.head.appendChild(script);
-  }
-})();
 
-/* V25.4 — PWA instalável e suporte offline do frontend. */
-(() => {
-  if (!document.querySelector('link[data-role-v25-4-pwa]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/pwa-v25.css';
-    link.dataset.roleV254Pwa = '1';
-    document.head.appendChild(link);
-  }
-  if (!document.querySelector('script[data-role-v25-4-pwa]')) {
-    const script = document.createElement('script');
-    script.src = 'js/pwa-v25.js';
-    script.async = false;
-    script.dataset.roleV254Pwa = '1';
-    document.head.appendChild(script);
-  }
-})();
+  /* V25.4 — PWA pode existir em todas as páginas públicas do projeto. */
+  estilo('css/pwa-v25.css','v25-4-pwa');
+  script('js/pwa-v25.js','v25-4-pwa');
 
-/* V25.4 — recomendações e busca inteligente. */
-(() => {
-  if (!document.querySelector('link[data-role-v25-4-inteligencia]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/inteligencia-v25.css';
-    link.dataset.roleV254Inteligencia = '1';
-    document.head.appendChild(link);
+  /* V25.4 — inteligência só existe no mural. */
+  if(eh('index.html')){
+    estilo('css/inteligencia-v25.css','v25-4-inteligencia');
+    script('js/inteligencia-v25.js','v25-4-inteligencia');
   }
-  if (!document.querySelector('script[data-role-v25-4-inteligencia]')) {
-    const script = document.createElement('script');
-    script.src = 'js/inteligencia-v25.js';
-    script.async = false;
-    script.dataset.roleV254Inteligencia = '1';
-    document.head.appendChild(script);
-  }
-})();
 
-/* V25.4 — Web Push. A permissão só é pedida quando o usuário ativa no perfil. */
-(() => {
-  if (!document.querySelector('link[data-role-v25-4-push]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/push-v25.css';
-    link.dataset.roleV254Push = '1';
-    document.head.appendChild(link);
+  /* V25.4 — configuração de Push fica no perfil do usuário. */
+  if(eh('perfil.html')){
+    estilo('css/push-v25.css','v25-4-push');
+    script('js/push-v25.js','v25-4-push');
   }
-  if (!document.querySelector('script[data-role-v25-4-push]')) {
-    const script = document.createElement('script');
-    script.src = 'js/push-v25.js';
-    script.async = false;
-    script.dataset.roleV254Push = '1';
-    document.head.appendChild(script);
-  }
+
+  /* V25.5 — acabamento e acessibilidade. */
+  estilo('css/revisao-v25.css','v25-5-review');
+  script('js/revisao-v25.js','v25-5-review');
 })();
