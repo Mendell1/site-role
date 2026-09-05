@@ -37,7 +37,11 @@ for marcador in [
     'aria-live',
     'v255-modal-aberto',
     "e.key!=='Escape'",
-    'MutationObserver'
+    'MutationObserver',
+    'reposicionarParticipacao',
+    "matchMedia('(max-width:760px)')",
+    "principal.querySelector('#areaComentarios')",
+    "card.dataset.v255Posicao='mobile'"
 ]:
     assert marcador in revisao, f'Revisão UX incompleta: {marcador}'
 
@@ -46,7 +50,8 @@ for marcador in [
     '100dvh',
     'prefers-reduced-motion',
     '.v253-qr-box canvas',
-    '@media (max-width:720px)',
+    '@media (max-width:760px)',
+    '.detalhe-coluna-principal > #participacaoV252',
     'env(safe-area-inset-bottom)'
 ]:
     assert marcador in css, f'Revisão mobile incompleta: {marcador}'
