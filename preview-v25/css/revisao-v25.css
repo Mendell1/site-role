@@ -18,9 +18,10 @@ body.v255-modal-aberto{overflow:hidden}
 .v252-btn:focus-visible,.v253-btn:focus-visible,.v254-pwa button:focus-visible,.v254-interpretacao button:focus-visible,.v254-push-btn:focus-visible,.btn-seguir-v25:focus-visible,.alerta-item-v25 button:focus-visible{outline:2px solid var(--amarelo,#EFD483);outline-offset:3px}
 .v252-btn:disabled,.v253-btn:disabled,.v254-push-btn:disabled,.btn-seguir-v25:disabled{cursor:not-allowed;opacity:.62}
 
-@media (max-width:720px){
+@media (max-width:760px){
   .cortina.aberta{align-items:flex-start;padding:8px}
   .cortina .folha,.v252-modal,.v253-modal-ingresso,.v253-modal-scanner,.v253-modal-painel{width:100%!important;max-width:none!important;max-height:calc(100dvh - 16px);border-radius:12px}
+  .detalhe-coluna-principal>#participacaoV252{width:100%;margin:18px 0 20px;scroll-margin-top:12px}
   #participacaoV252{width:100%}
   .v252-acoes,.v253-extra,.v253-scanner-acoes{display:grid;grid-template-columns:1fr;gap:8px}
   .v252-acoes .v252-btn,.v253-extra .v253-btn,.v253-scanner-acoes .v253-btn{width:100%}
