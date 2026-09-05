@@ -45,9 +45,33 @@ A branch `v25-experimental` é a área de desenvolvimento das próximas versões
 - opção de desfazer um check-in feito por engano;
 - cancelamento de inscrição bloqueado depois do check-in.
 
+### V25.4 — Aplicativo inteligente
+
+- PWA instalável com manifesto, ícones próprios e modo `standalone`;
+- Service Worker com cache apenas do frontend público e fallback básico offline;
+- chamadas do Supabase e dados privados ficam fora do cache da PWA;
+- experiência de instalação opcional, sem forçar prompt no usuário;
+- Web Push real para avisos mesmo com o site fechado;
+- ativação e desativação do Push por aparelho no perfil;
+- chaves privadas VAPID e segredo do webhook mantidos fora do repositório;
+- Edge Function envia Push a partir das notificações já criadas pelo Rolê;
+- aba **✦ Para você** com recomendações usando favoritos, interesses, cidade, alertas e organizadores seguidos;
+- motivos de recomendação visíveis nos cartões;
+- busca inteligente em português por frase natural;
+- interpretação de categoria, gratuidade, dia, período e localização;
+- ranking de resultados por aderência aos filtros, similaridade textual e interesse do público.
+
+Exemplo de busca inteligente:
+
+> Quero algo grátis sábado à noite perto de Itaquera
+
+O sistema transforma a frase em filtros estruturados antes de consultar e ordenar os eventos. A busca comum continua disponível para consultas simples.
+
 ## Funcionalidades
 
 - mural com busca, categorias e filtros;
+- busca inteligente por linguagem natural;
+- recomendações personalizadas **Para você**;
 - mapa e calendário de eventos;
 - localização **Perto de mim** por distância;
 - publicação e edição de eventos com endereço, CEP, mapa, imagem e status;
@@ -56,14 +80,15 @@ A branch `v25-experimental` é a área de desenvolvimento das próximas versões
 - perfil público compartilhável do organizador;
 - login por e-mail/senha e Google OAuth;
 - onboarding obrigatório para maiores de 18 anos e aceite dos termos;
-- notificações de mudanças nos eventos e resumo semanal opcional;
+- notificações internas e Web Push opcional;
+- PWA instalável;
 - denúncias com evidência privada, acompanhamento, recurso e auditoria;
 - painel administrativo com moderação, usuários, eventos, auditoria e métricas;
 - exclusão de conta com prazo de 7 dias e reautenticação recente.
 
 ## Tecnologias
 
-Frontend em HTML, CSS e JavaScript, com Leaflet para mapas. Backend em Supabase: PostgreSQL, Auth, Storage, Realtime, Row Level Security, funções SQL/PLpgSQL, Cron e Edge Functions. O ingresso usa o pacote `qrcode` 1.5.4 carregado de forma fixada para desenhar o QR no navegador. Publicação do frontend via GitHub Pages.
+Frontend em HTML, CSS e JavaScript, com Leaflet para mapas, Web App Manifest, Service Worker, Push API e Notifications API. Backend em Supabase: PostgreSQL, Auth, Storage, Realtime, Row Level Security, funções SQL/PLpgSQL, `pg_trgm`, Cron e Edge Functions. O ingresso usa um adaptador de QR no navegador com fallback de biblioteca. O Web Push é enviado no servidor pela Edge Function com VAPID. Publicação do frontend via GitHub Pages.
 
 ## Estrutura principal
 
@@ -71,8 +96,14 @@ Frontend em HTML, CSS e JavaScript, com Leaflet para mapas. Backend em Supabase:
 - `perfil.html` — conta, perfil, favoritos, inscrições e eventos do usuário;
 - `organizador.html` — perfil público compartilhável;
 - `admin.html` — moderação e métricas;
+- `manifest.webmanifest` — configuração instalável da PWA;
+- `sw-v25.js` — cache público, Push e abertura de notificações;
 - `js/participacao-v25.js` — inscrição, capacidade e fila de espera;
 - `js/checkin-v25.js` — ingresso, scanner e painel presencial;
+- `js/pwa-v25.js` — instalação e estado offline;
+- `js/inteligencia-v25.js` — recomendações e busca inteligente;
+- `js/push-v25.js` — assinatura de notificações por aparelho;
+- `supabase/functions/push-notificar-v25-4/` — envio server-side de Web Push;
 - `js/` — autenticação, eventos, perfil, admin e recursos sociais;
 - `css/` — identidade visual e responsividade;
 - `supabase/migrations/` — histórico aplicado no banco conectado;
@@ -81,11 +112,13 @@ Frontend em HTML, CSS e JavaScript, com Leaflet para mapas. Backend em Supabase:
 
 ## Executar localmente
 
-Sirva a pasta por HTTP para que autenticação, geolocalização, câmera e APIs do navegador funcionem corretamente. O `js/config.js` deve conter apenas a URL do projeto e uma chave pública/publishable do Supabase.
+Sirva a pasta por HTTP para que autenticação, geolocalização, câmera e APIs do navegador funcionem corretamente. Para PWA, Service Worker e Push, use um contexto seguro (`https` ou `localhost`). O `js/config.js` deve conter apenas a URL do projeto e uma chave pública/publishable do Supabase.
 
 ## Banco de dados
 
 Para uma instalação nova, siga `sql/install/README.md`. A instalação usa RLS como camada principal de autorização; esconder botões no frontend não é considerado controle de segurança.
+
+As tabelas de assinatura e entrega de Push possuem RLS e não recebem acesso direto de `anon` ou `authenticated`; as alterações do usuário passam por RPCs específicas. A configuração VAPID fica no schema privado e não é versionada.
 
 ## Segurança
 
@@ -95,13 +128,15 @@ Para uma instalação nova, siga `sql/install/README.md`. A instalação usa RLS
 - contas bloqueadas, suspensas, incompletas ou em exclusão não podem operar normalmente;
 - QR de ingresso utiliza um UUID aleatório próprio da inscrição e não carrega dados pessoais;
 - check-in só pode ser executado pelo organizador do evento ou pela administração;
-- exclusão de conta exige autenticação recente no servidor;
-- nenhum `service_role` ou Client Secret deve ser publicado no GitHub.
+- Service Worker não armazena respostas do Supabase nem dados privados da sessão;
+- Web Push exige assinatura vinculada ao usuário e segredo privado entre banco e Edge Function;
+- chave privada VAPID, segredo do webhook, `service_role` e Client Secrets não devem ser publicados no GitHub;
+- exclusão de conta exige autenticação recente no servidor.
 
 ## Testes
 
-O workflow de CI executa validação sintática dos arquivos JavaScript e testes estáticos de integração em `tests/smoke.py`, incluindo os módulos da V25. Antes de uma entrega, também é recomendado testar manualmente os fluxos de e-mail, Google OAuth, publicação, inscrição, fila, ingresso, check-in, mapa, notificações, denúncias, recurso, moderação e exclusão.
+O workflow de CI executa validação sintática dos arquivos JavaScript e testes estáticos de integração em `tests/smoke.py`, incluindo os módulos da V25. Antes de uma entrega, também é recomendado testar manualmente os fluxos de e-mail, Google OAuth, publicação, inscrição, fila, ingresso, check-in, instalação PWA, Push, recomendações, busca inteligente, mapa, denúncias, recurso, moderação e exclusão.
 
 ## Deploy
 
-O frontend é publicado pelo GitHub Pages. Alterações de banco devem ser registradas em migration e aplicadas ao Supabase antes de depender delas no frontend.
+O frontend é publicado pelo GitHub Pages. Alterações de banco devem ser registradas em migration e aplicadas ao Supabase antes de depender delas no frontend. A prévia da V25 permanece separada do site estável para evitar regressões durante os testes.
