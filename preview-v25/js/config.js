@@ -36,6 +36,17 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
+/* V25 — estabilidade antes dos módulos de participação/check-in. */
+(() => {
+  if (!document.querySelector('script[data-role-v25-stability]')) {
+    const script = document.createElement('script');
+    script.src = 'js/estabilidade-v25.js';
+    script.async = false;
+    script.dataset.roleV25Stability = '1';
+    document.head.appendChild(script);
+  }
+})();
+
 /* V25.2 — inscrição, vagas e lista de espera. */
 (() => {
   if (!document.querySelector('link[data-role-v25-2]')) {
