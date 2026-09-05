@@ -14,11 +14,12 @@ const SUPABASE_URL = 'https://wguayxwgxjvrtyowkzyz.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_Nrx0t9ApDVC2RfqPmlyKSA_9-kgVHpc';
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+// aviso amigável enquanto as chaves não forem preenchidas
 if (SUPABASE_URL.startsWith('COLE')) {
   console.warn('Configure js/config.js com a URL e a chave do seu projeto Supabase.');
 }
 
-/* V25.1 — comunidade. */
+/* V25 experimental: módulo comunitário carregado de forma isolada. */
 (() => {
   if (!document.querySelector('link[data-role-v25]')) {
     const link = document.createElement('link');
@@ -36,7 +37,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
-/* V25 — estabilidade antes dos módulos de participação/check-in. */
+/* V25: correção de estabilidade precisa carregar antes dos módulos dinâmicos. */
 (() => {
   if (!document.querySelector('script[data-role-v25-stability]')) {
     const script = document.createElement('script');
@@ -47,7 +48,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
-/* V25.2 — inscrição, vagas e lista de espera. */
+/* V25.2 experimental: inscrição, vagas e lista de espera. */
 (() => {
   if (!document.querySelector('link[data-role-v25-2]')) {
     const link = document.createElement('link');
@@ -65,7 +66,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
-/* V25.3 — compatibilidade do QR antes do módulo de check-in. */
+/* V25.3: adaptador do QR precisa existir antes do módulo de check-in. */
 (() => {
   if (!document.querySelector('script[data-role-v25-qr-compat]')) {
     const script = document.createElement('script');
@@ -76,7 +77,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 })();
 
-/* V25.3 — ingresso QR, check-in e painel presencial. */
+/* V25.3 experimental: ingresso QR, check-in e painel presencial. */
 (() => {
   if (!document.querySelector('link[data-role-v25-3]')) {
     const link = document.createElement('link');
@@ -90,6 +91,60 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script.src = 'js/checkin-v25.js';
     script.async = false;
     script.dataset.roleV253 = '1';
+    document.head.appendChild(script);
+  }
+})();
+
+/* V25.4 — PWA instalável e suporte offline do frontend. */
+(() => {
+  if (!document.querySelector('link[data-role-v25-4-pwa]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/pwa-v25.css';
+    link.dataset.roleV254Pwa = '1';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('script[data-role-v25-4-pwa]')) {
+    const script = document.createElement('script');
+    script.src = 'js/pwa-v25.js';
+    script.async = false;
+    script.dataset.roleV254Pwa = '1';
+    document.head.appendChild(script);
+  }
+})();
+
+/* V25.4 — recomendações e busca inteligente. */
+(() => {
+  if (!document.querySelector('link[data-role-v25-4-inteligencia]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/inteligencia-v25.css';
+    link.dataset.roleV254Inteligencia = '1';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('script[data-role-v25-4-inteligencia]')) {
+    const script = document.createElement('script');
+    script.src = 'js/inteligencia-v25.js';
+    script.async = false;
+    script.dataset.roleV254Inteligencia = '1';
+    document.head.appendChild(script);
+  }
+})();
+
+/* V25.4 — Web Push. A permissão só é pedida quando o usuário ativa no perfil. */
+(() => {
+  if (!document.querySelector('link[data-role-v25-4-push]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'css/push-v25.css';
+    link.dataset.roleV254Push = '1';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('script[data-role-v25-4-push]')) {
+    const script = document.createElement('script');
+    script.src = 'js/push-v25.js';
+    script.async = false;
+    script.dataset.roleV254Push = '1';
     document.head.appendChild(script);
   }
 })();
