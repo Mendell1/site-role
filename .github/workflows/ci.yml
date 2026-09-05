@@ -23,3 +23,4 @@ jobs:
         run: |
           python tests/smoke.py
           python tests/v25_2_static.py
+          python tests/v25_5_static.py
