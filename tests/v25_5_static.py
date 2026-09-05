@@ -57,9 +57,9 @@ for marcador in [
     assert marcador in css, f'Revisão mobile incompleta: {marcador}'
 
 # O Service Worker precisa invalidar o cache anterior para a revisão aparecer
-# imediatamente, em especial depois de mudanças no config.js.
+# imediatamente, em especial depois de mudanças no config.js e no mobile.
 sw = read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-5-shell-v1'" in sw
+assert "CACHE_ATUAL = 'role-v25-5-shell-v2'" in sw
 assert './css/revisao-v25.css' in sw
 assert './js/revisao-v25.js' in sw
 assert "url.origin !== self.location.origin" in sw
