@@ -84,7 +84,7 @@ body.v255-modal-aberto{
   opacity:.62;
 }
 
-@media (max-width:720px){
+@media (max-width:760px){
   .cortina.aberta{
     align-items:flex-start;
     padding:8px;
@@ -99,6 +99,13 @@ body.v255-modal-aberto{
     max-width:none!important;
     max-height:calc(100dvh - 16px);
     border-radius:12px;
+  }
+
+  /* No celular, a V25.5 move este cartão para antes dos comentários. */
+  .detalhe-coluna-principal > #participacaoV252{
+    width:100%;
+    margin:18px 0 20px;
+    scroll-margin-top:12px;
   }
 
   #participacaoV252{
