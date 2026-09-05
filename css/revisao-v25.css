@@ -1,0 +1,172 @@
+/* ============================================================
+   ROLÊ V25.5 — revisão visual, mobile e acessibilidade
+   Sem novas funcionalidades: apenas acabamento e estabilidade.
+   ============================================================ */
+
+/* Modais não deixam a página do fundo rolar. */
+body.v255-modal-aberto{
+  overflow:hidden;
+}
+
+.cortina.aberta{
+  padding:clamp(8px,2vw,24px);
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+
+.cortina .folha{
+  max-height:calc(100dvh - clamp(16px,4vw,48px));
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Alvos de toque adequados para os recursos adicionados na V25. */
+.v252-btn,
+.v253-btn,
+.v254-pwa-instalar,
+.v254-pwa-fechar,
+.v254-push-btn,
+.btn-seguir-v25,
+.alerta-item-v25 button{
+  min-height:44px;
+}
+
+/* Evita que QR, chips e textos longos estourem o modal. */
+.v253-qr-box{
+  max-width:100%;
+  overflow:hidden;
+}
+.v253-qr-box canvas,
+.v253-qr-box img{
+  display:block;
+  width:min(260px,100%)!important;
+  height:auto!important;
+  margin-inline:auto;
+}
+.v253-codigo,
+.v253-codigo code{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.v254-interpretacao{
+  flex-wrap:wrap;
+}
+.v254-interpretacao > *{
+  max-width:100%;
+}
+
+/* O banner da PWA respeita a área segura de celulares. */
+.v254-pwa{
+  bottom:max(14px,env(safe-area-inset-bottom));
+  left:max(14px,env(safe-area-inset-left));
+  right:max(14px,env(safe-area-inset-right));
+}
+
+/* Foco visível também nos componentes novos. */
+.v252-btn:focus-visible,
+.v253-btn:focus-visible,
+.v254-pwa button:focus-visible,
+.v254-interpretacao button:focus-visible,
+.v254-push-btn:focus-visible,
+.btn-seguir-v25:focus-visible,
+.alerta-item-v25 button:focus-visible{
+  outline:2px solid var(--amarelo,#EFD483);
+  outline-offset:3px;
+}
+
+/* Estado de carregamento/desabilitado mais claro. */
+.v252-btn:disabled,
+.v253-btn:disabled,
+.v254-push-btn:disabled,
+.btn-seguir-v25:disabled{
+  cursor:not-allowed;
+  opacity:.62;
+}
+
+@media (max-width:720px){
+  .cortina.aberta{
+    align-items:flex-start;
+    padding:8px;
+  }
+
+  .cortina .folha,
+  .v252-modal,
+  .v253-modal-ingresso,
+  .v253-modal-scanner,
+  .v253-modal-painel{
+    width:100%!important;
+    max-width:none!important;
+    max-height:calc(100dvh - 16px);
+    border-radius:12px;
+  }
+
+  #participacaoV252{
+    width:100%;
+  }
+
+  .v252-acoes,
+  .v253-extra,
+  .v253-scanner-acoes{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+
+  .v252-acoes .v252-btn,
+  .v253-extra .v253-btn,
+  .v253-scanner-acoes .v253-btn{
+    width:100%;
+  }
+
+  .v253-metricas{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .v253-painel-titulo{
+    align-items:flex-start;
+    gap:12px;
+    flex-direction:column;
+  }
+
+  .v254-pwa{
+    align-items:flex-start;
+    gap:10px;
+  }
+  .v254-pwa-icone{
+    flex:0 0 auto;
+  }
+  .v254-pwa-acoes{
+    margin-left:auto;
+  }
+}
+
+@media (max-width:430px){
+  .v253-metricas{
+    grid-template-columns:1fr 1fr;
+  }
+  .v252-cabecalho{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:8px;
+  }
+  .v254-pwa{
+    display:grid;
+    grid-template-columns:auto 1fr;
+  }
+  .v254-pwa-acoes{
+    grid-column:1/-1;
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 44px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
