@@ -1,9 +1,9 @@
 /* ============================================================
-   ROLÊ V25.4 — Service Worker / PWA
+   ROLÊ V25.5 — Service Worker / PWA
    Cacheia somente recursos públicos do frontend.
    Nunca intercepta ou persiste respostas do Supabase.
    ============================================================ */
-const CACHE_ATUAL = 'role-v25-4-shell-v1';
+const CACHE_ATUAL = 'role-v25-5-shell-v1';
 const PREFIXO_CACHE = 'role-v25-';
 const BASE = self.registration.scope;
 
@@ -13,7 +13,9 @@ const SHELL = [
   './manifest.webmanifest',
   './css/estilo.css',
   './css/mobile-responsive.css',
+  './css/revisao-v25.css',
   './js/config.js',
+  './js/revisao-v25.js',
   './assets/icon-192.png',
   './assets/icon-512.png'
 ].map(caminho => new URL(caminho, BASE).href);
@@ -50,7 +52,7 @@ function requisicaoPrivadaOuApi(request) {
 async function navegacaoNetworkFirst(request) {
   const cache = await caches.open(CACHE_ATUAL);
   try {
-    const resposta = await fetch(request);
+    const resposta = await fetch(request, {cache:'no-cache'});
     if (resposta && resposta.ok) await cache.put(request, resposta.clone());
     return resposta;
   } catch (_) {
@@ -89,7 +91,6 @@ self.addEventListener('message', event => {
   if (event.data?.tipo === 'ROLE_SKIP_WAITING') self.skipWaiting();
 });
 
-/* Preparado para Web Push da próxima etapa da V25.4. */
 self.addEventListener('push', event => {
   let dados = {};
   try { dados = event.data ? event.data.json() : {}; } catch (_) {
