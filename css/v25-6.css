@@ -1,0 +1,101 @@
+/* ============================================================
+   ROLÊ V25.6 — recorrência + mapa por raio
+   ============================================================ */
+
+.v256-kicker{
+  display:block;
+  font:700 9px/1.35 'Space Mono',monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#9a7418;
+  margin-bottom:5px;
+}
+
+/* ---------- formulário de recorrência ---------- */
+.v256-recorrencia{
+  margin:4px 0 16px;
+  padding:15px;
+  border:1px solid rgba(42,33,26,.18);
+  border-radius:8px;
+  background:rgba(255,255,255,.28);
+}
+.v256-recorrencia-topo{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.v256-recorrencia-topo strong{display:block;font-size:14px;color:#2c221a}
+.v256-recorrencia>.dica{margin:8px 0 0;line-height:1.5}
+.v256-recorrencia-opcoes{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(42,33,26,.18)}
+.v256-recorrencia-opcoes .campo{margin-bottom:10px}
+.v256-intervalo{display:grid;grid-template-columns:88px 1fr;gap:8px;align-items:center}
+.v256-intervalo span{font-size:12px;color:#70665d}
+.v256-recorrencia-resumo{padding:11px 12px;border-radius:6px;background:#f2e7cf;border:1px solid #d8c8a6;display:grid;gap:3px}
+.v256-recorrencia-resumo strong{font-size:12px}
+.v256-recorrencia-resumo span{font-size:11px;color:#71675d;line-height:1.45}
+.v256-recorrencia-edicao{margin-top:12px;padding:11px 12px;border:1px solid #d7c9b4;border-radius:6px;background:#f7efe2;display:grid;gap:4px}
+.v256-recorrencia-edicao strong{font-size:12px}
+.v256-recorrencia-edicao span{font-size:11px;line-height:1.5;color:#71675f}
+
+.v256-switch{position:relative;display:inline-flex;cursor:pointer;flex:0 0 auto}
+.v256-switch input{position:absolute;opacity:0;pointer-events:none}
+.v256-switch span{width:44px;height:24px;border-radius:999px;background:#c9bfae;border:1px solid #b3a691;position:relative;transition:.18s ease}
+.v256-switch span::after{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.22);transition:.18s ease}
+.v256-switch input:checked+span{background:#e4b52f;border-color:#bc8e17}
+.v256-switch input:checked+span::after{transform:translateX(20px);background:#241b15}
+.v256-switch input:focus-visible+span{outline:3px solid rgba(205,153,26,.28);outline-offset:2px}
+.v256-switch input:disabled+span{opacity:.5;cursor:not-allowed}
+
+/* ---------- detalhe da série ---------- */
+.v256-serie-card{
+  margin:14px 0 18px;
+  padding:14px;
+  border:1px solid rgba(42,33,26,.17);
+  border-left:4px solid #d5a72b;
+  border-radius:7px;
+  background:#f6eddf;
+}
+.v256-serie-cabecalho{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v256-serie-cabecalho .v256-kicker{margin:0}
+.v256-serie-cabecalho strong{font:700 10px/1 'Space Mono',monospace;color:#403329}
+.v256-serie-card>p{font-size:12px;line-height:1.55;color:#6f655c;margin:9px 0 11px}
+.v256-datas-serie{display:flex;gap:7px;flex-wrap:wrap}
+.v256-datas-serie button{border:1px solid #cfc0aa;background:#fff9ef;color:#493d32;border-radius:999px;padding:7px 10px;font:700 10px/1 'Space Mono',monospace;cursor:pointer}
+.v256-datas-serie button:hover,.v256-datas-serie button.ativa{background:#241b15;color:#fff4e3;border-color:#241b15}
+
+.v256-modal-serie .folha{max-width:430px}
+.v256-modal-serie h3{margin:3px 0 8px}
+.v256-modal-acoes{display:grid;gap:8px;margin-top:18px}
+.v256-modal-acoes button{width:100%;justify-content:center;text-align:center;min-height:43px}
+
+/* ---------- seletor de raio ---------- */
+.v256-raio{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 4px 3px 8px;
+  border:1px solid rgba(255,240,218,.16);
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  vertical-align:middle;
+}
+.v256-raio>span{font:700 8px/1 'Space Mono',monospace;letter-spacing:.11em;color:#91877e;margin-right:2px}
+.v256-raio button{border:0;border-radius:999px;background:transparent;color:#b9aea3;padding:7px 8px;font:700 9px/1 'Space Mono',monospace;cursor:pointer}
+.v256-raio button:hover{color:#fff0d9;background:rgba(255,255,255,.07)}
+.v256-raio button[aria-pressed="true"]{background:#ddb032;color:#21180d}
+.chip-perto-v23[aria-pressed="true"]{background:#ddb032!important;color:#21180d!important;border-color:#ddb032!important}
+.v256-distancia{position:absolute;right:11px;bottom:11px;z-index:3;background:#201814;color:#fff5e8;border:1px solid rgba(255,255,255,.16);padding:6px 9px;border-radius:999px;font:700 9px/1 'Space Mono',monospace;box-shadow:0 4px 15px rgba(0,0,0,.22)}
+.v256-km-inline{font-weight:700;color:#a8790d}
+
+@media(max-width:760px){
+  .v256-recorrencia{padding:13px;margin-bottom:14px}
+  .v256-recorrencia-topo{align-items:flex-start}
+  .v256-recorrencia .duas{grid-template-columns:1fr}
+  .v256-intervalo{grid-template-columns:80px 1fr}
+  .v256-serie-card{margin:12px 0 15px;padding:12px}
+  .v256-datas-serie{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v256-datas-serie button{width:100%}
+  .v256-raio{width:100%;box-sizing:border-box;justify-content:space-between;margin-top:5px;padding:5px 6px 5px 10px}
+  .v256-raio button{min-height:36px;flex:1}
+  .v256-distancia{right:8px;bottom:8px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .v256-switch span,.v256-switch span::after{transition:none}
+}
