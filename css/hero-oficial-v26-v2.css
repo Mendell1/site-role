@@ -1,0 +1,70 @@
+/* ROLÊ V26 — fundo oficial real (v2) */
+body.v26-home .hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#090806!important;
+}
+
+/* Imagem aprovada: São Paulo noturna + ROLÊ + assinatura */
+body.v26-home .hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-3!important;
+  opacity:1!important;
+  background-image:url('../assets/hero-v26-oficial.jpg')!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center 48%!important;
+  filter:none!important;
+  transform:none!important;
+}
+
+/* Escurece somente o necessário para o texto continuar legível */
+body.v26-home .hero::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-2!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(90deg,
+      rgba(7,6,5,.88) 0%,
+      rgba(7,6,5,.74) 27%,
+      rgba(7,6,5,.42) 46%,
+      rgba(7,6,5,.12) 67%,
+      rgba(7,6,5,.08) 100%),
+    linear-gradient(180deg,
+      rgba(7,6,5,.08) 0%,
+      rgba(7,6,5,.02) 68%,
+      rgba(7,6,5,.50) 100%)!important;
+}
+
+/* A arte já contém ROLÊ e a assinatura. Evita duplicação. */
+body.v26-home .v26-wordmark,
+body.v26-home .v26-slogan,
+body.v26-home .v26-palavras,
+body.v26-home .v26-cityline{
+  display:none!important;
+}
+
+body.v26-home .v26-hero-arte{
+  min-height:inherit!important;
+}
+
+/* Mantém o conteúdo acima da imagem */
+body.v26-home .hero-conteudo,
+body.v26-home .v26-hero-grid{
+  position:relative;
+  z-index:2;
+}
+
+@media (max-width:820px){
+  body.v26-home .hero::before{
+    background-position:68% center!important;
+  }
+  body.v26-home .hero::after{
+    background:linear-gradient(90deg,rgba(7,6,5,.92),rgba(7,6,5,.58) 72%,rgba(7,6,5,.40))!important;
+  }
+}
