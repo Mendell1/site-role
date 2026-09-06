@@ -1,0 +1,66 @@
+/* ============================================================
+   ROLÊ V26.1 — PRECISION PASS
+   Terceira passada baseada no print real 1650x926.
+   Ajusta escala/composição sem alterar IDs ou regras da V25.
+   ============================================================ */
+
+@media (min-width:1181px){
+  .v26-home .topo-inner{width:calc(100% - 92px)!important;max-width:1490px!important;min-height:68px!important;margin-inline:auto!important}
+  .v26-home .marca::before,.v26-home .marca::after{display:none!important;content:none!important}
+  .v26-home .marca{gap:9px!important}
+  .v26-home .marca-role{font-size:32px!important}
+  .v26-home .v26-logo-pin{display:grid;place-items:center;flex:0 0 auto;width:27px;height:27px;border-radius:50%;border:1px solid rgba(240,184,62,.52);color:#f3b83a;background:rgba(240,184,62,.055);font:700 14px/1 'Space Mono',monospace}
+  .v26-home .marca small{font-size:8px!important;letter-spacing:.29em!important;margin-left:5px!important}
+  .v26-home .v26-nav{margin-left:auto!important;margin-right:auto!important;gap:42px!important}
+  .v26-home .v26-nav a{font-size:13.5px!important}
+  .v26-home .topo .btn{min-height:40px!important;padding-inline:15px!important;font-size:11.5px!important}
+  .v26-home .topo .btn-forte{padding-inline:22px!important}
+
+  .v26-home .v26-hero-grid{width:calc(100% - 170px)!important;max-width:1480px!important;min-height:424px!important;grid-template-columns:minmax(0,930px) minmax(420px,1fr)!important;gap:18px!important;padding:26px 0 17px!important}
+  .v26-home .hero-conteudo{max-width:930px!important}
+  .v26-home .hero-kicker{font-size:11.5px!important;margin-bottom:14px!important;letter-spacing:.12em!important}
+  .v26-home .hero h1{max-width:910px!important;font-size:clamp(82px,5.55vw,103px)!important;line-height:.82!important;letter-spacing:-.017em!important}
+  .v26-home .hero h1 em{margin-top:8px!important}
+  .v26-home .hero-desc{max-width:700px!important;margin-top:17px!important;font-size:15px!important;line-height:1.48!important}
+  .v26-home .busca{width:100%!important;max-width:955px!important;min-height:58px!important;margin-top:25px!important}
+  .v26-home .busca-icone{width:57px!important;font-size:21px!important}
+  .v26-home .busca input{font-size:14.5px!important;min-height:58px!important}
+  .v26-home .busca button{min-width:153px!important;font-size:11.5px!important}
+  .v26-home .atalhos{gap:8px!important;margin-top:11px!important}
+  .v26-home .chip,.v26-home .chip-perto-v23{min-height:38px!important;padding-inline:14px!important;font-size:9.8px!important}
+  .v26-home .v256-raio{height:38px!important;padding-inline:5px!important}
+  .v26-home .v256-raio>span{font-size:7.5px!important}
+  .v26-home .v256-raio button{height:30px!important;padding-inline:9px!important;font-size:8.6px!important}
+
+  .v26-home .hero::before{inset:0 0 0 53%!important;opacity:.25!important;background-position:center 46%!important}
+  .v26-home .v26-hero-arte{min-height:398px!important}
+  .v26-home .v26-wordmark{left:-45px!important;top:30px!important;font-size:255px!important;color:rgba(240,184,62,.052)!important}
+  .v26-home .v26-slogan{right:88px!important;top:136px!important;font-size:30px!important;line-height:1.07!important}
+  .v26-home .v26-palavras{right:0!important;bottom:42px!important;font-size:8px!important}
+
+  .v26-home .cats{width:calc(100% - 170px)!important;max-width:1340px!important;min-height:62px!important;margin-inline:auto!important;padding:10px 0!important;gap:7px!important;overflow:visible!important}
+  .v26-home .cat{min-height:40px!important;padding:0 11px 0 34px!important;font-size:10.8px!important;flex:1 1 auto!important;white-space:nowrap!important}
+  .v26-home .cat::before{left:11px!important;font-size:14px!important}
+  .v26-home .cat-tudo{flex:0 0 auto!important;padding-inline:16px!important}
+
+  .v26-home .mural-toolbar{min-height:64px!important;padding:8px 12px!important}
+  .v26-home .aba{min-height:45px!important;padding-inline:18px!important;font-size:12px!important}
+  .v26-home .visao{min-height:37px!important;padding-inline:15px!important;font-size:11px!important}
+  .v26-home .linha-topo{min-height:66px!important;padding:10px 4px 9px!important}
+  .v26-home .v26-secao-cabecalho h2{font-size:25px!important}
+  .v26-home .v26-secao-cabecalho p{font-size:12.5px!important}
+  .v26-home .v26-ver-todos{font-size:11.5px!important}
+
+  .v26-home .grade{gap:19px!important}
+  .v26-home .evento-media{min-height:126px!important;max-height:151px!important;aspect-ratio:3.8/1!important}
+  .v26-home .evento-card h3{font-size:18px!important}
+  .v26-home .evento-meta{font-size:11px!important;gap:6px 18px!important}
+  .v26-home .v261-card-desc{font-size:11.5px!important;line-height:1.4!important}
+}
+
+@media (min-width:1181px) and (max-width:1450px){
+  .v26-home .v26-hero-grid{width:calc(100% - 96px)!important;grid-template-columns:minmax(0,820px) minmax(360px,1fr)!important}
+  .v26-home .hero h1{font-size:clamp(76px,6.1vw,92px)!important}
+  .v26-home .cats{width:calc(100% - 96px)!important;max-width:none!important}
+  .v26-home .cat{font-size:9.8px!important;padding-right:9px!important;padding-left:31px!important}
+}
