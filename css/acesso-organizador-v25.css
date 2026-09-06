@@ -1,6 +1,9 @@
 /* ============================================================
    ROLÊ V25.9 — acesso de organizador
    ============================================================ */
+/* V25.9 consolida aprovação + verificação em uma única área. */
+.painel-aba[data-painel="verificacao"]{display:none}
+
 .v259-perfil{display:grid;gap:18px}
 .v259-card{padding:28px;display:grid;gap:18px}
 .v259-card h2,.v259-admin-bloco h3{margin:0}
