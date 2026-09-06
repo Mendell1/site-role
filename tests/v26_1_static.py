@@ -9,104 +9,56 @@ for rel in [
     'css/v26-home.css','js/v26-home.js',
     'css/v26-home-fidelity.css','js/v26-home-fidelity.js',
     'css/v26-home-precision.css','js/v26-home-precision.js',
-    'css/icons-v26.css','js/icons-v26.js','css/icons-v26-hotfix.css'
+    'css/icons-v26.css','js/icons-v26.js','css/icons-v26-hotfix.css',
+    'assets/icons/categoria-cultura.png','assets/icons/categoria-gastronomia.png'
 ]:
     assert (root/rel).exists(), f'Arquivo V26.1 ausente: {rel}'
 
 css=read('css/v26-home.css')
 for marcador in [
-    'body.v26-home',
-    '.v26-nav',
-    '.v26-hero-grid',
-    '.v26-hero-arte',
-    '.v26-wordmark',
-    '.v26-slogan',
-    '.v26-home .busca',
-    '.v26-home .cat',
-    '.v26-home .mural-toolbar',
-    '.v26-home .evento-card',
-    '.v26-home .grade',
-    '@media(max-width:820px)',
-    '@media(max-width:520px)',
+    'body.v26-home','.v26-nav','.v26-hero-grid','.v26-hero-arte','.v26-wordmark','.v26-slogan',
+    '.v26-home .busca','.v26-home .cat','.v26-home .mural-toolbar','.v26-home .evento-card','.v26-home .grade',
+    '@media(max-width:820px)','@media(max-width:520px)'
 ]:
     assert marcador in css, f'CSS V26.1 incompleto: {marcador}'
 
 fidelity=read('css/v26-home-fidelity.css')
 for marcador in [
-    'width:min(1740px,calc(100% - 96px))',
-    'min-height:424px',
-    'max-width:1560px',
-    'max-width:1760px',
-    'flex-wrap:nowrap',
-    'aspect-ratio:4.15/1',
-    '.v261-categoria-media',
-    '.v261-card-desc',
-    '.organizador-card{display:none',
+    'width:min(1740px,calc(100% - 96px))','min-height:424px','max-width:1560px','max-width:1760px',
+    'flex-wrap:nowrap','aspect-ratio:4.15/1','.v261-categoria-media','.v261-card-desc','.organizador-card{display:none'
 ]:
     assert marcador in fidelity, f'Fidelity CSS V26.1 incompleto: {marcador}'
 
 precision=read('css/v26-home-precision.css')
 for marcador in [
-    '.v26-logo-pin',
-    'grid-template-columns:minmax(0,930px)',
-    'font-size:clamp(82px,5.55vw,103px)',
-    'font-size:clamp(70px,4.75vw,88px)',
-    'max-width:955px',
-    'max-width:1340px',
-    'overflow:visible',
-    'min-height:64px',
-    'HOTFIX DE PROPORÇÃO',
+    '.v26-logo-pin','grid-template-columns:minmax(0,930px)','font-size:clamp(82px,5.55vw,103px)',
+    'font-size:clamp(70px,4.75vw,88px)','max-width:955px','max-width:1340px','overflow:visible','min-height:64px','HOTFIX DE PROPORÇÃO'
 ]:
     assert marcador in precision, f'Precision CSS V26.1 incompleto: {marcador}'
 
 icons_css=read('css/icons-v26.css')
 for marcador in [
-    '.v26-ui-icon',
-    '#btnNotificacoes',
-    '.chip-perto-v23',
-    '.cat[data-cat="games"]',
-    '.cat[data-cat="esportes"] .v26-icon-dumbbell',
-    '.cat[data-cat="cultura"] .v26-icon-culture',
-    '.cat[data-cat="gastronomia"] .v26-icon-food',
-    'stroke-width:2.35',
-    '.aba[data-aba="favoritos"]',
-    '.visao[aria-pressed="true"]',
+    '.v26-ui-icon','#btnNotificacoes','.chip-perto-v23','.cat[data-cat="games"]',
+    '.cat[data-cat="esportes"] .v26-icon-dumbbell','.aba[data-aba="favoritos"]','.visao[aria-pressed="true"]'
 ]:
     assert marcador in icons_css, f'CSS de ícones V26 incompleto: {marcador}'
 
 hotfix=read('css/icons-v26-hotfix.css')
 for marcador in [
-    '.cat[data-cat="cultura"]::before',
-    '.cat[data-cat="gastronomia"]::before',
-    'data:image/svg+xml',
-    '%23ffbd32',
-    '%23ff861f',
+    '.v26-icon-png','.cat[data-cat="cultura"] .v26-icon-culture',
+    '.cat[data-cat="gastronomia"] .v26-icon-food','filter:none!important','object-fit:contain!important'
 ]:
-    assert marcador in hotfix, f'Hotfix de ícones V26 incompleto: {marcador}'
+    assert marcador in hotfix, f'Hotfix de ícones PNG V26 incompleto: {marcador}'
 
 js=read('js/v26-home.js')
 for marcador in [
-    '__roleV261HomeAtiva',
-    "document.body.classList.add('v26-home')",
-    'v26-nav',
-    'v26-hero-grid',
-    'Mais Eventos',
-    'Eventos perto de você',
-    'v26-info',
-    "busca.placeholder='Ex: grátis sábado à noite perto de Itaquera'",
+    '__roleV261HomeAtiva',"document.body.classList.add('v26-home')",'v26-nav','v26-hero-grid',
+    'Mais Eventos','Eventos perto de você','v26-info',"busca.placeholder='Ex: grátis sábado à noite perto de Itaquera'"
 ]:
     assert marcador in js, f'JS V26.1 incompleto: {marcador}'
 
 fidelity_js=read('js/v26-home-fidelity.js')
-for marcador in [
-    '__roleV261FidelityAtiva',
-    'eventoPorId',
-    'v261-categoria-media',
-    'v261-card-desc',
-    'MutationObserver',
-    'Todos os eventos',
-    'Para você',
-]:
+for marcador in ['__roleV261FidelityAtiva','eventoPorId','v261-categoria-media','v261-card-desc','MutationObserver','Todos os eventos','Para você']:
     assert marcador in fidelity_js, f'Fidelity JS V26.1 incompleto: {marcador}'
 
 precision_js=read('js/v26-home-precision.js')
@@ -115,54 +67,28 @@ for marcador in ['__roleV261PrecisionAtiva','v26-logo-pin','v26-precision']:
 
 icons_js=read('js/icons-v26.js')
 for marcador in [
-    '__roleV26IconsAtivos',
-    "bell:",
-    "gamepad:",
-    "dumbbell:",
-    "culture:",
-    "food:",
-    'v26-icon-${name}',
-    'width="3" height="8.6"',
-    'c2.6-.8 5.2-.8 7.8 0',
-    'M15.3 3v18',
-    "education:",
-    "storefront:",
-    'MutationObserver',
-    '#btnNotificacoes',
-    '.chip-perto-v23',
-    '.aba[data-aba]',
-    '.visao[data-visao]',
+    '__roleV26IconsAtivos','bell:','gamepad:','dumbbell:','education:','storefront:',
+    "culture:'assets/icons/categoria-cultura.png'","food:'assets/icons/categoria-gastronomia.png'",
+    'v26-icon-png','MutationObserver','#btnNotificacoes','.chip-perto-v23','.aba[data-aba]','.visao[data-visao]'
 ]:
     assert marcador in icons_js, f'JS de ícones V26 incompleto: {marcador}'
 
 config=read('js/config.js')
 for marcador in [
-    "estilo('css/v26-home.css','v26-1-home')",
-    "script('js/v26-home.js','v26-1-home')",
-    "estilo('css/v26-home-fidelity.css','v26-1-fidelity')",
-    "script('js/v26-home-fidelity.js','v26-1-fidelity')",
-    "estilo('css/v26-home-precision.css','v26-1-precision')",
-    "script('js/v26-home-precision.js','v26-1-precision')",
-    "estilo('css/icons-v26.css','v26-icons')",
-    "script('js/icons-v26.js','v26-icons')",
-    "estilo('css/icons-v26-hotfix.css','v26-icons-hotfix')",
-    "if(eh('index.html'))",
+    "estilo('css/v26-home.css','v26-1-home')","script('js/v26-home.js','v26-1-home')",
+    "estilo('css/v26-home-fidelity.css','v26-1-fidelity')","script('js/v26-home-fidelity.js','v26-1-fidelity')",
+    "estilo('css/v26-home-precision.css','v26-1-precision')","script('js/v26-home-precision.js','v26-1-precision')",
+    "estilo('css/icons-v26.css','v26-icons')","script('js/icons-v26.js','v26-icons')",
+    "estilo('css/icons-v26-hotfix.css','v26-icons-hotfix')","if(eh('index.html'))"
 ]:
     assert marcador in config, f'Loader V26.1 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v26-1-home-v6'" in sw
+assert "CACHE_ATUAL = 'role-v26-1-home-v7'" in sw
 for marcador in [
-    "'./css/v26-home.css'",
-    "'./js/v26-home.js'",
-    "'./css/v26-home-fidelity.css'",
-    "'./js/v26-home-fidelity.js'",
-    "'./css/v26-home-precision.css'",
-    "'./js/v26-home-precision.js'",
-    "'./css/icons-v26.css'",
-    "'./css/icons-v26-hotfix.css'",
-    "'./js/icons-v26.js'",
-    'PREFIXO_CACHE_V26',
+    "'./css/v26-home.css'","'./js/v26-home.js'","'./css/v26-home-fidelity.css'","'./js/v26-home-fidelity.js'",
+    "'./css/v26-home-precision.css'","'./js/v26-home-precision.js'","'./css/icons-v26.css'","'./css/icons-v26-hotfix.css'",
+    "'./js/icons-v26.js'","'./assets/icons/categoria-cultura.png'","'./assets/icons/categoria-gastronomia.png'",'PREFIXO_CACHE_V26'
 ]:
     assert marcador in sw, f'Cache V26.1 incompleto: {marcador}'
 
