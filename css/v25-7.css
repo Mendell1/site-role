@@ -1,0 +1,80 @@
+/* ============================================================
+   ROLÊ V25.7 — painel do organizador + reputação
+   ============================================================ */
+.v257-kicker{display:block;font:700 9px/1.35 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#b78a19;margin-bottom:6px}
+
+/* Painel privado */
+.v257-dashboard{display:grid;gap:20px}
+.v257-dashboard-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding-bottom:14px;border-bottom:1px solid rgba(255,240,218,.13)}
+.v257-dashboard-topo h2{margin:0;color:#fff3e2;font-size:28px;letter-spacing:-.03em}
+.v257-dashboard-topo p{margin:7px 0 0;color:#aaa096;line-height:1.5}
+.v257-dashboard-topo .btn-linha{flex:0 0 auto}
+.v257-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v257-kpi{padding:17px;border:1px solid rgba(255,240,218,.13);border-radius:8px;background:rgba(255,255,255,.025);min-width:0}
+.v257-kpi>span{display:block;color:#a99e93;font:700 9px/1.35 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.v257-kpi>strong{display:block;color:#fff2df;font:38px/1 'Anton',sans-serif;font-weight:400;margin-top:9px;overflow-wrap:anywhere}
+.v257-kpi>small{display:block;color:#d4aa3c;font-size:10px;line-height:1.45;margin-top:7px}
+.v257-reputacao-painel{display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:center;padding:18px;border:1px solid rgba(221,176,50,.28);border-radius:9px;background:linear-gradient(135deg,rgba(221,176,50,.09),rgba(255,255,255,.025))}
+.v257-reputacao-icone{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#ddb032;color:#21180d;font-size:23px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.v257-reputacao-painel h3{margin:0;color:#fff3e1;font-size:19px}
+.v257-reputacao-painel p{margin:5px 0 0;color:#b8ada2;font-size:12px;line-height:1.55}
+.v257-funil{padding:17px;border:1px solid rgba(255,240,218,.12);border-radius:8px;background:rgba(255,255,255,.02)}
+.v257-funil h3{margin:0;color:#f6eadb;font-size:17px}
+.v257-funil-linha{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:15px}
+.v257-funil-linha span{padding:11px;border-radius:6px;background:rgba(255,255,255,.04);color:#afa49a;text-align:center;font-size:10px}
+.v257-funil-linha b{display:block;color:#fff3e2;font-size:19px;margin-bottom:4px}
+.v257-funil-linha i{font-style:normal;color:#d2a630}
+.v257-eventos{padding:18px;border:1px solid rgba(255,240,218,.12);border-radius:8px;background:rgba(255,255,255,.018)}
+.v257-secao-titulo{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px}
+.v257-secao-titulo h3{margin:0;color:#f7ebdc;font-size:17px}
+.v257-evento-linha{display:grid;grid-template-columns:minmax(190px,1.15fr) minmax(0,2fr);gap:18px;align-items:center;padding:14px 0;border-top:1px solid rgba(255,240,218,.09)}
+.v257-evento-linha:first-of-type{border-top:0}
+.v257-evento-identidade a{color:#fff1df;text-decoration:none}
+.v257-evento-identidade a:hover{text-decoration:underline}
+.v257-evento-identidade strong{display:block;font-size:13px}
+.v257-evento-identidade>span{display:block;color:#978d84;font-size:10px;margin-top:5px}
+.v257-barra{height:5px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.07);margin-top:9px}
+.v257-barra i{display:block;height:100%;min-width:3px;background:#d9aa2d;border-radius:inherit}
+.v257-evento-metricas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.v257-evento-metricas span{padding:8px;border-radius:5px;background:rgba(255,255,255,.035);color:#968c83;font-size:9px;white-space:nowrap}
+.v257-evento-metricas b{display:block;color:#eee2d4;font-size:12px;margin-bottom:2px}
+.v257-carregando,.v257-vazio{padding:34px 18px;text-align:center;border:1px dashed rgba(255,240,218,.14);border-radius:8px;color:#9f958b}
+.v257-carregando span{display:block;width:24px;height:24px;border:2px solid rgba(255,255,255,.14);border-top-color:#ddb032;border-radius:50%;margin:0 auto 10px;animation:v257-girar .7s linear infinite}
+.v257-vazio strong{display:block;color:#efe2d2;margin-bottom:6px}
+.v257-vazio p,.v257-carregando p{margin:0;font-size:11px}
+@keyframes v257-girar{to{transform:rotate(360deg)}}
+
+/* Reputação pública */
+.v257-reputacao-publica{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:15px 17px;border:1px solid rgba(255,240,218,.14);border-radius:9px;background:rgba(255,255,255,.025)}
+.v257-reputacao-selo{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#d7a92e;color:#21180d;font-size:20px}
+.v257-reputacao-publica strong{display:block;color:#fff1df;font-size:15px}
+.v257-reputacao-publica p{margin:4px 0 0;color:#a99e94;font-size:11px;line-height:1.45}
+.v257-reputacao-ajuda{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,240,218,.18);display:grid;place-items:center;color:#a79c92;font:700 10px/1 'Space Mono',monospace;cursor:help}
+.v257-reputacao-publica.consistente{border-color:rgba(221,176,50,.4);background:linear-gradient(90deg,rgba(221,176,50,.1),rgba(255,255,255,.02))}
+.v257-reputacao-publica.frequente .v257-reputacao-selo{background:#d7bd72}
+.v257-reputacao-publica.crescimento .v257-reputacao-selo{background:#b6b0a2}
+.v257-reputacao-publica.novo .v257-reputacao-selo{background:#8f887f;color:#fff}
+
+@media(max-width:900px){
+  .v257-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v257-evento-linha{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .v257-dashboard-topo{align-items:flex-start;flex-direction:column}
+  .v257-dashboard-topo .btn-linha{width:100%}
+  .v257-kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .v257-kpi{padding:14px}
+  .v257-kpi>strong{font-size:31px}
+  .v257-reputacao-painel{grid-template-columns:auto 1fr;padding:14px}
+  .v257-funil-linha{grid-template-columns:1fr 1fr;gap:7px}
+  .v257-funil-linha i{display:none}
+  .v257-eventos{padding:13px}
+  .v257-evento-metricas{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v257-reputacao-publica{grid-template-columns:auto 1fr;padding:13px}
+  .v257-reputacao-ajuda{grid-column:2;justify-self:start}
+}
+@media(max-width:430px){
+  .v257-kpis{grid-template-columns:1fr}
+  .v257-evento-metricas{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){.v257-carregando span{animation:none}}
