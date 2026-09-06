@@ -69,7 +69,8 @@ icons_js=read('js/icons-v26.js')
 for marcador in [
     '__roleV26IconsAtivos','bell:','gamepad:','dumbbell:','education:','storefront:',
     "culture:'assets/icons/categoria-cultura.png'","food:'assets/icons/categoria-gastronomia.png'",
-    'v26-icon-png','MutationObserver','#btnNotificacoes','.chip-perto-v23','.aba[data-aba]','.visao[data-visao]'
+    'v26-icon-png','MutationObserver','#btnNotificacoes','.chip-perto-v23','.aba[data-aba]','.visao[data-visao]',
+    "el.dataset.v26IconReady==='1' && el.querySelector('.v26-ui-icon')"
 ]:
     assert marcador in icons_js, f'JS de ícones V26 incompleto: {marcador}'
 
@@ -84,7 +85,7 @@ for marcador in [
     assert marcador in config, f'Loader V26.1 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v26-1-home-v7'" in sw
+assert "CACHE_ATUAL = 'role-v26-1-home-v8'" in sw
 for marcador in [
     "'./css/v26-home.css'","'./js/v26-home.js'","'./css/v26-home-fidelity.css'","'./js/v26-home-fidelity.js'",
     "'./css/v26-home-precision.css'","'./js/v26-home-precision.js'","'./css/icons-v26.css'","'./css/icons-v26-hotfix.css'",
