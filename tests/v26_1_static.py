@@ -9,7 +9,7 @@ for rel in [
     'css/v26-home.css','js/v26-home.js',
     'css/v26-home-fidelity.css','js/v26-home-fidelity.js',
     'css/v26-home-precision.css','js/v26-home-precision.js',
-    'css/icons-v26.css','js/icons-v26.js'
+    'css/icons-v26.css','js/icons-v26.js','css/icons-v26-hotfix.css'
 ]:
     assert (root/rel).exists(), f'Arquivo V26.1 ausente: {rel}'
 
@@ -50,10 +50,12 @@ for marcador in [
     '.v26-logo-pin',
     'grid-template-columns:minmax(0,930px)',
     'font-size:clamp(82px,5.55vw,103px)',
+    'font-size:clamp(70px,4.75vw,88px)',
     'max-width:955px',
     'max-width:1340px',
     'overflow:visible',
     'min-height:64px',
+    'HOTFIX DE PROPORÇÃO',
 ]:
     assert marcador in precision, f'Precision CSS V26.1 incompleto: {marcador}'
 
@@ -71,6 +73,16 @@ for marcador in [
     '.visao[aria-pressed="true"]',
 ]:
     assert marcador in icons_css, f'CSS de ícones V26 incompleto: {marcador}'
+
+hotfix=read('css/icons-v26-hotfix.css')
+for marcador in [
+    '.cat[data-cat="cultura"]::before',
+    '.cat[data-cat="gastronomia"]::before',
+    'data:image/svg+xml',
+    '#ffbd32',
+    '#ff861f',
+]:
+    assert marcador in hotfix, f'Hotfix de ícones V26 incompleto: {marcador}'
 
 js=read('js/v26-home.js')
 for marcador in [
@@ -133,12 +145,13 @@ for marcador in [
     "script('js/v26-home-precision.js','v26-1-precision')",
     "estilo('css/icons-v26.css','v26-icons')",
     "script('js/icons-v26.js','v26-icons')",
+    "estilo('css/icons-v26-hotfix.css','v26-icons-hotfix')",
     "if(eh('index.html'))",
 ]:
     assert marcador in config, f'Loader V26.1 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v26-1-home-v5'" in sw
+assert "CACHE_ATUAL = 'role-v26-1-home-v6'" in sw
 for marcador in [
     "'./css/v26-home.css'",
     "'./js/v26-home.js'",
@@ -147,6 +160,7 @@ for marcador in [
     "'./css/v26-home-precision.css'",
     "'./js/v26-home-precision.js'",
     "'./css/icons-v26.css'",
+    "'./css/icons-v26-hotfix.css'",
     "'./js/icons-v26.js'",
     'PREFIXO_CACHE_V26',
 ]:
