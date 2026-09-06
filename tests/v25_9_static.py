@@ -81,7 +81,18 @@ for marcador in [
     assert marcador in js, f'Frontend V25.9 incompleto: {marcador}'
 
 css=read('css/acesso-organizador-v25.css')
-for marcador in ['.v259-card','.v259-checklist','.v259-admin-bloco','.v259-aprovado','@media(max-width:760px)']:
+for marcador in [
+    '.v259-card',
+    '.v259-checklist',
+    '.v259-admin-bloco',
+    '.v259-aprovado',
+    '--v259-card:#f4ecdf',
+    '--v259-gold:#d7a83d',
+    '.v259-admin-bloco>.ficha',
+    '.v259-convite #btnConcederOrganizadorV259',
+    '.painel-aba[data-painel="organizadores-v25-9"] .contador',
+    '@media(max-width:760px)'
+]:
     assert marcador in css, f'CSS V25.9 incompleto: {marcador}'
 
 config=read('js/config.js')
@@ -90,7 +101,7 @@ assert "script('js/acesso-organizador-v25.js','v25-9-organizador')" in config
 assert "eh('index.html','perfil.html','admin.html','organizador.html')" in config
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-9-shell-v1'" in sw
+assert "CACHE_ATUAL = 'role-v25-9-organizador-ui-v2'" in sw
 assert './css/acesso-organizador-v25.css' in sw
 assert './js/acesso-organizador-v25.js' in sw
 
