@@ -15,7 +15,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 }
 
 /* ============================================================
-   V25 — carregamento por página
+   V25/V26 — carregamento por página
    Evita módulos duplicados e reduz código desnecessário em telas
    que não usam participação, check-in, inteligência ou Push.
    ============================================================ */
@@ -99,5 +99,11 @@ if (SUPABASE_URL.startsWith('COLE')) {
   if(eh('index.html','perfil.html','admin.html','organizador.html')){
     estilo('css/acesso-organizador-v25.css','v25-9-organizador');
     script('js/acesso-organizador-v25.js','v25-9-organizador');
+  }
+
+  /* V26.1 — redesign visual premium da home. Somente a página inicial. */
+  if(eh('index.html')){
+    estilo('css/v26-home.css','v26-1-home');
+    script('js/v26-home.js','v26-1-home');
   }
 })();
