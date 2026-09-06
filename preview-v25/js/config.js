@@ -107,5 +107,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/v26-home.js','v26-1-home');
     estilo('css/v26-home-fidelity.css','v26-1-fidelity');
     script('js/v26-home-fidelity.js','v26-1-fidelity');
+    estilo('css/v26-home-precision.css','v26-1-precision');
+    script('js/v26-home-precision.js','v26-1-precision');
   }
 })();
