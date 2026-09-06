@@ -70,10 +70,10 @@ for marcador in [
 ]:
     assert marcador in qr_evento, f'Correção do QR do evento incompleta: {marcador}'
 
-# O cache deve continuar pertencendo à família V25, mas versões posteriores
-# podem incrementá-lo sem quebrar o teste histórico da V25.5.
+# O cache pertence à família Rolê e pode avançar de V25 para V26 sem quebrar
+# este teste histórico, desde que os recursos essenciais continuem no shell.
 sw = read('sw-v25.js')
-assert "const CACHE_ATUAL = 'role-v25-" in sw
+assert "const CACHE_ATUAL = 'role-v" in sw
 assert './css/revisao-v25.css' in sw
 assert './js/revisao-v25.js' in sw
 assert './js/qr-evento-v25.js' in sw
