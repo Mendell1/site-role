@@ -63,6 +63,10 @@ for marcador in [
     '#btnNotificacoes',
     '.chip-perto-v23',
     '.cat[data-cat="games"]',
+    '.cat[data-cat="esportes"] .v26-icon-dumbbell',
+    '.cat[data-cat="cultura"] .v26-icon-culture',
+    '.cat[data-cat="gastronomia"] .v26-icon-food',
+    'stroke-width:2.35',
     '.aba[data-aba="favoritos"]',
     '.visao[aria-pressed="true"]',
 ]:
@@ -103,9 +107,13 @@ for marcador in [
     "bell:",
     "gamepad:",
     "dumbbell:",
-    "education:",
     "culture:",
     "food:",
+    'v26-icon-${name}',
+    'width="3" height="8.6"',
+    'c2.6-.8 5.2-.8 7.8 0',
+    'M15.3 3v18',
+    "education:",
     "storefront:",
     'MutationObserver',
     '#btnNotificacoes',
@@ -130,7 +138,7 @@ for marcador in [
     assert marcador in config, f'Loader V26.1 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v26-1-home-v4'" in sw
+assert "CACHE_ATUAL = 'role-v26-1-home-v5'" in sw
 for marcador in [
     "'./css/v26-home.css'",
     "'./js/v26-home.js'",
