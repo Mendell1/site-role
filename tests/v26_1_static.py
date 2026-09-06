@@ -79,8 +79,8 @@ for marcador in [
     '.cat[data-cat="cultura"]::before',
     '.cat[data-cat="gastronomia"]::before',
     'data:image/svg+xml',
-    '#ffbd32',
-    '#ff861f',
+    '%23ffbd32',
+    '%23ff861f',
 ]:
     assert marcador in hotfix, f'Hotfix de ícones V26 incompleto: {marcador}'
 
