@@ -1,9 +1,30 @@
 /* ============================================================
    ROLÊ V25.9 — acesso de organizador
+   Revisão visual V2: contraste, hierarquia e estados do admin
    ============================================================ */
 /* V25.9 consolida aprovação + verificação em uma única área. */
 .painel-aba[data-painel="verificacao"]{display:none}
 
+:root{
+  --v259-card:#f4ecdf;
+  --v259-card-2:#fbf6ed;
+  --v259-card-border:#d6c3a0;
+  --v259-title:#2b2116;
+  --v259-text:#4d4032;
+  --v259-muted:#796b5c;
+  --v259-gold:#d7a83d;
+  --v259-gold-hover:#c39226;
+  --v259-gold-dark:#6e5015;
+  --v259-green:#2f6849;
+  --v259-green-bg:#e8f3ec;
+  --v259-red:#7a2d2d;
+  --v259-red-bg:#f8e9e7;
+  --v259-blue:#345f82;
+  --v259-blue-bg:#e9f1f8;
+  --v259-shadow:0 14px 34px rgba(0,0,0,.2);
+}
+
+/* ---------------- Perfil ---------------- */
 .v259-perfil{display:grid;gap:18px}
 .v259-card{padding:28px;display:grid;gap:18px}
 .v259-card h2,.v259-admin-bloco h3{margin:0}
@@ -24,26 +45,253 @@
 .v259-resumo span{padding:12px;border:1px solid var(--linha,#ddd);border-radius:12px;display:grid;gap:4px;font-size:.88rem}
 .v259-resumo b{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#756e64}
 
-.v259-admin-bloco{display:grid;gap:14px;margin-bottom:28px;padding:20px;border:1px solid var(--linha,#d8d2c8);background:#fff;border-radius:16px}
-.v259-admin-titulo{display:flex;justify-content:space-between;gap:16px;align-items:end}
-.v259-admin-titulo>span{font-family:'Space Mono',monospace;font-weight:700}
-.v259-kicker{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.12em;font-weight:700;color:#766e64}
-.v259-admin-solicitacao{align-items:flex-start}
-.v259-admin-solicitacao .corpo p{margin:10px 0;line-height:1.5}
-.v259-motivo{margin-top:9px;padding:10px 12px;border-left:3px solid #191610;background:#f7f4ee;line-height:1.45;font-size:.9rem}
-.v259-admin-vazio{padding:18px;border:1px dashed #c9c1b6;border-radius:12px;color:#716a61;text-align:center}
-.v259-convite{background:#f8f5ef}
-.v259-convite>div:first-child p{margin:5px 0 0;color:#6b655d}
+/* ---------------- Admin / Organizadores V2 ---------------- */
+.v259-admin-bloco{
+  position:relative;
+  display:grid;
+  gap:16px;
+  margin-bottom:24px;
+  padding:24px;
+  overflow:hidden;
+  border:1px solid var(--v259-card-border)!important;
+  background:linear-gradient(180deg,var(--v259-card-2),var(--v259-card))!important;
+  border-radius:20px;
+  box-shadow:var(--v259-shadow);
+  color:var(--v259-text)!important;
+}
+.v259-admin-bloco::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:var(--v259-gold);
+}
+.v259-admin-bloco:nth-of-type(2)::before{background:#6f8c72}
+.v259-admin-bloco.v259-convite::before{background:#b98432}
+
+.v259-admin-titulo{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+  padding-bottom:14px;
+  border-bottom:1px solid rgba(103,79,40,.16);
+}
+.v259-admin-titulo h3,
+.v259-convite h3{
+  margin:4px 0 0!important;
+  color:var(--v259-title)!important;
+  font-size:1.08rem;
+  letter-spacing:-.01em;
+}
+.v259-admin-titulo>span{
+  min-width:34px;
+  height:30px;
+  padding:0 11px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(110,80,21,.18);
+  border-radius:999px;
+  background:#f0dca8!important;
+  color:var(--v259-gold-dark)!important;
+  font-family:'Space Mono',monospace;
+  font-weight:800;
+  font-size:.76rem;
+}
+.v259-kicker{
+  font-family:'Space Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.15em;
+  font-weight:800;
+  color:var(--v259-gold-dark)!important;
+}
+
+/* linhas de solicitação e organizador */
+.v259-admin-bloco>.ficha{
+  margin:0!important;
+  padding:17px 18px!important;
+  border:1px solid rgba(104,80,48,.18)!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.52)!important;
+  box-shadow:none!important;
+  color:var(--v259-text)!important;
+}
+.v259-admin-bloco>.ficha:hover{
+  border-color:rgba(185,132,50,.42)!important;
+  background:rgba(255,255,255,.72)!important;
+}
+.v259-admin-bloco .ficha h4{
+  margin:0 0 7px!important;
+  color:var(--v259-title)!important;
+  font-size:.98rem;
+}
+.v259-admin-bloco .ficha .meta,
+.v259-admin-bloco .ficha .corpo,
+.v259-admin-bloco .ficha .corpo p{
+  color:var(--v259-text)!important;
+}
+.v259-admin-bloco .ficha .meta{
+  opacity:1!important;
+  line-height:1.55;
+  font-size:.78rem;
+}
+.v259-admin-solicitacao{align-items:flex-start!important}
+.v259-admin-solicitacao .corpo p{margin:10px 0;line-height:1.55}
+.v259-motivo{
+  margin-top:10px;
+  padding:12px 13px;
+  border-left:3px solid var(--v259-gold);
+  background:#f3ead8;
+  color:#514332!important;
+  border-radius:0 10px 10px 0;
+  line-height:1.5;
+  font-size:.86rem;
+}
+
+/* status / selos */
+.v259-admin-bloco .selo{
+  border-radius:999px!important;
+  padding:6px 9px!important;
+  font-size:.66rem!important;
+  letter-spacing:.06em;
+  font-weight:800!important;
+  text-transform:uppercase;
+}
+.v259-admin-bloco .selo.admin{
+  background:var(--v259-blue-bg)!important;
+  color:var(--v259-blue)!important;
+  border:1px solid #b8d0e2!important;
+}
+.v259-admin-bloco .selo.oculto{
+  opacity:1!important;
+  visibility:visible!important;
+  background:#eee3ce!important;
+  color:#705522!important;
+  border:1px solid #d4bb86!important;
+}
+
+/* botões do admin */
+.v259-admin-bloco .botoes{display:flex;flex-wrap:wrap;gap:8px!important}
+.v259-admin-bloco button.mini,
+.v259-convite button.mini{
+  min-height:38px;
+  padding:9px 13px!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+  font-size:.75rem!important;
+  transition:transform .12s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.v259-admin-bloco button.mini:hover,
+.v259-convite button.mini:hover{transform:translateY(-1px)}
+.v259-admin-bloco button.mini.ok,
+.v259-convite button.mini.ok{
+  background:var(--v259-gold)!important;
+  color:#241b09!important;
+  border:1px solid var(--v259-gold)!important;
+  box-shadow:0 5px 14px rgba(158,112,27,.18);
+}
+.v259-admin-bloco button.mini.ok:hover,
+.v259-convite button.mini.ok:hover{
+  background:var(--v259-gold-hover)!important;
+  border-color:var(--v259-gold-hover)!important;
+}
+.v259-admin-bloco button.mini:not(.ok):not(.perigo){
+  background:#fff9ef!important;
+  color:#6f531e!important;
+  border:1px solid #b99654!important;
+}
+.v259-admin-bloco button.mini.perigo{
+  background:var(--v259-red-bg)!important;
+  color:var(--v259-red)!important;
+  border:1px solid #d8aaa4!important;
+}
+.v259-admin-bloco button.mini.perigo:hover{
+  background:#edd4d0!important;
+  border-color:#c88980!important;
+}
+
+/* vazios */
+.v259-admin-vazio{
+  padding:22px 18px;
+  border:1px dashed #c8b38c!important;
+  border-radius:13px;
+  background:rgba(255,255,255,.32);
+  color:var(--v259-muted)!important;
+  text-align:center;
+  line-height:1.5;
+}
+
+/* concessão direta */
+.v259-convite{
+  background:linear-gradient(180deg,#f8f0e2,#efe3cf)!important;
+}
+.v259-convite>div:first-child p{
+  max-width:720px;
+  margin:7px 0 2px;
+  color:var(--v259-muted)!important;
+  line-height:1.55;
+}
+.v259-convite .campo label{
+  color:#6a5841!important;
+  font-weight:800;
+}
+.v259-convite select,
+.v259-convite input{
+  min-height:44px;
+  background:#fffaf1!important;
+  color:var(--v259-title)!important;
+  border:1px solid #cbb389!important;
+  border-radius:11px!important;
+}
+.v259-convite select:focus,
+.v259-convite input:focus{
+  outline:none;
+  border-color:var(--v259-gold)!important;
+  box-shadow:0 0 0 3px rgba(215,168,61,.17)!important;
+}
+.v259-convite #btnConcederOrganizadorV259{
+  width:100%;
+  min-height:44px;
+  margin-top:2px;
+  background:var(--v259-gold)!important;
+  color:#241b09!important;
+  border-color:var(--v259-gold)!important;
+  font-size:.79rem!important;
+}
+.v259-convite #btnConcederOrganizadorV259:disabled{
+  opacity:.55!important;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
 .v259-sem-organizador{text-align:center;padding:36px 24px}
+
+/* destaque da aba com pendências */
+.painel-aba[data-painel="organizadores-v25-9"] .contador{
+  margin-left:5px;
+  min-width:20px;
+  height:20px;
+  padding:0 6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#d7a83d!important;
+  color:#1d1608!important;
+  font-weight:900;
+}
 
 @media(max-width:760px){
   .v259-card{padding:20px}
   .v259-aprovado{grid-template-columns:1fr}
   .v259-resumo{grid-template-columns:1fr}
   .v259-checklist{display:grid;grid-template-columns:1fr}
-  .v259-admin-bloco{padding:14px}
+  .v259-admin-bloco{padding:17px 15px 17px 18px;border-radius:16px}
   .v259-admin-titulo{align-items:flex-start}
-  .v259-admin-solicitacao{display:grid;gap:12px}
-  .v259-admin-solicitacao .botoes{width:100%;display:flex}
-  .v259-admin-solicitacao .botoes button{flex:1;min-height:44px}
+  .v259-admin-solicitacao{display:grid!important;gap:12px}
+  .v259-admin-bloco>.ficha{padding:15px!important}
+  .v259-admin-solicitacao .botoes,.v259-admin-bloco .botoes{width:100%;display:flex}
+  .v259-admin-solicitacao .botoes button,.v259-admin-bloco .botoes button{flex:1;min-height:44px}
+  .v259-convite .linha-2{grid-template-columns:1fr!important}
 }
