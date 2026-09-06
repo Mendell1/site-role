@@ -64,3 +64,21 @@
   .v26-home .cats{width:calc(100% - 96px)!important;max-width:none!important}
   .v26-home .cat{font-size:9.8px!important;padding-right:9px!important;padding-left:31px!important}
 }
+
+/* Hotfix de proporção após revisão visual. */
+@media (min-width:1181px){
+  .v26-home .v26-hero-grid{min-height:398px!important;grid-template-columns:minmax(0,850px) minmax(420px,1fr)!important;padding:20px 0 15px!important}
+  .v26-home .hero-conteudo{max-width:850px!important;padding-top:12px!important;padding-bottom:12px!important}
+  .v26-home .hero-kicker{margin-bottom:11px!important}
+  .v26-home .hero h1{max-width:820px!important;font-size:clamp(70px,4.75vw,88px)!important;line-height:.86!important;letter-spacing:-.01em!important}
+  .v26-home .hero h1 em{margin-top:5px!important}
+  .v26-home .hero-desc{max-width:650px!important;margin-top:13px!important;font-size:14px!important;line-height:1.45!important}
+  .v26-home .busca{max-width:900px!important;margin-top:20px!important}
+  .v26-home .v26-hero-arte{min-height:374px!important}
+  .v26-home .v26-wordmark{font-size:230px!important;top:34px!important}
+  .v26-home .v26-slogan{top:128px!important;font-size:28px!important}
+}
+@media (min-width:1181px) and (max-width:1450px){
+  .v26-home .v26-hero-grid{grid-template-columns:minmax(0,760px) minmax(360px,1fr)!important}
+  .v26-home .hero h1{font-size:clamp(66px,5.35vw,80px)!important;max-width:740px!important}
+}
