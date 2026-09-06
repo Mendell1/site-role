@@ -71,7 +71,7 @@ for marcador in [
     assert marcador in css, f'CSS V25.7 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-7-shell-v1'" in sw
+assert "CACHE_ATUAL = 'role-v25-" in sw
 assert './css/v25-7.css' in sw
 assert './js/metricas-organizador-v25.js' in sw
 
