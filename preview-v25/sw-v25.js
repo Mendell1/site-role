@@ -1,9 +1,9 @@
 /* ============================================================
-   ROLÊ V25.5 — Service Worker / PWA
+   ROLÊ V25.6 — Service Worker / PWA
    Cacheia somente recursos públicos do frontend.
    Nunca intercepta ou persiste respostas do Supabase.
    ============================================================ */
-const CACHE_ATUAL = 'role-v25-5-shell-v3';
+const CACHE_ATUAL = 'role-v25-6-shell-v1';
 const PREFIXO_CACHE = 'role-v25-';
 const BASE = self.registration.scope;
 
@@ -14,10 +14,13 @@ const SHELL = [
   './css/estilo.css',
   './css/mobile-responsive.css',
   './css/revisao-v25.css',
+  './css/v25-6.css',
   './js/config.js',
   './js/revisao-v25.js',
   './js/qr-compat-v25.js',
   './js/qr-evento-v25.js',
+  './js/recorrencia-v25.js',
+  './js/mapa-raio-v25.js',
   './assets/icon-192.png',
   './assets/icon-512.png'
 ].map(caminho => new URL(caminho, BASE).href);

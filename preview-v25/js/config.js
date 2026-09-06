@@ -81,4 +81,11 @@ if (SUPABASE_URL.startsWith('COLE')) {
   /* V25.5 — acabamento e acessibilidade. */
   estilo('css/revisao-v25.css','v25-5-review');
   script('js/revisao-v25.js','v25-5-review');
+
+  /* V25.6 — recorrência e mapa avançado por raio. */
+  if(eh('index.html')){
+    estilo('css/v25-6.css','v25-6');
+    script('js/recorrencia-v25.js','v25-6-recorrencia');
+    script('js/mapa-raio-v25.js','v25-6-mapa-raio');
+  }
 })();
