@@ -6,6 +6,17 @@ Plataforma web colaborativa para divulgar e descobrir eventos locais. O projeto 
 
 A branch `v25-experimental` é a área de desenvolvimento das próximas versões. A V24 permanece preservada em `v24-stable` e o `main` continua como versão estável.
 
+### Papéis de acesso
+
+A V25.9 separa participação de administração de eventos:
+
+- **Visitante** — navega sem conta;
+- **Usuário** — participa, favorita, comenta, segue organizadores, cria alertas, faz inscrição e recebe ingresso;
+- **Organizador** — usuário aprovado pela moderação, com permissão para publicar e administrar os próprios eventos;
+- **Administrador** — moderação e controle da plataforma.
+
+O selo **Organizador verificado** é separado do papel `organizador`: primeiro a conta precisa ter acesso de organizador; depois a administração pode conceder o selo para uma identidade/instituição conferida.
+
 ### V25.1 — Comunidade
 
 - seguir e deixar de seguir organizadores;
@@ -80,6 +91,36 @@ O sistema transforma a frase em filtros estruturados antes de consultar e ordena
 - cache da PWA versionado novamente para evitar arquivos antigos após atualização;
 - checklist de regressão e testes estáticos específicos da V25.5.
 
+### V25.6 — Recorrência e mapa avançado
+
+- eventos semanais e mensais em série;
+- cada ocorrência mantém inscrição, fila, ingresso e check-in próprios;
+- exclusão de uma ocorrência ou daquela data em diante;
+- filtro **Perto de mim** com 1, 5, 10 ou 25 km;
+- raio visual no mapa e ordenação por distância.
+
+### V25.7 — Painel e reputação
+
+- painel privado com visualizações, favoritos, interessados, inscritos, fila, check-ins e compartilhamentos;
+- taxa de comparecimento e métricas por evento;
+- reputação pública baseada no histórico real de eventos realizados/cancelados;
+- níveis de histórico sem inventar avaliação por estrelas.
+
+### V25.9 — Acesso de organizador
+
+- novo papel `organizador` separado de `usuario` e `admin`;
+- usuário comum não pode publicar, editar, excluir, consultar participantes nem realizar check-in;
+- proteção aplicada no banco/RLS e não apenas nos botões do frontend;
+- área **Organizador** no perfil para solicitar acesso;
+- formulário com projeto, região, tipos de eventos, descrição, contato e motivo;
+- estados de solicitação: pendente, aprovada, recusada e cancelada;
+- administração recebe fila própria de solicitações;
+- admin pode aprovar/recusar, conceder acesso diretamente ou revogar um organizador;
+- revogação devolve a conta para `usuario` e pode opcionalmente ocultar eventos futuros;
+- selo verificado só pode ser concedido a uma conta com papel `organizador`;
+- auditoria e notificações registram aprovação, recusa, concessão e revogação;
+- perfis públicos de organizador e seguidores ficam restritos a contas realmente autorizadas.
+
 ## Funcionalidades
 
 - mural com busca, categorias e filtros;
@@ -87,7 +128,8 @@ O sistema transforma a frase em filtros estruturados antes de consultar e ordena
 - recomendações personalizadas **Para você**;
 - mapa e calendário de eventos;
 - localização **Perto de mim** por distância;
-- publicação e edição de eventos com endereço, CEP, mapa, imagem e status;
+- publicação e edição de eventos exclusiva para organizadores aprovados;
+- eventos recorrentes;
 - favoritos, interesse, inscrição e comentários;
 - compartilhamento por link/WhatsApp, QR Code e Google Agenda/ICS;
 - perfil público compartilhável do organizador;
@@ -96,7 +138,7 @@ O sistema transforma a frase em filtros estruturados antes de consultar e ordena
 - notificações internas e Web Push opcional;
 - PWA instalável;
 - denúncias com evidência privada, acompanhamento, recurso e auditoria;
-- painel administrativo com moderação, usuários, eventos, auditoria e métricas;
+- painel administrativo com moderação, usuários, organizadores, eventos, auditoria e métricas;
 - exclusão de conta com prazo de 7 dias e reautenticação recente.
 
 ## Tecnologias
@@ -106,9 +148,9 @@ Frontend em HTML, CSS e JavaScript, com Leaflet para mapas, Web App Manifest, Se
 ## Estrutura principal
 
 - `index.html` — mural e descoberta;
-- `perfil.html` — conta, perfil, favoritos, inscrições e eventos do usuário;
-- `organizador.html` — perfil público compartilhável;
-- `admin.html` — moderação e métricas;
+- `perfil.html` — conta, perfil, favoritos, inscrições e solicitação de organizador;
+- `organizador.html` — perfil público exclusivo de organizadores autorizados;
+- `admin.html` — moderação, aprovação de organizadores e métricas;
 - `manifest.webmanifest` — configuração instalável da PWA;
 - `sw-v25.js` — cache público, Push e abertura de notificações;
 - `js/participacao-v25.js` — inscrição, capacidade e fila de espera;
@@ -117,7 +159,10 @@ Frontend em HTML, CSS e JavaScript, com Leaflet para mapas, Web App Manifest, Se
 - `js/inteligencia-v25.js` — recomendações e busca inteligente;
 - `js/push-v25.js` — assinatura de notificações por aparelho;
 - `js/revisao-v25.js` — acabamento de UX, foco e modais da V25.5;
-- `css/revisao-v25.css` — ajustes mobile/acessibilidade da V25.5;
+- `js/recorrencia-v25.js` e `js/mapa-raio-v25.js` — V25.6;
+- `js/metricas-organizador-v25.js` — painel e reputação da V25.7;
+- `js/acesso-organizador-v25.js` — papéis, solicitação e administração da V25.9;
+- `css/acesso-organizador-v25.css` — interface do fluxo de organizador;
 - `supabase/functions/push-notificar-v25-4/` — envio server-side de Web Push;
 - `js/` — autenticação, eventos, perfil, admin e recursos sociais;
 - `css/` — identidade visual e responsividade;
@@ -137,12 +182,15 @@ As tabelas de assinatura e entrega de Push possuem RLS e não recebem acesso dir
 
 ## Segurança
 
+- usuários comuns não recebem permissão de publicação apenas por estarem autenticados;
+- criação/edição/exclusão de eventos e uploads de capas exigem papel `organizador`/`admin` no banco;
+- participantes só ficam visíveis para o próprio usuário, o organizador autorizado daquele evento ou a administração;
 - evidências de denúncia ficam em bucket privado;
 - uploads de eventos e avatares possuem limite de tamanho e MIME no Storage;
 - operações administrativas validam o papel no banco;
 - contas bloqueadas, suspensas, incompletas ou em exclusão não podem operar normalmente;
 - QR de ingresso utiliza um UUID aleatório próprio da inscrição e não carrega dados pessoais;
-- check-in só pode ser executado pelo organizador do evento ou pela administração;
+- check-in só pode ser executado pelo organizador autorizado do evento ou pela administração;
 - Service Worker não armazena respostas do Supabase nem dados privados da sessão;
 - Web Push exige assinatura vinculada ao usuário e segredo privado entre banco e Edge Function;
 - chave privada VAPID, segredo do webhook, `service_role` e Client Secrets não devem ser publicados no GitHub;
@@ -150,9 +198,9 @@ As tabelas de assinatura e entrega de Push possuem RLS e não recebem acesso dir
 
 ## Testes
 
-O workflow de CI executa validação sintática dos arquivos JavaScript e os testes estáticos `tests/smoke.py`, `tests/v25_2_static.py` e `tests/v25_5_static.py`. O roteiro manual de entrega está em `tests/V25.5-CHECKLIST.md` e cobre visitante, usuário, capacidade/fila, organizador, admin, PWA/Push, mobile e acessibilidade.
+O workflow de CI executa validação sintática dos arquivos JavaScript e testes estáticos das etapas V25.2, V25.5, V25.6, V25.7 e V25.9, além do smoke test geral. O roteiro manual de entrega está em `tests/V25.5-CHECKLIST.md`.
 
-Antes de congelar uma nova versão estável, os fluxos críticos devem ser testados manualmente no preview, principalmente cadastro/login, publicação, inscrição, fila, ingresso, check-in, instalação PWA, Push, recomendações, busca inteligente, mapa, denúncias, moderação e exclusão.
+Antes de congelar uma nova versão estável, os fluxos críticos devem ser testados manualmente no preview, principalmente cadastro/login, solicitação/aprovação/revogação de organizador, publicação, inscrição, fila, ingresso, check-in, instalação PWA, Push, recomendações, busca inteligente, mapa, denúncias, moderação e exclusão.
 
 ## Deploy
 
