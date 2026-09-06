@@ -1,0 +1,49 @@
+/* ============================================================
+   ROLÊ V25.9 — acesso de organizador
+   ============================================================ */
+/* V25.9 consolida aprovação + verificação em uma única área. */
+.painel-aba[data-painel="verificacao"]{display:none}
+
+.v259-perfil{display:grid;gap:18px}
+.v259-card{padding:28px;display:grid;gap:18px}
+.v259-card h2,.v259-admin-bloco h3{margin:0}
+.v259-intro{max-width:760px;margin:0;line-height:1.6}
+.v259-checklist{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 8px}
+.v259-checklist span{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border:1px solid var(--linha,#d8d2c8);border-radius:999px;font-size:.82rem;font-weight:700}
+.v259-checklist .ok{background:#f1f6ee}
+.v259-checklist .pendente{background:#fff7e8}
+.v259-alerta{padding:14px 16px;border:1px solid #d8c28f;background:#fff8e9;border-radius:12px;line-height:1.5}
+.v259-alerta p{margin:6px 0 0}
+.v259-aceite{margin-top:4px;align-items:flex-start}
+.v259-status-grande{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:#f2eee6;font-size:1.8rem;flex:0 0 auto}
+.v259-aprovado{grid-template-columns:auto 1fr;align-items:start}
+.v259-selos{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.v259-selos span{padding:7px 10px;border:1px solid var(--linha,#d8d2c8);border-radius:999px;font-size:.78rem;font-weight:800}
+.v259-selos .verificado{background:#edf5ff;border-color:#b7d2f0}
+.v259-resumo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.v259-resumo span{padding:12px;border:1px solid var(--linha,#ddd);border-radius:12px;display:grid;gap:4px;font-size:.88rem}
+.v259-resumo b{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#756e64}
+
+.v259-admin-bloco{display:grid;gap:14px;margin-bottom:28px;padding:20px;border:1px solid var(--linha,#d8d2c8);background:#fff;border-radius:16px}
+.v259-admin-titulo{display:flex;justify-content:space-between;gap:16px;align-items:end}
+.v259-admin-titulo>span{font-family:'Space Mono',monospace;font-weight:700}
+.v259-kicker{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.12em;font-weight:700;color:#766e64}
+.v259-admin-solicitacao{align-items:flex-start}
+.v259-admin-solicitacao .corpo p{margin:10px 0;line-height:1.5}
+.v259-motivo{margin-top:9px;padding:10px 12px;border-left:3px solid #191610;background:#f7f4ee;line-height:1.45;font-size:.9rem}
+.v259-admin-vazio{padding:18px;border:1px dashed #c9c1b6;border-radius:12px;color:#716a61;text-align:center}
+.v259-convite{background:#f8f5ef}
+.v259-convite>div:first-child p{margin:5px 0 0;color:#6b655d}
+.v259-sem-organizador{text-align:center;padding:36px 24px}
+
+@media(max-width:760px){
+  .v259-card{padding:20px}
+  .v259-aprovado{grid-template-columns:1fr}
+  .v259-resumo{grid-template-columns:1fr}
+  .v259-checklist{display:grid;grid-template-columns:1fr}
+  .v259-admin-bloco{padding:14px}
+  .v259-admin-titulo{align-items:flex-start}
+  .v259-admin-solicitacao{display:grid;gap:12px}
+  .v259-admin-solicitacao .botoes{width:100%;display:flex}
+  .v259-admin-solicitacao .botoes button{flex:1;min-height:44px}
+}

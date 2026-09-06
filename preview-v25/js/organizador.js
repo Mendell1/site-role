@@ -1,5 +1,6 @@
 /* ============================================================
-   ROLÊ V23 — página pública do organizador
+   ROLÊ V25.9 — página pública do organizador
+   Só perfis com acesso de organizador/admin aparecem aqui.
    ============================================================ */
 (() => {
   const alvo=document.getElementById('organizadorConteudo');
@@ -49,13 +50,13 @@
     }
 
     const [perfilResp,eventosResp]=await Promise.all([
-      db.rpc('perfil_publico',{p_usuario:id}),
+      db.rpc('perfil_publico_v25',{p_usuario:id}),
       db.from('eventos_lista').select('*').eq('criador_id',id).gte('data_evento',new Date().toISOString().slice(0,10)).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).limit(30)
     ]);
 
     const p=Array.isArray(perfilResp.data)?perfilResp.data[0]:perfilResp.data;
     if(perfilResp.error||!p){
-      alvo.innerHTML='<div class="organizador-vazio"><strong>Perfil indisponível</strong><p>Esse organizador não está disponível publicamente.</p></div>';
+      alvo.innerHTML='<div class="organizador-vazio"><strong>Perfil sem acesso de organizador</strong><p>Esta conta não está autorizada a publicar ou administrar eventos no Rolê.</p></div>';
       return;
     }
 
