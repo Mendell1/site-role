@@ -1,11 +1,20 @@
-/* ROLÊ V26 — fallback do hero oficial.
-   A imagem final é aplicada pelo js/assets-oficial-v26.js a partir
-   do asset base64 validado, evitando problema com binário no Pages. */
+/* ROLÊ V26 — hero oficial aprovado, arquivo real em alta qualidade. */
 body.v26-home .hero{
   position:relative;
   isolation:isolate;
   overflow:hidden;
-  background:#090806!important;
+  background-color:#090806!important;
+  background-image:
+    linear-gradient(90deg,
+      rgba(7,6,5,.42) 0%,
+      rgba(7,6,5,.28) 28%,
+      rgba(7,6,5,.12) 46%,
+      rgba(7,6,5,.03) 64%,
+      rgba(7,6,5,0) 100%),
+    url('../assets/hero-v26-wide-approved.webp?v=20260906-2046')!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-size:100% 100%,cover!important;
+  background-position:center center,center center!important;
 }
 
 body.v26-home .hero::before,
@@ -13,7 +22,7 @@ body.v26-home .hero::after{
   display:none!important;
 }
 
-/* A arte oficial já contém ROLÊ e a assinatura. */
+/* A arte já contém o ROLÊ, a cidade e a assinatura. */
 body.v26-home .v26-wordmark,
 body.v26-home .v26-slogan,
 body.v26-home .v26-palavras,
@@ -26,4 +35,29 @@ body.v26-home .hero-conteudo,
 body.v26-home .v26-hero-grid{
   position:relative;
   z-index:2;
+}
+
+/* A imagem foi preparada perto da proporção do hero desktop,
+   então o cover faz apenas um corte mínimo, sem esticar a ponte ou o texto. */
+@media (min-width:1200px){
+  body.v26-home .hero{
+    background-size:100% 100%,cover!important;
+    background-position:center center,center center!important;
+  }
+}
+
+@media (max-width:1199px){
+  body.v26-home .hero{
+    background-position:center center,58% center!important;
+  }
+}
+
+@media (max-width:820px){
+  body.v26-home .hero{
+    background-image:
+      linear-gradient(90deg,rgba(7,6,5,.78) 0%,rgba(7,6,5,.48) 48%,rgba(7,6,5,.16) 100%),
+      url('../assets/hero-v26-wide-approved.webp?v=20260906-2046')!important;
+    background-size:100% 100%,auto 100%!important;
+    background-position:center center,72% center!important;
+  }
 }
