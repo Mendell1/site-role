@@ -25,3 +25,4 @@ jobs:
           python tests/v25_2_static.py
           python tests/v25_5_static.py
           python tests/v25_6_static.py
+          python tests/v25_7_static.py
