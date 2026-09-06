@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, v25-experimental]
+    branches: [main, v25-experimental, v26-1-home-redesign]
   pull_request:
     branches: [main]
 
@@ -27,3 +27,4 @@ jobs:
           python tests/v25_6_static.py
           python tests/v25_7_static.py
           python tests/v25_9_static.py
+          python tests/v26_1_static.py
