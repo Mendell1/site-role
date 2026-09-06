@@ -32,22 +32,19 @@
     more:'<circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/>'
   };
 
-  const PNG = {
-    culture:'assets/icons/categoria-cultura.png',
-    food:'assets/icons/categoria-gastronomia.png'
-  };
+  const PNG = {culture:'assets/icons/categoria-cultura.png',food:'assets/icons/categoria-gastronomia.png'};
 
-  function icon(name, extra='') {
-    if (PNG[name]) {
-      return `<img class="v26-ui-icon v26-icon-${name} v26-icon-png ${extra}" src="${PNG[name]}" alt="" aria-hidden="true" draggable="false">`;
-    }
-    const content=P[name] || P.more;
+  function icon(name,extra=''){
+    if(PNG[name]) return `<img class="v26-ui-icon v26-icon-${name} v26-icon-png ${extra}" src="${PNG[name]}" alt="" aria-hidden="true" draggable="false">`;
+    const content=P[name]||P.more;
     return `<svg class="v26-ui-icon v26-icon-${name} ${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${content}</svg>`;
   }
 
   const limparPrefixo=(texto='')=>texto.replace(/^[\s★☆✦♡♥▦▱♙⌖▣▤♫♪◆●•]+/u,'').trim();
+
   function colocarNoBotao(el,nome,preservar=true){
-    if(!el||el.dataset.v26IconReady==='1') return;
+    if(!el) return;
+    if(el.dataset.v26IconReady==='1' && el.querySelector('.v26-ui-icon')) return;
     const texto=preservar?limparPrefixo(el.textContent):'';
     el.innerHTML=icon(nome)+(texto?`<span class="v26-icon-label">${texto}</span>`:'');
     el.dataset.v26IconReady='1';
@@ -55,9 +52,9 @@
 
   function topo(){
     const sino=document.querySelector('#btnNotificacoes');
-    if(sino&&sino.dataset.v26IconReady!=='1'){
+    if(sino && (!sino.querySelector('.v26-ui-icon') || sino.dataset.v26IconReady!=='1')){
       const badge=sino.querySelector('#badgeNotificacoes');
-      sino.innerHTML=icon('bell'); if(badge) sino.appendChild(badge); sino.dataset.v26IconReady='1';
+      sino.innerHTML=icon('bell'); if(badge)sino.appendChild(badge); sino.dataset.v26IconReady='1';
     }
     colocarNoBotao(document.querySelector('#btnMenuMobile'),'menu',false);
     colocarNoBotao(document.querySelector('#btnPerfil'),'user');
@@ -66,7 +63,7 @@
 
   function buscaEFiltros(){
     const icone=document.querySelector('.busca-icone');
-    if(icone&&icone.dataset.v26IconReady!=='1'){icone.innerHTML=icon('search');icone.dataset.v26IconReady='1'}
+    if(icone && (!icone.querySelector('.v26-ui-icon') || icone.dataset.v26IconReady!=='1')){icone.innerHTML=icon('search');icone.dataset.v26IconReady='1'}
     colocarNoBotao(document.querySelector('#btnBuscar'),'search');
     const atalhos={hoje:'calendar',fds:'calendar',semana:'calendarGrid',gratis:'tag'};
     document.querySelectorAll('.chip[data-atalho]').forEach(btn=>colocarNoBotao(btn,atalhos[btn.dataset.atalho]||'calendar'));
@@ -74,42 +71,18 @@
   }
 
   const categorias={festas:'music',games:'gamepad',esportes:'dumbbell',educacao:'education',cultura:'culture',gastronomia:'food',musica:'music',social:'users',profissional:'briefcase',feiras:'storefront',outros:'more'};
-  function categoriasUI(){
-    document.querySelectorAll('.cat[data-cat]').forEach(btn=>{
-      const cat=(btn.dataset.cat||'').toLowerCase();
-      if(cat==='todos'||cat==='tudo') return;
-      colocarNoBotao(btn,categorias[cat]||'more');
-    });
-  }
+  function categoriasUI(){document.querySelectorAll('.cat[data-cat]').forEach(btn=>{const cat=(btn.dataset.cat||'').toLowerCase();if(cat==='todos'||cat==='tudo')return;colocarNoBotao(btn,categorias[cat]||'more')})}
 
   function abasEVisoes(){
-    document.querySelectorAll('.aba[data-aba]').forEach(btn=>{
-      const aba=(btn.dataset.aba||'').toLowerCase();
-      const nome=aba==='todos'?'grid':(aba==='recomendados'||aba==='para-voce')?'sparkles':aba==='favoritos'?'heart':aba==='interesse'?'bookmark':aba==='meus'?'user':'grid';
-      colocarNoBotao(btn,nome);
-    });
-    document.querySelectorAll('.visao[data-visao]').forEach(btn=>{
-      const v=(btn.dataset.visao||'').toLowerCase();
-      colocarNoBotao(btn,v==='mapa'?'mapPin':v==='calendario'?'calendar':'grid');
-    });
+    document.querySelectorAll('.aba[data-aba]').forEach(btn=>{const aba=(btn.dataset.aba||'').toLowerCase();const nome=aba==='todos'?'grid':(aba==='recomendados'||aba==='para-voce')?'sparkles':aba==='favoritos'?'heart':aba==='interesse'?'bookmark':aba==='meus'?'user':'grid';colocarNoBotao(btn,nome)});
+    document.querySelectorAll('.visao[data-visao]').forEach(btn=>{const v=(btn.dataset.visao||'').toLowerCase();colocarNoBotao(btn,v==='mapa'?'mapPin':v==='calendario'?'calendar':'grid')});
   }
 
-  function categoriasCards(){
-    document.querySelectorAll('.v261-categoria-media').forEach(el=>{
-      if(el.dataset.v26IconReady==='1') return;
-      const texto=limparPrefixo(el.textContent);
-      const chave=texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-      el.innerHTML=icon(categorias[chave]||'tag')+`<span class="v26-icon-label">${texto}</span>`;
-      el.dataset.v26IconReady='1';
-    });
-  }
+  function categoriasCards(){document.querySelectorAll('.v261-categoria-media').forEach(el=>{if(el.dataset.v26IconReady==='1' && el.querySelector('.v26-ui-icon'))return;const texto=limparPrefixo(el.textContent);const chave=texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();el.innerHTML=icon(categorias[chave]||'tag')+`<span class="v26-icon-label">${texto}</span>`;el.dataset.v26IconReady='1'})}
 
   function aplicar(){topo();buscaEFiltros();categoriasUI();abasEVisoes();categoriasCards()}
   let agendado=false;
   function agendar(){if(agendado)return;agendado=true;requestAnimationFrame(()=>{agendado=false;aplicar()})}
-  function iniciar(){
-    if(!document.body.classList.contains('v26-home')) document.body.classList.add('v26-home');
-    aplicar(); const obs=new MutationObserver(agendar); obs.observe(document.body,{childList:true,subtree:true});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true}); else iniciar();
+  function iniciar(){if(!document.body.classList.contains('v26-home'))document.body.classList.add('v26-home');aplicar();const obs=new MutationObserver(agendar);obs.observe(document.body,{childList:true,subtree:true})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
