@@ -13,6 +13,16 @@
   let timerConvite=null;
 
   function garantirHead(){
+    if(!document.querySelector('link[rel="icon"]')){
+      const link=document.createElement('link');
+      link.rel='icon'; link.type='image/png'; link.sizes='32x32'; link.href='assets/favicon-32.png?v=1';
+      document.head.appendChild(link);
+    }
+    if(!document.querySelector('link[rel="shortcut icon"]')){
+      const link=document.createElement('link');
+      link.rel='shortcut icon'; link.type='image/png'; link.href='assets/favicon-32.png?v=1';
+      document.head.appendChild(link);
+    }
     if(!document.querySelector('link[rel="manifest"]')){
       const link=document.createElement('link');
       link.rel='manifest'; link.href='manifest.webmanifest';
