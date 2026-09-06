@@ -3,7 +3,7 @@
    Cacheia somente recursos públicos do frontend.
    Nunca intercepta ou persiste respostas do Supabase.
    ============================================================ */
-const CACHE_ATUAL = 'role-v26-1-home-v6';
+const CACHE_ATUAL = 'role-v26-1-home-v7';
 const PREFIXO_CACHE = 'role-v25-';
 const PREFIXO_CACHE_V26 = 'role-v26-';
 const BASE = self.registration.scope;
@@ -35,6 +35,8 @@ const SHELL = [
   './js/v26-home-fidelity.js',
   './js/v26-home-precision.js',
   './js/icons-v26.js',
+  './assets/icons/categoria-cultura.png',
+  './assets/icons/categoria-gastronomia.png',
   './assets/favicon-role.svg',
   './assets/favicon-32.png',
   './assets/icon-192.png',
@@ -99,14 +101,11 @@ async function recursoStaleWhileRevalidate(request) {
 self.addEventListener('fetch', event => {
   const {request} = event;
   if (request.method !== 'GET' || requisicaoPrivadaOuApi(request)) return;
-
   if (request.mode === 'navigate') {
     event.respondWith(navegacaoNetworkFirst(request));
     return;
   }
-
-  const destino = request.destination;
-  if (['script','style','image','font','manifest'].includes(destino)) {
+  if (['script','style','image','font','manifest'].includes(request.destination)) {
     event.respondWith(recursoStaleWhileRevalidate(request));
   }
 });
