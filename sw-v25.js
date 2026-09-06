@@ -3,7 +3,7 @@
    Cacheia somente recursos públicos do frontend.
    Nunca intercepta ou persiste respostas do Supabase.
    ============================================================ */
-const CACHE_ATUAL = 'role-v25-9-shell-v4';
+const CACHE_ATUAL = 'role-v25-9-shell-v5';
 const PREFIXO_CACHE = 'role-v25-';
 const BASE = self.registration.scope;
 
@@ -25,6 +25,7 @@ const SHELL = [
   './js/mapa-raio-v25.js',
   './js/metricas-organizador-v25.js',
   './js/acesso-organizador-v25.js',
+  './assets/favicon-role.svg',
   './assets/favicon-32.png',
   './assets/icon-192.png',
   './assets/icon-512.png'
