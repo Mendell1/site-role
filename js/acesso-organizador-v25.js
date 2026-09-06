@@ -18,15 +18,20 @@
   let observer=null;
   let timerAplicar=null;
   let adminPainelAtivo=false;
+  let abriuQueryOrganizador=false;
+  let contadorAdminCarregado=false;
 
   const podeOrganizar=()=>!!perfil&&['organizador','admin'].includes(perfil.papel);
   const usuarioComum=()=>!!perfil&&perfil.papel==='usuario';
   const eAdmin=()=>!!perfil&&perfil.papel==='admin';
 
+  function setText(el,texto){ if(el&&el.textContent!==texto) el.textContent=texto; }
+  function setHidden(el,valor){ if(el&&el.hidden!==valor) el.hidden=valor; }
+
   function avisar(texto){
     if(typeof window.avisar==='function') return window.avisar(texto);
     const a=document.getElementById('aviso');
-    if(a){a.textContent=texto;a.classList.add('mostra');setTimeout(()=>a.classList.remove('mostra'),3400);}
+    if(a){setText(a,texto);a.classList.add('mostra');setTimeout(()=>a.classList.remove('mostra'),3400);}
     else console.info('[V25.9]',texto);
   }
 
@@ -49,21 +54,20 @@
   function atualizarBotaoPublicar(){
     if(pagina!=='index.html') return;
     const btn=document.getElementById('btnCriar');
-    if(!btn) return;
-    if(!session){return;}
-    btn.hidden=false;
+    if(!btn||!session) return;
+    setHidden(btn,false);
     if(usuarioComum()){
-      btn.textContent='🎪 Quero publicar eventos';
+      setText(btn,'🎪 Quero publicar eventos');
       btn.dataset.v259Solicitar='1';
-      btn.title='Solicite acesso de organizador para publicar eventos';
+      if(btn.title!=='Solicite acesso de organizador para publicar eventos') btn.title='Solicite acesso de organizador para publicar eventos';
     }else if(podeOrganizar()){
       delete btn.dataset.v259Solicitar;
-      btn.textContent='＋ Publicar evento';
-      btn.title='Publicar evento';
+      setText(btn,'＋ Publicar evento');
+      if(btn.title!=='Publicar evento') btn.title='Publicar evento';
     }
 
     const abaMeus=document.querySelector('#abas .aba[data-aba="meus"]');
-    if(abaMeus) abaMeus.hidden=usuarioComum();
+    setHidden(abaMeus,usuarioComum());
     if(usuarioComum() && typeof estado!=='undefined' && estado.aba==='meus'){
       const todos=document.querySelector('#abas .aba[data-aba="todos"]');
       if(todos) todos.click();
@@ -74,7 +78,7 @@
     if(pagina!=='index.html'||!usuarioComum()) return;
     const folha=document.getElementById('folhaDetalhe');
     if(!folha) return;
-    folha.querySelectorAll('[data-editar],[data-excluir],[data-v252-participantes],[data-v253-scanner],[data-v253-painel],[data-v253-desfazer]').forEach(el=>el.hidden=true);
+    folha.querySelectorAll('[data-editar],[data-excluir],[data-v252-participantes],[data-v253-scanner],[data-v253-painel],[data-v253-desfazer]').forEach(el=>setHidden(el,true));
   }
 
   function bloquearAcoesIndex(e){
@@ -126,7 +130,7 @@
       b.classList.toggle('ativa',ativo);
       b.setAttribute('aria-selected',String(ativo));
     });
-    document.querySelectorAll('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==tab);
+    document.querySelectorAll('[data-pane]').forEach(p=>setHidden(p,p.dataset.pane!==tab));
   }
 
   async function abrirAbaOrganizador(){
@@ -195,6 +199,7 @@
     const btn=document.getElementById('btnSolicitarOrganizadorV259');
     const valor=id=>document.getElementById(id)?.value.trim()||'';
     if(!document.getElementById('v259_regras')?.checked){avisar('Aceite as regras para organizadores antes de enviar.');return;}
+    if(!btn) return;
     btn.disabled=true;btn.textContent='Enviando...';
     const {error}=await db.rpc('solicitar_organizador_v25_9',{
       p_nome_organizacao:valor('v259_nome'),p_cidade:valor('v259_cidade'),p_tipos_eventos:valor('v259_tipos'),
@@ -219,18 +224,18 @@
     garantirAbaOrganizadorPerfil();
     const kicker=document.getElementById('perfilKicker');
     if(kicker){
-      if(eAdmin()) kicker.textContent='ADMINISTRADOR DO ROLÊ';
-      else if(perfil.papel==='organizador') kicker.textContent=perfil.verificado?'ORGANIZADOR VERIFICADO':'ORGANIZADOR DO ROLÊ';
-      else kicker.textContent='MEMBRO DO ROLÊ';
+      if(eAdmin()) setText(kicker,'ADMINISTRADOR DO ROLÊ');
+      else if(perfil.papel==='organizador') setText(kicker,perfil.verificado?'ORGANIZADOR VERIFICADO':'ORGANIZADOR DO ROLÊ');
+      else setText(kicker,'MEMBRO DO ROLÊ');
     }
 
     const btnTopo=document.getElementById('btnCriar');
     const btnHero=document.getElementById('btnCriarHero');
     [btnTopo,btnHero].filter(Boolean).forEach(btn=>{
       if(usuarioComum()){
-        btn.hidden=false;btn.textContent='Quero publicar eventos';btn.dataset.v259Solicitar='1';
+        setHidden(btn,false);setText(btn,'Quero publicar eventos');btn.dataset.v259Solicitar='1';
       }else if(podeOrganizar()){
-        delete btn.dataset.v259Solicitar;btn.textContent=btn===btnHero?'Publicar evento':'＋ Publicar evento';
+        delete btn.dataset.v259Solicitar;setText(btn,btn===btnHero?'Publicar evento':'＋ Publicar evento');
       }
     });
 
@@ -238,14 +243,15 @@
     const paneEventos=document.querySelector('[data-pane="eventos"]');
     const tabPainel=document.querySelector('.perfil-aba[data-tab="painel-v25-7"]');
     const panePainel=document.querySelector('[data-pane="painel-v25-7"]');
-    if(tabEventos) tabEventos.hidden=usuarioComum();
-    if(paneEventos && usuarioComum()) paneEventos.hidden=true;
-    if(tabPainel) tabPainel.hidden=usuarioComum();
-    if(panePainel && usuarioComum()) panePainel.hidden=true;
+    setHidden(tabEventos,usuarioComum());
+    if(paneEventos&&usuarioComum()) setHidden(paneEventos,true);
+    setHidden(tabPainel,usuarioComum());
+    if(panePainel&&usuarioComum()) setHidden(panePainel,true);
 
-    if(usuarioComum() && document.querySelector('.perfil-aba[data-tab="eventos"].ativa')) selecionarAbaPerfil('favoritos');
+    if(usuarioComum() && tabEventos?.classList.contains('ativa')) selecionarAbaPerfil('favoritos');
 
-    if(new URLSearchParams(location.search).get('organizador')==='1'){
+    if(!abriuQueryOrganizador&&new URLSearchParams(location.search).get('organizador')==='1'){
+      abriuQueryOrganizador=true;
       setTimeout(()=>abrirAbaOrganizador(),30);
     }
   }
@@ -256,7 +262,7 @@
     const lista=document.getElementById('lista');
     const titulo=document.getElementById('tituloPainel');
     const contagem=document.getElementById('contagemPainel');
-    if(titulo) titulo.textContent='Organizadores';
+    setText(titulo,'Organizadores');
     document.querySelectorAll('.painel-aba').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.painel==='organizadores-v25-9')));
     if(lista) lista.innerHTML='<div class="esqueleto" style="min-height:80px"></div>'.repeat(3);
 
@@ -271,12 +277,12 @@
     }
     const solicitacoes=solResp.data||[], organizadores=orgResp.data||[], usuarios=userResp.data||[];
     const ids=[...new Set(solicitacoes.map(x=>x.usuario_id))];
-    let perfisReq=new Map();
+    const perfisReq=new Map();
     if(ids.length){
       const r=await db.from('perfis').select('id,nome,email,cidade').in('id',ids);
       (r.data||[]).forEach(x=>perfisReq.set(x.id,x));
     }
-    if(contagem) contagem.textContent=solicitacoes.length+' pendente'+(solicitacoes.length===1?'':'s')+' · '+organizadores.length+' organizador'+(organizadores.length===1?'':'es');
+    setText(contagem,solicitacoes.length+' pendente'+(solicitacoes.length===1?'':'s')+' · '+organizadores.length+' organizador'+(organizadores.length===1?'':'es'));
 
     const pendHtml=solicitacoes.length?solicitacoes.map(s=>{
       const u=perfisReq.get(s.usuario_id)||{};
@@ -286,10 +292,11 @@
     const orgHtml=organizadores.length?organizadores.map(o=>'<article class="ficha"><div class="corpo"><h4>🎪 '+esc(o.organizador_nome||o.nome)+'</h4><div class="meta">'+esc(o.nome)+' · '+esc(o.email||'')+(o.cidade?' · '+esc(o.cidade):'')+'<br>DESDE '+esc(fmtData(o.organizador_desde))+' · '+Number(o.seguidores_total||0)+' seguidor(es)</div></div>'+(o.verificado?'<span class="selo admin">✓ verificado</span>':'<span class="selo oculto">organizador</span>')+'<div class="botoes">'+(o.verificado?'<button class="mini" data-v259-verificar="'+esc(o.id)+'" data-valor="0">Remover selo</button>':'<button class="mini ok" data-v259-verificar="'+esc(o.id)+'" data-valor="1">Verificar</button>')+'<button class="mini perigo" data-v259-revogar="'+esc(o.id)+'">Revogar acesso</button></div></article>').join(''):'<div class="v259-admin-vazio">Nenhum organizador aprovado ainda.</div>';
 
     const options=usuarios.map(u=>'<option value="'+esc(u.id)+'">'+esc(u.nome)+' — '+esc(u.email||u.cidade||'')+'</option>').join('');
-    lista.innerHTML='<section class="v259-admin-bloco"><div class="v259-admin-titulo"><div><span class="v259-kicker">FILA DE APROVAÇÃO</span><h3>Solicitações pendentes</h3></div><span>'+solicitacoes.length+'</span></div>'+pendHtml+'</section>'+
+    if(lista) lista.innerHTML='<section class="v259-admin-bloco"><div class="v259-admin-titulo"><div><span class="v259-kicker">FILA DE APROVAÇÃO</span><h3>Solicitações pendentes</h3></div><span>'+solicitacoes.length+'</span></div>'+pendHtml+'</section>'+
       '<section class="v259-admin-bloco"><div class="v259-admin-titulo"><div><span class="v259-kicker">ACESSO ATIVO</span><h3>Organizadores</h3></div><span>'+organizadores.length+'</span></div>'+orgHtml+'</section>'+
       '<section class="v259-admin-bloco v259-convite"><div><span class="v259-kicker">CONCESSÃO DIRETA</span><h3>Convidar usuário para organizar</h3><p>Use para prefeitura, ONG, instituição ou pessoa já conhecida pela administração.</p></div>'+
         (usuarios.length?'<div class="linha-form-lovable linha-2"><div class="campo"><label for="v259_convidar_usuario">Usuário</label><select id="v259_convidar_usuario"><option value="">Selecione...</option>'+options+'</select></div><div class="campo"><label for="v259_convidar_nome">Nome do projeto/organizador</label><input id="v259_convidar_nome" maxlength="100" placeholder="Opcional"></div></div><button class="mini ok" id="btnConcederOrganizadorV259">Conceder acesso de organizador</button>':'<p class="dica">Nenhum usuário comum elegível no momento.</p>')+'</section>';
+    await atualizarContadorAdmin();
   }
 
   function garantirAbaAdmin(){
@@ -302,15 +309,16 @@
       btn.innerHTML='Organizadores <span class="contador" id="cntOrganizadoresV259" hidden>0</span>';
       const usuarios=abas.querySelector('[data-painel="usuarios"]');
       if(usuarios&&usuarios.nextSibling) abas.insertBefore(btn,usuarios.nextSibling); else abas.appendChild(btn);
+      contadorAdminCarregado=false;
     }
-    atualizarContadorAdmin();
+    if(!contadorAdminCarregado){contadorAdminCarregado=true;atualizarContadorAdmin();}
   }
 
   async function atualizarContadorAdmin(){
     if(!eAdmin()) return;
     const {count}=await db.from('solicitacoes_organizador_v25_9').select('id',{count:'exact',head:true}).eq('status','pendente');
     const c=document.getElementById('cntOrganizadoresV259');
-    if(c){c.hidden=!count;c.textContent=count||0;}
+    if(c){setHidden(c,!count);setText(c,String(count||0));}
   }
 
   async function decidirSolicitacao(id,decisao){
@@ -454,7 +462,7 @@
     db.auth.onAuthStateChange(()=>setTimeout(async()=>{await carregarPerfil();aplicarTudo();},60));
     if(document.body){
       observer=new MutationObserver(agendarAplicar);
-      observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+      observer.observe(document.body,{childList:true,subtree:true});
     }
     setTimeout(aplicarTudo,600);
     setTimeout(aplicarTudo,1400);
