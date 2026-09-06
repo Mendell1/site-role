@@ -104,12 +104,13 @@ sw=read('sw-v25.js')
 assert "CACHE_ATUAL = 'role-v25-9-" in sw
 assert './css/acesso-organizador-v25.css' in sw
 assert './js/acesso-organizador-v25.js' in sw
-assert './assets/favicon-32.png' in sw
+assert './assets/favicon-role.svg' in sw
 
 pwa=read('js/pwa-v25.js')
 assert "link.rel='icon'" in pwa
-assert "assets/favicon-32.png?v=1" in pwa
-assert (root/'assets/favicon-32.png').exists()
-assert (root/'assets/favicon-32.png').read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
+assert "assets/favicon-role.svg?v=2" in pwa
+assert (root/'assets/favicon-role.svg').exists()
+assert '<circle' in read('assets/favicon-role.svg')
+assert '<text' in read('assets/favicon-role.svg')
 
 print('V25.9 static tests: OK')
