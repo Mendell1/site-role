@@ -70,10 +70,10 @@ for marcador in [
 ]:
     assert marcador in qr_evento, f'Correção do QR do evento incompleta: {marcador}'
 
-# O Service Worker precisa invalidar o cache anterior para a revisão aparecer
-# imediatamente, em especial depois de mudanças no config.js, mobile e QR.
+# O cache deve continuar pertencendo à família V25, mas versões posteriores
+# podem incrementá-lo sem quebrar o teste histórico da V25.5.
 sw = read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-5-shell-v3'" in sw
+assert "const CACHE_ATUAL = 'role-v25-" in sw
 assert './css/revisao-v25.css' in sw
 assert './js/revisao-v25.js' in sw
 assert './js/qr-evento-v25.js' in sw
