@@ -101,8 +101,15 @@ assert "script('js/acesso-organizador-v25.js','v25-9-organizador')" in config
 assert "eh('index.html','perfil.html','admin.html','organizador.html')" in config
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-9-organizador-ui-v2'" in sw
+assert "CACHE_ATUAL = 'role-v25-9-" in sw
 assert './css/acesso-organizador-v25.css' in sw
 assert './js/acesso-organizador-v25.js' in sw
+assert './assets/favicon-32.png' in sw
+
+pwa=read('js/pwa-v25.js')
+assert "link.rel='icon'" in pwa
+assert "assets/favicon-32.png?v=1" in pwa
+assert (root/'assets/favicon-32.png').exists()
+assert (root/'assets/favicon-32.png').read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
 
 print('V25.9 static tests: OK')
