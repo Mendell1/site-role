@@ -19,10 +19,10 @@
     navigation: '<path d="m21 3-7.4 18-3.1-7.5L3 10.4 21 3Z"/><path d="m10.5 13.5 5.2-5.2"/>',
     music: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
     gamepad: '<path d="M8.2 8.1h7.6c2.4 0 4 1.6 4.4 4.4l.5 3.6c.3 2.3-2.1 3.6-3.7 2l-2.2-2.2H9.2L7 18.1c-1.6 1.6-4 .3-3.7-2l.5-3.6c.4-2.8 2-4.4 4.4-4.4Z"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r=".8"/><circle cx="18" cy="14" r=".8"/>',
-    dumbbell: '<path d="M6 9v6M3.5 10.5v3M18 9v6M20.5 10.5v3M6 12h12"/>',
+    dumbbell: '<rect x="4.6" y="7.7" width="3" height="8.6" rx="1.5"/><rect x="1.9" y="9.6" width="2.7" height="4.8" rx="1.35"/><rect x="16.4" y="7.7" width="3" height="8.6" rx="1.5"/><rect x="19.4" y="9.6" width="2.7" height="4.8" rx="1.35"/><path d="M7.6 12h8.8"/>',
     education: '<path d="m3 10 9-5 9 5-9 5-9-5Z"/><path d="M7 12.2V16c2.9 2 7.1 2 10 0v-3.8M21 10v5"/>',
-    culture: '<path d="M5 5.5h6v6.2c0 3.5-1.3 5.3-3 6.3-1.7-1-3-2.8-3-6.3V5.5Z"/><path d="M13 4h6v6.2c0 3.5-1.3 5.3-3 6.3-1.2-.7-2.2-1.8-2.7-3.5"/><path d="M7 9h.01M9 9h.01M7 13c.8.8 1.2.8 2 0M15 7.5h.01M17 7.5h.01M15 11.5c.8-.8 1.2-.8 2 0"/>',
-    food: '<path d="M6 3v7M3.5 3v4.5A2.5 2.5 0 0 0 6 10v11M8.5 3v4.5A2.5 2.5 0 0 1 6 10"/><path d="M15 3v18M15 3c4 1.5 5.5 4.2 5.5 7.5H15"/>',
+    culture: '<path d="M3.4 5.5c2.6-.8 5.2-.8 7.8 0v5.1c0 3.2-1.6 5.5-3.9 6.6-2.3-1.1-3.9-3.4-3.9-6.6V5.5Z"/><circle cx="5.8" cy="9" r=".55" fill="currentColor" stroke="none"/><circle cx="8.8" cy="9" r=".55" fill="currentColor" stroke="none"/><path d="M5.7 12c1.1 1.1 2.1 1.1 3.2 0"/><path d="M12.8 7c2.6-.8 5.2-.8 7.8 0v5.1c0 3.2-1.6 5.5-3.9 6.6-1.6-.8-2.9-2.2-3.5-4"/><circle cx="15.2" cy="10.5" r=".55" fill="currentColor" stroke="none"/><circle cx="18.2" cy="10.5" r=".55" fill="currentColor" stroke="none"/><path d="M15.2 14.2c1-1 2-1 3 0"/>',
+    food: '<path d="M5.9 3v6.4M3.5 3v4.4A2.4 2.4 0 0 0 5.9 9.8v11.2M8.3 3v4.4A2.4 2.4 0 0 1 5.9 9.8"/><path d="M15.3 3v18M15.3 3c3.3 1.3 5.2 4 5.2 7.6v1.2h-5.2"/>',
     users: '<circle cx="12" cy="8" r="3"/><path d="M6.5 20c.5-3.9 2.3-6 5.5-6s5 2.1 5.5 6"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><path d="M2 18c.3-2.5 1.5-4 3.8-4M22 18c-.3-2.5-1.5-4-3.8-4"/>',
     briefcase: '<rect x="3" y="7" width="18" height="12" rx="2.2"/><path d="M9 7V5.5h6V7M3 11.5h18M10 12h4v2h-4z"/>',
     storefront: '<path d="M4 10v10h16V10M3 10l2-5h14l2 5"/><path d="M3 10c0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0 0 2 3 2 3 0"/><path d="M9 20v-6h6v6"/>',
@@ -36,18 +36,109 @@
 
   function svg(name, extra='') {
     const content=P[name] || P.more;
-    return `<svg class="v26-ui-icon ${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${content}</svg>`;
+    return `<svg class="v26-ui-icon v26-icon-${name} ${extra}" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${content}</svg>`;
   }
-  function limparPrefixo(texto='') {return texto.replace(/^[\s★☆✦♡♥▦▱♙⌖▣▤♫♪◆●•]+/u,'').trim()}
-  function colocarNoBotao(el,nome,preservar=true){if(!el||el.dataset.v26IconReady==='1')return;const texto=preservar?limparPrefixo(el.textContent):'';el.innerHTML=svg(nome)+(texto?`<span class="v26-icon-label">${texto}</span>`:'');el.dataset.v26IconReady='1'}
-  function topo(){const sino=document.querySelector('#btnNotificacoes');if(sino&&sino.dataset.v26IconReady!=='1'){const badge=sino.querySelector('#badgeNotificacoes');sino.innerHTML=svg('bell');if(badge)sino.appendChild(badge);sino.dataset.v26IconReady='1'}colocarNoBotao(document.querySelector('#btnMenuMobile'),'menu',false);colocarNoBotao(document.querySelector('#btnPerfil'),'user');colocarNoBotao(document.querySelector('#btnAdmin'),'shield')}
-  function buscaEFiltros(){const icone=document.querySelector('.busca-icone');if(icone&&icone.dataset.v26IconReady!=='1'){icone.innerHTML=svg('search');icone.dataset.v26IconReady='1'}colocarNoBotao(document.querySelector('#btnBuscar'),'search');const atalhos={hoje:'calendar',fds:'calendar',semana:'calendarGrid',gratis:'tag'};document.querySelectorAll('.chip[data-atalho]').forEach(btn=>colocarNoBotao(btn,atalhos[btn.dataset.atalho]||'calendar'));document.querySelectorAll('.chip-perto-v23').forEach(btn=>colocarNoBotao(btn,'navigation'))}
-  const categorias={festas:'music',games:'gamepad',esportes:'dumbbell',educacao:'education',cultura:'culture',gastronomia:'food',musica:'music',social:'users',profissional:'briefcase',feiras:'storefront',outros:'more'};
-  function categoriasUI(){document.querySelectorAll('.cat[data-cat]').forEach(btn=>{const cat=(btn.dataset.cat||'').toLowerCase();if(cat==='todos'||cat==='tudo')return;colocarNoBotao(btn,categorias[cat]||'more')})}
-  function abasEVisoes(){document.querySelectorAll('.aba[data-aba]').forEach(btn=>{const aba=(btn.dataset.aba||'').toLowerCase();const nome=aba==='todos'?'grid':(aba==='recomendados'||aba==='para-voce')?'sparkles':aba==='favoritos'?'heart':aba==='interesse'?'bookmark':aba==='meus'?'user':'grid';colocarNoBotao(btn,nome)});document.querySelectorAll('.visao[data-visao]').forEach(btn=>{const v=(btn.dataset.visao||'').toLowerCase();colocarNoBotao(btn,v==='mapa'?'mapPin':v==='calendario'?'calendar':'grid')})}
-  function categoriasCards(){document.querySelectorAll('.v261-categoria-media').forEach(el=>{if(el.dataset.v26IconReady==='1')return;const texto=limparPrefixo(el.textContent);const chave=texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();el.innerHTML=svg(categorias[chave]||'tag')+`<span class="v26-icon-label">${texto}</span>`;el.dataset.v26IconReady='1'})}
-  function aplicar(){topo();buscaEFiltros();categoriasUI();abasEVisoes();categoriasCards()}
-  let agendado=false;function agendar(){if(agendado)return;agendado=true;requestAnimationFrame(()=>{agendado=false;aplicar()})}
-  function iniciar(){if(!document.body.classList.contains('v26-home'))document.body.classList.add('v26-home');aplicar();const obs=new MutationObserver(agendar);obs.observe(document.body,{childList:true,subtree:true})}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
+
+  function limparPrefixo(texto='') {
+    return texto.replace(/^[\s★☆✦♡♥▦▱♙⌖▣▤♫♪◆●•]+/u,'').trim();
+  }
+
+  function colocarNoBotao(el, nome, preservar=true) {
+    if (!el || el.dataset.v26IconReady==='1') return;
+    const texto=preservar ? limparPrefixo(el.textContent) : '';
+    el.innerHTML = svg(nome) + (texto ? `<span class="v26-icon-label">${texto}</span>` : '');
+    el.dataset.v26IconReady='1';
+  }
+
+  function topo() {
+    const sino=document.querySelector('#btnNotificacoes');
+    if (sino && sino.dataset.v26IconReady!=='1') {
+      const badge=sino.querySelector('#badgeNotificacoes');
+      sino.innerHTML=svg('bell');
+      if (badge) sino.appendChild(badge);
+      sino.dataset.v26IconReady='1';
+    }
+    colocarNoBotao(document.querySelector('#btnMenuMobile'),'menu',false);
+    colocarNoBotao(document.querySelector('#btnPerfil'),'user');
+    colocarNoBotao(document.querySelector('#btnAdmin'),'shield');
+  }
+
+  function buscaEFiltros() {
+    const icone=document.querySelector('.busca-icone');
+    if (icone && icone.dataset.v26IconReady!=='1') {
+      icone.innerHTML=svg('search');
+      icone.dataset.v26IconReady='1';
+    }
+    colocarNoBotao(document.querySelector('#btnBuscar'),'search');
+    const atalhos={hoje:'calendar',fds:'calendar',semana:'calendarGrid',gratis:'tag'};
+    document.querySelectorAll('.chip[data-atalho]').forEach(btn=>{
+      colocarNoBotao(btn,atalhos[btn.dataset.atalho] || 'calendar');
+    });
+    document.querySelectorAll('.chip-perto-v23').forEach(btn=>colocarNoBotao(btn,'navigation'));
+  }
+
+  const categorias={
+    festas:'music', games:'gamepad', esportes:'dumbbell', educacao:'education',
+    cultura:'culture', gastronomia:'food', musica:'music', social:'users',
+    profissional:'briefcase', feiras:'storefront', outros:'more'
+  };
+
+  function categoriasUI() {
+    document.querySelectorAll('.cat[data-cat]').forEach(btn=>{
+      const cat=(btn.dataset.cat||'').toLowerCase();
+      if (cat==='todos' || cat==='tudo') return;
+      colocarNoBotao(btn,categorias[cat] || 'more');
+    });
+  }
+
+  function abasEVisoes() {
+    document.querySelectorAll('.aba[data-aba]').forEach(btn=>{
+      const aba=(btn.dataset.aba||'').toLowerCase();
+      const nome = aba==='todos' ? 'grid' :
+        (aba==='recomendados'||aba==='para-voce') ? 'sparkles' :
+        aba==='favoritos' ? 'heart' :
+        aba==='interesse' ? 'bookmark' :
+        aba==='meus' ? 'user' : 'grid';
+      colocarNoBotao(btn,nome);
+    });
+    document.querySelectorAll('.visao[data-visao]').forEach(btn=>{
+      const v=(btn.dataset.visao||'').toLowerCase();
+      colocarNoBotao(btn,v==='mapa'?'mapPin':v==='calendario'?'calendar':'grid');
+    });
+  }
+
+  function categoriasCards() {
+    document.querySelectorAll('.v261-categoria-media').forEach(el=>{
+      if (el.dataset.v26IconReady==='1') return;
+      const texto=limparPrefixo(el.textContent);
+      const chave=texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+      el.innerHTML=svg(categorias[chave] || 'tag') + `<span class="v26-icon-label">${texto}</span>`;
+      el.dataset.v26IconReady='1';
+    });
+  }
+
+  function aplicar() {
+    topo();
+    buscaEFiltros();
+    categoriasUI();
+    abasEVisoes();
+    categoriasCards();
+  }
+
+  let agendado=false;
+  function agendar(){
+    if(agendado) return;
+    agendado=true;
+    requestAnimationFrame(()=>{agendado=false;aplicar();});
+  }
+
+  function iniciar(){
+    if(!document.body.classList.contains('v26-home')) document.body.classList.add('v26-home');
+    aplicar();
+    const obs=new MutationObserver(agendar);
+    obs.observe(document.body,{childList:true,subtree:true});
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
+  else iniciar();
 })();
