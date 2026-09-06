@@ -1,10 +1,11 @@
 /* ============================================================
-   ROLÊ V25.9 — Service Worker / PWA
+   ROLÊ V26.1 — Service Worker / PWA
    Cacheia somente recursos públicos do frontend.
    Nunca intercepta ou persiste respostas do Supabase.
    ============================================================ */
-const CACHE_ATUAL = 'role-v25-9-shell-v5';
+const CACHE_ATUAL = 'role-v26-1-home-v1';
 const PREFIXO_CACHE = 'role-v25-';
+const PREFIXO_CACHE_V26 = 'role-v26-';
 const BASE = self.registration.scope;
 
 const SHELL = [
@@ -17,6 +18,7 @@ const SHELL = [
   './css/v25-6.css',
   './css/v25-7.css',
   './css/acesso-organizador-v25.css',
+  './css/v26-home.css',
   './js/config.js',
   './js/revisao-v25.js',
   './js/qr-compat-v25.js',
@@ -25,6 +27,7 @@ const SHELL = [
   './js/mapa-raio-v25.js',
   './js/metricas-organizador-v25.js',
   './js/acesso-organizador-v25.js',
+  './js/v26-home.js',
   './assets/favicon-role.svg',
   './assets/favicon-32.png',
   './assets/icon-192.png',
@@ -48,7 +51,10 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const nomes = await caches.keys();
     await Promise.all(nomes
-      .filter(nome => nome.startsWith(PREFIXO_CACHE) && nome !== CACHE_ATUAL)
+      .filter(nome =>
+        (nome.startsWith(PREFIXO_CACHE) || nome.startsWith(PREFIXO_CACHE_V26)) &&
+        nome !== CACHE_ATUAL
+      )
       .map(nome => caches.delete(nome)));
     await self.clients.claim();
   })());
