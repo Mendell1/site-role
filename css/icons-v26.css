@@ -78,16 +78,35 @@
 .v26-home .cat .v26-ui-icon{width:17px;height:17px}
 .v26-home .cat[data-cat="festas"] .v26-ui-icon{color:#f3bd3e}
 .v26-home .cat[data-cat="games"] .v26-ui-icon{color:#c96af2}
-.v26-home .cat[data-cat="esportes"] .v26-ui-icon{color:#59b8f5}
+.v26-home .cat[data-cat="esportes"] .v26-ui-icon{color:#2d8cff}
 .v26-home .cat[data-cat="educacao"] .v26-ui-icon{color:#dfe7f5}
-.v26-home .cat[data-cat="cultura"] .v26-ui-icon{color:#f2b53f}
-.v26-home .cat[data-cat="gastronomia"] .v26-ui-icon{color:#ff8a34}
+.v26-home .cat[data-cat="cultura"] .v26-ui-icon{color:#ffbd32}
+.v26-home .cat[data-cat="gastronomia"] .v26-ui-icon{color:#ff861f}
 .v26-home .cat[data-cat="musica"] .v26-ui-icon{color:#c66cf4}
 .v26-home .cat[data-cat="social"] .v26-ui-icon{color:#f05d9c}
 .v26-home .cat[data-cat="profissional"] .v26-ui-icon{color:#efb441}
 .v26-home .cat[data-cat="feiras"] .v26-ui-icon{color:#48d690}
 .v26-home .cat[data-cat="outros"] .v26-ui-icon{color:#d8d2c9}
 .v26-home .cat-tudo .v26-ui-icon{color:#171005}
+
+/* Trio aprovado: mais grosso, legível e próximo do mockup. */
+.v26-home .cat[data-cat="esportes"] .v26-icon-dumbbell,
+.v26-home .cat[data-cat="cultura"] .v26-icon-culture,
+.v26-home .cat[data-cat="gastronomia"] .v26-icon-food{
+  width:20px!important;
+  height:20px!important;
+  flex-basis:20px!important;
+  stroke-width:2.35;
+}
+.v26-home .cat[data-cat="esportes"] .v26-icon-dumbbell{
+  filter:drop-shadow(0 0 5px rgba(45,140,255,.42));
+}
+.v26-home .cat[data-cat="cultura"] .v26-icon-culture{
+  filter:drop-shadow(0 0 5px rgba(255,189,50,.38));
+}
+.v26-home .cat[data-cat="gastronomia"] .v26-icon-food{
+  filter:drop-shadow(0 0 5px rgba(255,134,31,.40));
+}
 
 /* Abas da experiência */
 .v26-home .aba{
@@ -109,10 +128,16 @@
 
 /* Ícone de categoria flutuante nos cards */
 .v26-home .v261-categoria-media .v26-ui-icon{width:14px;height:14px}
+.v26-home .v261-categoria-media .v26-icon-dumbbell,
+.v26-home .v261-categoria-media .v26-icon-culture,
+.v26-home .v261-categoria-media .v26-icon-food{stroke-width:2.25}
 
 /* Um pouco mais de presença em telas grandes, como no mockup. */
 @media(min-width:1181px){
   .v26-home .cat .v26-ui-icon{width:18px;height:18px;flex-basis:18px}
+  .v26-home .cat[data-cat="esportes"] .v26-icon-dumbbell,
+  .v26-home .cat[data-cat="cultura"] .v26-icon-culture,
+  .v26-home .cat[data-cat="gastronomia"] .v26-icon-food{width:20px!important;height:20px!important;flex-basis:20px!important}
   .v26-home .aba .v26-ui-icon{width:18px;height:18px;flex-basis:18px}
   .v26-home .visao .v26-ui-icon{width:17px;height:17px;flex-basis:17px}
 }
