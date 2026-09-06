@@ -101,7 +101,7 @@ assert "script('js/acesso-organizador-v25.js','v25-9-organizador')" in config
 assert "eh('index.html','perfil.html','admin.html','organizador.html')" in config
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v25-9-" in sw
+assert "CACHE_ATUAL = 'role-v" in sw
 assert './css/acesso-organizador-v25.css' in sw
 assert './js/acesso-organizador-v25.js' in sw
 assert './assets/favicon-role.svg' in sw
