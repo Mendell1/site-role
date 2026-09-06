@@ -94,4 +94,10 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estilo('css/v25-7.css','v25-7');
     script('js/metricas-organizador-v25.js','v25-7-metricas');
   }
+
+  /* V25.9 — usuário comum participa; organizador publica/administra. */
+  if(eh('index.html','perfil.html','admin.html','organizador.html')){
+    estilo('css/acesso-organizador-v25.css','v25-9-organizador');
+    script('js/acesso-organizador-v25.js','v25-9-organizador');
+  }
 })();
