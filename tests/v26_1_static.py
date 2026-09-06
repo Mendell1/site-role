@@ -8,7 +8,8 @@ def read(path):
 for rel in [
     'css/v26-home.css','js/v26-home.js',
     'css/v26-home-fidelity.css','js/v26-home-fidelity.js',
-    'css/v26-home-precision.css','js/v26-home-precision.js'
+    'css/v26-home-precision.css','js/v26-home-precision.js',
+    'css/icons-v26.css','js/icons-v26.js'
 ]:
     assert (root/rel).exists(), f'Arquivo V26.1 ausente: {rel}'
 
@@ -56,6 +57,17 @@ for marcador in [
 ]:
     assert marcador in precision, f'Precision CSS V26.1 incompleto: {marcador}'
 
+icons_css=read('css/icons-v26.css')
+for marcador in [
+    '.v26-ui-icon',
+    '#btnNotificacoes',
+    '.chip-perto-v23',
+    '.cat[data-cat="games"]',
+    '.aba[data-aba="favoritos"]',
+    '.visao[aria-pressed="true"]',
+]:
+    assert marcador in icons_css, f'CSS de ícones V26 incompleto: {marcador}'
+
 js=read('js/v26-home.js')
 for marcador in [
     '__roleV261HomeAtiva',
@@ -85,6 +97,24 @@ precision_js=read('js/v26-home-precision.js')
 for marcador in ['__roleV261PrecisionAtiva','v26-logo-pin','v26-precision']:
     assert marcador in precision_js, f'Precision JS V26.1 incompleto: {marcador}'
 
+icons_js=read('js/icons-v26.js')
+for marcador in [
+    '__roleV26IconsAtivos',
+    "bell:",
+    "gamepad:",
+    "dumbbell:",
+    "education:",
+    "culture:",
+    "food:",
+    "storefront:",
+    'MutationObserver',
+    '#btnNotificacoes',
+    '.chip-perto-v23',
+    '.aba[data-aba]',
+    '.visao[data-visao]',
+]:
+    assert marcador in icons_js, f'JS de ícones V26 incompleto: {marcador}'
+
 config=read('js/config.js')
 for marcador in [
     "estilo('css/v26-home.css','v26-1-home')",
@@ -93,12 +123,14 @@ for marcador in [
     "script('js/v26-home-fidelity.js','v26-1-fidelity')",
     "estilo('css/v26-home-precision.css','v26-1-precision')",
     "script('js/v26-home-precision.js','v26-1-precision')",
+    "estilo('css/icons-v26.css','v26-icons')",
+    "script('js/icons-v26.js','v26-icons')",
     "if(eh('index.html'))",
 ]:
     assert marcador in config, f'Loader V26.1 incompleto: {marcador}'
 
 sw=read('sw-v25.js')
-assert "CACHE_ATUAL = 'role-v26-1-home-v3'" in sw
+assert "CACHE_ATUAL = 'role-v26-1-home-v4'" in sw
 for marcador in [
     "'./css/v26-home.css'",
     "'./js/v26-home.js'",
@@ -106,6 +138,8 @@ for marcador in [
     "'./js/v26-home-fidelity.js'",
     "'./css/v26-home-precision.css'",
     "'./js/v26-home-precision.js'",
+    "'./css/icons-v26.css'",
+    "'./js/icons-v26.js'",
     'PREFIXO_CACHE_V26',
 ]:
     assert marcador in sw, f'Cache V26.1 incompleto: {marcador}'
