@@ -88,4 +88,10 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/recorrencia-v25.js','v25-6-recorrencia');
     script('js/mapa-raio-v25.js','v25-6-mapa-raio');
   }
+
+  /* V25.7 — métricas no mural, painel privado e reputação pública. */
+  if(eh('index.html','perfil.html','organizador.html')){
+    estilo('css/v25-7.css','v25-7');
+    script('js/metricas-organizador-v25.js','v25-7-metricas');
+  }
 })();
