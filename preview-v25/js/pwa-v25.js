@@ -15,12 +15,12 @@
   function garantirHead(){
     if(!document.querySelector('link[rel="icon"]')){
       const link=document.createElement('link');
-      link.rel='icon'; link.type='image/png'; link.sizes='32x32'; link.href='assets/favicon-32.png?v=1';
+      link.rel='icon'; link.type='image/svg+xml'; link.sizes='any'; link.href='assets/favicon-role.svg?v=2';
       document.head.appendChild(link);
     }
     if(!document.querySelector('link[rel="shortcut icon"]')){
       const link=document.createElement('link');
-      link.rel='shortcut icon'; link.type='image/png'; link.href='assets/favicon-32.png?v=1';
+      link.rel='shortcut icon'; link.type='image/svg+xml'; link.href='assets/favicon-role.svg?v=2';
       document.head.appendChild(link);
     }
     if(!document.querySelector('link[rel="manifest"]')){
