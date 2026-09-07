@@ -17,14 +17,22 @@
     document.body.classList.add('v26-perfil-mockup');
   }
 
+  function normalizarMarca(){
+    const marca=qs('.marca');
+    const legenda=marca?.querySelector('small');
+    if(legenda) legenda.textContent='EVENTOS DO SEU BAIRRO';
+  }
+
   function montarNav(){
     const topo=qs('.topo-inner');
     const marca=qs('.marca',topo || document);
-    if(!topo || !marca || qs('.perfil-nav-v26',topo)) return;
+    if(!topo || !marca) return;
+
+    const antiga=qs('.perfil-nav-v26',topo);
+    if(antiga) antiga.remove();
 
     const nav=criar('nav','perfil-nav-v26',
-      '<a href="index.html#explorar">Explorar</a>'+
-      '<a href="index.html#grade">Eventos</a>'+
+      '<a class="ativo" href="index.html#explorar">Explorar</a>'+
       '<a href="index.html#sobreRole">Sobre</a>'+
       '<a href="index.html#comoFunciona">Como funciona</a>'
     );
@@ -86,6 +94,7 @@
 
   function iniciar(){
     marcarPagina();
+    normalizarMarca();
     montarNav();
     moverVoltarParaHero();
     decorarHero();
