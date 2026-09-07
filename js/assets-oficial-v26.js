@@ -1,10 +1,10 @@
 /* ROLÊ V26 — assets oficiais e hero aprovado em alta qualidade. */
 (() => {
   'use strict';
-  if (window.__roleV26AssetsOficiaisV4) return;
-  window.__roleV26AssetsOficiaisV4 = true;
+  if (window.__roleV26AssetsOficiaisV5) return;
+  window.__roleV26AssetsOficiaisV5 = true;
 
-  const VERSAO = '20260907-0225';
+  const VERSAO = '20260907-0245';
   const BASE64_ESPERADO = 182088;
   const BYTES_ESPERADOS = 136564;
   const HERO_LARGURA = 2172;
@@ -33,7 +33,8 @@
     'assets/icons/categoria-gastronomia.png': 'preview-v25/assets/icons/categoria-gastronomia.png'
   };
 
-  const GRADIENTE = 'linear-gradient(90deg, rgba(7,6,5,.68) 0%, rgba(7,6,5,.48) 27%, rgba(7,6,5,.18) 48%, rgba(7,6,5,.03) 68%, rgba(7,6,5,0) 100%)';
+  /* Sombra suave: mantém o texto legível sem criar um bloco preto sobre a arte. */
+  const GRADIENTE = 'linear-gradient(90deg, rgba(7,6,5,.42) 0%, rgba(7,6,5,.30) 26%, rgba(7,6,5,.14) 46%, rgba(7,6,5,.04) 62%, rgba(7,6,5,0) 76%)';
 
   let heroPromise = null;
   let heroObjectUrl = null;
