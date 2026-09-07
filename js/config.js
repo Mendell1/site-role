@@ -92,6 +92,10 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/acesso-organizador-v25.js','v25-9-organizador');
   }
 
+  if(eh('perfil.html')){
+    estiloLocal('css/perfil-identidade-v26.css?v=20260907-1345','v26-perfil-identidade');
+  }
+
   if(eh('index.html')){
     estilo('css/v26-home.css','v26-1-home');
     script('js/v26-home.js?v=20260907-0315','v26-1-home');
