@@ -109,6 +109,6 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/hero-oficial-v26-v2.css?v=20260907-0225','v26-hero-oficial-v2');
     scriptLocal('js/assets-oficial-v26.js?v=20260907-0225','v26-assets-oficial');
     estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
-    estiloLocal('css/polimento-v26.css?v=20260907-1327','v26-polimento-final');
+    estiloLocal('css/polimento-v26.css?v=20260907-1340','v26-polimento-final');
   }
 })();
