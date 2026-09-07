@@ -1,18 +1,28 @@
 /* ROLÊ V26 — assets oficiais e hero aprovado em alta qualidade. */
 (() => {
   'use strict';
-  if (window.__roleV26AssetsOficiaisV3) return;
-  window.__roleV26AssetsOficiaisV3 = true;
+  if (window.__roleV26AssetsOficiaisV4) return;
+  window.__roleV26AssetsOficiaisV4 = true;
 
-  const VERSAO = '20260907-0125';
+  const VERSAO = '20260907-0140';
+  const BASE64_ESPERADO = 182088;
+  const BYTES_ESPERADOS = 136564;
+  const HERO_LARGURA = 2172;
+  const HERO_ALTURA = 724;
+
+  /* Fragmentos sequenciais do mesmo WebP aprovado.
+     A soma precisa dar exatamente 182088 caracteres em base64. */
   const PARTES_HERO = [
     'assets/hero-v26-q80-part00.txt',
     'assets/hero-v26-q80-part01.txt',
     'assets/hero-v26-q80-part02.txt',
     'assets/hero-v26-q80-part03.txt',
-    'assets/hero-v26-q80-tail00.txt',
-    'assets/hero-v26-q80-tail01.txt',
-    'assets/hero-v26-q80-tail02.txt'
+    'assets/hero-v26-q80-part04.txt',
+    'assets/hero-v26-q80-part05.txt',
+    'assets/hero-v26-q80-part06.txt',
+    'assets/hero-v26-q80-part07.txt',
+    'assets/hero-v26-q80-part08.txt',
+    'assets/hero-v26-q80-part09.txt'
   ];
 
   const mapa = {
@@ -37,16 +47,17 @@
 
   function base64ParaBlobUrl(base64){
     const limpo = String(base64 || '').replace(/\s+/g, '');
+
     if (!limpo.startsWith('UklG')) {
       throw new Error('payload do hero não começa com um WebP válido');
     }
-    if (limpo.length < 100000) {
-      throw new Error(`payload do hero está incompleto (${limpo.length} caracteres)`);
+    if (limpo.length !== BASE64_ESPERADO) {
+      throw new Error(`payload do hero com tamanho incorreto: ${limpo.length}/${BASE64_ESPERADO}`);
     }
 
     const binario = atob(limpo);
-    if (binario.length < 100000) {
-      throw new Error(`arquivo reconstruído está pequeno demais (${binario.length} bytes)`);
+    if (binario.length !== BYTES_ESPERADOS) {
+      throw new Error(`arquivo reconstruído com tamanho incorreto: ${binario.length}/${BYTES_ESPERADOS} bytes`);
     }
 
     const bytes = new Uint8Array(binario.length);
@@ -68,6 +79,10 @@
       teste.onload = () => {
         if (!teste.naturalWidth || !teste.naturalHeight) {
           reject(new Error('imagem decodificou sem dimensões'));
+          return;
+        }
+        if (teste.naturalWidth !== HERO_LARGURA || teste.naturalHeight !== HERO_ALTURA) {
+          reject(new Error(`dimensões inesperadas: ${teste.naturalWidth}x${teste.naturalHeight}`));
           return;
         }
         resolve({ width: teste.naturalWidth, height: teste.naturalHeight });
@@ -95,9 +110,6 @@
 
       try {
         const dimensoes = await validarImagem(url);
-        if (dimensoes.width < 1900 || dimensoes.height < 650) {
-          throw new Error(`dimensões inesperadas: ${dimensoes.width}x${dimensoes.height}`);
-        }
         heroObjectUrl = url;
         heroDimensoes = dimensoes;
         return { url, dimensoes };
