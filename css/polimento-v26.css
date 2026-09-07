@@ -87,6 +87,41 @@ body.v26-home .linha-topo{
   padding-top:18px!important;
 }
 
+/* Cabeçalho mais limpo: remove os dois adornos circulares do logo e a seta de Entrar. */
+body.v26-home .v26-logo-pin,
+body.v26-home .marca::before,
+body.v26-home .marca::after,
+body.v26-home .marca-role::before,
+body.v26-home .marca-role::after{
+  display:none!important;
+  content:none!important;
+}
+
+body.v26-home .marca{
+  gap:10px!important;
+}
+
+body.v26-home #btnEntrar > span[aria-hidden="true"]{
+  display:none!important;
+}
+
+body.v26-home #btnEntrar{
+  min-width:82px!important;
+  justify-content:center!important;
+  padding-inline:18px!important;
+}
+
+@media (min-width:1181px){
+  /* Menu hambúrguer só faz sentido no mobile. */
+  body.v26-home #btnMenuMobile{
+    display:none!important;
+  }
+
+  body.v26-home .topo-mobile-acoes{
+    margin-left:0!important;
+  }
+}
+
 @media (max-width:1180px){
   body.v26-home .faixa{margin-bottom:12px!important}
   body.v26-home .mural{padding-top:0!important}
