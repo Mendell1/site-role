@@ -94,7 +94,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html')){
     estilo('css/v26-home.css','v26-1-home');
-    script('js/v26-home.js','v26-1-home');
+    script('js/v26-home.js?v=20260907-0315','v26-1-home');
 
     estilo('css/v26-home-fidelity.css','v26-1-fidelity');
     script('js/v26-home-fidelity.js','v26-1-fidelity');
