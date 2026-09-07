@@ -55,37 +55,6 @@ if (SUPABASE_URL.startsWith('COLE')) {
     document.head.appendChild(s);
   }
 
-  function aplicarHeroDireto(){
-    const hero=document.querySelector('.hero');
-    if(!hero) return;
-
-    document.body.classList.add('v26-home');
-    hero.style.setProperty('background-color','#090806','important');
-    hero.style.setProperty(
-      'background-image',
-      'linear-gradient(90deg,rgba(7,6,5,.52) 0%,rgba(7,6,5,.38) 26%,rgba(7,6,5,.16) 46%,rgba(7,6,5,.03) 68%,rgba(7,6,5,0) 100%),url("assets/hero-v26-wide-approved.webp?v=20260906-2058")',
-      'important'
-    );
-    hero.style.setProperty('background-repeat','no-repeat,no-repeat','important');
-    hero.style.setProperty('background-size','100% 100%,cover','important');
-    hero.style.setProperty('background-position','center center,center center','important');
-
-    let reforco=document.getElementById('v26HeroDiretoReforco');
-    if(!reforco){
-      reforco=document.createElement('style');
-      reforco.id='v26HeroDiretoReforco';
-      reforco.textContent=`
-        .hero::before,.hero::after{display:none!important;}
-        .v26-wordmark,.v26-slogan,.v26-palavras,.v26-cityline,.v26-hero-arte{display:none!important;}
-        .hero-conteudo,.v26-hero-grid{position:relative!important;z-index:2!important;}
-        @media(max-width:820px){
-          .hero{background-size:100% 100%,auto 100%!important;background-position:center center,70% center!important;}
-        }
-      `;
-      document.head.appendChild(reforco);
-    }
-  }
-
   if(eh('index.html','perfil.html')){
     estilo('css/participacao-v25.css','v25-2');
     script('js/participacao-v25.js','v25-2');
@@ -137,13 +106,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/icons-v26.js','v26-icons');
     estilo('css/icons-v26-hotfix.css','v26-icons-hotfix');
 
-    estiloLocal('css/hero-oficial-v26-v2.css?v=20260906-2058','v26-hero-oficial-v2');
-    scriptLocal('js/assets-oficial-v26.js?v=20260906-2058','v26-assets-oficial');
-
-    if(document.readyState==='loading'){
-      document.addEventListener('DOMContentLoaded',aplicarHeroDireto,{once:true});
-    }else{
-      aplicarHeroDireto();
-    }
+    estiloLocal('css/hero-oficial-v26-v2.css?v=20260906-2240','v26-hero-oficial-v2');
+    scriptLocal('js/assets-oficial-v26.js?v=20260906-2240','v26-assets-oficial');
   }
 })();
