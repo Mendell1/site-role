@@ -111,6 +111,12 @@ body.v26-home #btnEntrar{
   padding-inline:18px!important;
 }
 
+/* Remove o pequeno rótulo decorativo “EXPLORAR” acima da barra do mural. */
+body.v26-home .mural-toolbar::before{
+  display:none!important;
+  content:none!important;
+}
+
 @media (min-width:1181px){
   /* Menu hambúrguer só faz sentido no mobile. */
   body.v26-home #btnMenuMobile{
