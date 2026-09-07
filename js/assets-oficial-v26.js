@@ -1,4 +1,4 @@
-/* ROLÊ V26 — assets oficiais. O hero agora é carregado diretamente pelo CSS. */
+/* ROLÊ V26 — assets oficiais e hero físico, sem depender de background-image. */
 (() => {
   'use strict';
   if (window.__roleV26AssetsOficiais) return;
@@ -18,13 +18,92 @@
     });
   }
 
-  corrigirIcones();
-  const obs = new MutationObserver(corrigirIcones);
-  obs.observe(document.documentElement, { childList:true, subtree:true });
+  function aplicarHeroFisico(){
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
 
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    document.body.classList.add('v26-hero-oficial-carregado');
-    console.info('[V26] Hero HQ aprovado carregado diretamente pelo CSS.');
+    document.body.classList.add('v26-home', 'v26-hero-oficial-carregado');
+
+    hero.style.setProperty('position', 'relative', 'important');
+    hero.style.setProperty('overflow', 'hidden', 'important');
+    hero.style.setProperty('background', '#090806', 'important');
+    hero.style.setProperty('isolation', 'isolate', 'important');
+
+    let img = hero.querySelector('.v26-hero-bg-fisico');
+    if (!img) {
+      img = document.createElement('img');
+      img.className = 'v26-hero-bg-fisico';
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+      img.src = 'assets/hero-v26-wide-approved.webp?v=20260906-2240';
+
+      Object.assign(img.style, {
+        position: 'absolute',
+        inset: '0',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        objectPosition: 'center 58%',
+        zIndex: '0',
+        pointerEvents: 'none',
+        userSelect: 'none',
+        display: 'block'
+      });
+
+      img.addEventListener('load', () => {
+        hero.classList.add('v26-hero-img-ok');
+        console.info('[V26] Hero físico carregado:', img.naturalWidth, 'x', img.naturalHeight);
+      }, { once:true });
+
+      img.addEventListener('error', () => {
+        console.error('[V26] Falha ao carregar asset físico do hero:', img.src);
+      }, { once:true });
+
+      hero.prepend(img);
+    }
+
+    let overlay = hero.querySelector('.v26-hero-overlay-fisico');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'v26-hero-overlay-fisico';
+      overlay.setAttribute('aria-hidden', 'true');
+      Object.assign(overlay.style, {
+        position: 'absolute',
+        inset: '0',
+        zIndex: '1',
+        pointerEvents: 'none',
+        background: 'linear-gradient(90deg, rgba(7,6,5,.42) 0%, rgba(7,6,5,.22) 28%, rgba(7,6,5,.06) 50%, rgba(7,6,5,0) 72%)'
+      });
+      img.after(overlay);
+    }
+
+    hero.querySelectorAll('.hero-conteudo,.v26-hero-grid').forEach(el => {
+      el.style.setProperty('position', 'relative', 'important');
+      el.style.setProperty('z-index', '2', 'important');
+    });
+
+    hero.querySelectorAll('.v26-hero-arte,.v26-wordmark,.v26-slogan,.v26-palavras,.v26-cityline').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+    });
+  }
+
+  function iniciar(){
+    corrigirIcones();
+    aplicarHeroFisico();
+
+    const obs = new MutationObserver(() => {
+      corrigirIcones();
+      aplicarHeroFisico();
+    });
+    obs.observe(document.documentElement, { childList:true, subtree:true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciar, { once:true });
+  } else {
+    iniciar();
   }
 })();
