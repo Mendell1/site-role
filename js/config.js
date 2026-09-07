@@ -106,7 +106,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/icons-v26.js','v26-icons');
     estilo('css/icons-v26-hotfix.css','v26-icons-hotfix');
 
-    estiloLocal('css/hero-oficial-v26-v2.css?v=20260906-2240','v26-hero-oficial-v2');
-    scriptLocal('js/assets-oficial-v26.js?v=20260906-2240','v26-assets-oficial');
+    estiloLocal('css/hero-oficial-v26-v2.css?v=20260907-0035','v26-hero-oficial-v2');
+    scriptLocal('js/assets-oficial-v26.js?v=20260907-0035','v26-assets-oficial');
   }
 })();
