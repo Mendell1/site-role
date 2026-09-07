@@ -1,0 +1,520 @@
+/* ============================================================
+   ROLÊ V26 — identidade visual do perfil
+   Aproxima perfil, organizador, formulários e cards da linguagem
+   visual da home: preto quente, dourado, bordas suaves e hierarquia.
+   ============================================================ */
+
+body.pagina-perfil-lovable{
+  --perfil-bg:#0b0907;
+  --perfil-bg-2:#100d09;
+  --perfil-panel:#12100d;
+  --perfil-panel-2:#17130f;
+  --perfil-paper:#f4efe7;
+  --perfil-muted:#a69d92;
+  --perfil-line:rgba(244,239,231,.11);
+  --perfil-gold:#f0b83e;
+  --perfil-gold-2:#ffcc57;
+  --perfil-gold-soft:rgba(240,184,62,.14);
+  color:var(--perfil-paper)!important;
+  background:
+    radial-gradient(900px 420px at 88% 4%,rgba(223,143,24,.10),transparent 68%),
+    radial-gradient(700px 420px at 10% 32%,rgba(255,191,56,.045),transparent 68%),
+    linear-gradient(180deg,var(--perfil-bg),#090806 70%,#0b0907)!important;
+  min-height:100vh;
+}
+
+body.pagina-perfil-lovable::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.16;
+  background-image:radial-gradient(rgba(255,255,255,.16) .5px,transparent .5px);
+  background-size:5px 5px;
+  mask-image:linear-gradient(180deg,#000,transparent 72%);
+}
+
+/* ---------- topo: mesma linguagem da home ---------- */
+body.pagina-perfil-lovable .topo{
+  position:sticky!important;
+  top:0!important;
+  z-index:60!important;
+  padding:0!important;
+  background:rgba(9,8,6,.90)!important;
+  backdrop-filter:blur(18px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(125%)!important;
+  border-bottom:1px solid rgba(244,239,231,.09)!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.18)!important;
+}
+
+body.pagina-perfil-lovable .topo-inner{
+  width:min(1490px,calc(100% - 92px))!important;
+  max-width:none!important;
+  min-height:68px!important;
+  height:auto!important;
+  margin:0 auto!important;
+  gap:16px!important;
+}
+
+body.pagina-perfil-lovable .marca{
+  gap:11px!important;
+  color:var(--perfil-paper)!important;
+  text-decoration:none!important;
+}
+
+body.pagina-perfil-lovable .marca-role{
+  font-family:'Anton',sans-serif!important;
+  font-size:32px!important;
+  font-weight:400!important;
+  letter-spacing:.035em!important;
+  line-height:1!important;
+}
+
+body.pagina-perfil-lovable .marca-role>span{
+  color:var(--perfil-gold)!important;
+}
+
+body.pagina-perfil-lovable .marca small{
+  margin:0 0 0 4px!important;
+  color:rgba(244,239,231,.42)!important;
+  font:700 7.5px 'Space Mono',monospace!important;
+  letter-spacing:.28em!important;
+}
+
+body.pagina-perfil-lovable .marca::before,
+body.pagina-perfil-lovable .marca::after,
+body.pagina-perfil-lovable .marca-role::before,
+body.pagina-perfil-lovable .marca-role::after,
+body.pagina-perfil-lovable .v26-logo-pin{
+  display:none!important;
+  content:none!important;
+}
+
+body.pagina-perfil-lovable .btn-voltar-mural{
+  min-height:38px!important;
+  margin-left:22px!important;
+  padding:0 14px!important;
+  border:1px solid rgba(244,239,231,.11)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.018)!important;
+  color:rgba(244,239,231,.72)!important;
+  font-size:11px!important;
+}
+
+body.pagina-perfil-lovable .btn-voltar-mural:hover{
+  color:#fff!important;
+  border-color:rgba(244,239,231,.24)!important;
+  background:rgba(255,255,255,.05)!important;
+}
+
+body.pagina-perfil-lovable .topo .direita{
+  margin-left:auto!important;
+  gap:8px!important;
+}
+
+body.pagina-perfil-lovable .topo .btn{
+  min-height:40px!important;
+  padding:0 15px!important;
+  border-radius:9px!important;
+  border:1px solid rgba(244,239,231,.12)!important;
+  background:rgba(255,255,255,.015)!important;
+  color:rgba(244,239,231,.82)!important;
+  font-size:11px!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable .topo .btn:hover,
+body.pagina-perfil-lovable .topo .btn.ativo{
+  color:#fff!important;
+  background:rgba(255,255,255,.05)!important;
+  border-color:rgba(244,239,231,.23)!important;
+}
+
+body.pagina-perfil-lovable .topo .btn-forte{
+  padding-inline:21px!important;
+  background:linear-gradient(180deg,var(--perfil-gold-2),var(--perfil-gold))!important;
+  border-color:var(--perfil-gold)!important;
+  color:#171005!important;
+  font-weight:700!important;
+}
+
+@media(min-width:1181px){
+  body.pagina-perfil-lovable #btnMenuMobile{display:none!important}
+}
+
+/* ---------- apresentação do usuário ---------- */
+body.pagina-perfil-lovable .perfil-hero{
+  position:relative!important;
+  overflow:hidden!important;
+  border-bottom:1px solid var(--perfil-line)!important;
+  background:
+    radial-gradient(720px 260px at 78% 24%,rgba(240,184,62,.09),transparent 70%),
+    linear-gradient(180deg,rgba(18,15,11,.96),rgba(10,9,7,.96))!important;
+}
+
+body.pagina-perfil-lovable .perfil-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(240,184,62,.025),transparent 48%);
+}
+
+body.pagina-perfil-lovable .perfil-hero-inner{
+  position:relative!important;
+  z-index:1!important;
+  width:min(1120px,calc(100% - 48px))!important;
+  max-width:none!important;
+  min-height:230px!important;
+  margin:0 auto!important;
+  padding:42px 0 36px!important;
+  display:grid!important;
+  grid-template-columns:88px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:24px!important;
+}
+
+body.pagina-perfil-lovable .perfil-avatar-bloco{
+  width:88px!important;
+  height:88px!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 88px!important;
+  background:linear-gradient(145deg,#211a11,#0f0d09)!important;
+  border:1px solid rgba(240,184,62,.42)!important;
+  color:var(--perfil-gold)!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.32),inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  font:400 30px 'Anton',sans-serif!important;
+}
+
+body.pagina-perfil-lovable .perfil-avatar-bloco img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+
+body.pagina-perfil-lovable .perfil-apresentacao{
+  min-width:0!important;
+}
+
+body.pagina-perfil-lovable .perfil-kicker{
+  margin:0 0 8px!important;
+  color:var(--perfil-gold)!important;
+  font:700 9px 'Space Mono',monospace!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+}
+
+body.pagina-perfil-lovable .perfil-kicker::before{
+  content:"";
+  display:inline-block;
+  width:26px;
+  height:2px;
+  margin-right:9px;
+  vertical-align:middle;
+  background:var(--perfil-gold);
+}
+
+body.pagina-perfil-lovable .perfil-apresentacao h1{
+  margin:0!important;
+  color:var(--perfil-paper)!important;
+  font-family:'Anton',sans-serif!important;
+  font-size:clamp(42px,4.3vw,62px)!important;
+  font-weight:400!important;
+  line-height:.98!important;
+  letter-spacing:.01em!important;
+  text-transform:uppercase!important;
+}
+
+body.pagina-perfil-lovable .perfil-bio-resumo{
+  max-width:730px!important;
+  margin:10px 0 0!important;
+  color:rgba(244,239,231,.62)!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+}
+
+body.pagina-perfil-lovable .perfil-metricas{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px 18px!important;
+  margin:14px 0 0!important;
+  padding:0!important;
+  list-style:none!important;
+  color:rgba(244,239,231,.48)!important;
+  font:600 10px 'Archivo',sans-serif!important;
+}
+
+body.pagina-perfil-lovable .perfil-metricas li{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+}
+
+body.pagina-perfil-lovable .perfil-hero-acoes .btn-forte,
+body.pagina-perfil-lovable #btnCriarHero{
+  min-height:46px!important;
+  padding:0 22px!important;
+  border-radius:10px!important;
+  border:1px solid var(--perfil-gold)!important;
+  background:linear-gradient(180deg,var(--perfil-gold-2),var(--perfil-gold))!important;
+  color:#171005!important;
+  font-weight:700!important;
+  box-shadow:0 10px 28px rgba(240,184,62,.12)!important;
+}
+
+/* ---------- corpo e abas ---------- */
+body.pagina-perfil-lovable .perfil-main{
+  width:min(1120px,calc(100% - 48px))!important;
+  max-width:none!important;
+  margin:0 auto!important;
+  padding:30px 0 80px!important;
+}
+
+body.pagina-perfil-lovable .perfil-abas{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  margin:0 0 24px!important;
+  padding:6px!important;
+  overflow-x:auto!important;
+  border:1px solid var(--perfil-line)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,rgba(22,19,15,.95),rgba(13,11,9,.97))!important;
+  box-shadow:0 15px 38px rgba(0,0,0,.16)!important;
+  scrollbar-width:none!important;
+}
+body.pagina-perfil-lovable .perfil-abas::-webkit-scrollbar{display:none!important}
+
+body.pagina-perfil-lovable .perfil-aba{
+  min-height:40px!important;
+  padding:0 14px!important;
+  flex:0 0 auto!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:rgba(244,239,231,.58)!important;
+  font:600 11px 'Archivo',sans-serif!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable .perfil-aba:hover{
+  color:#fff!important;
+  background:rgba(255,255,255,.035)!important;
+}
+
+body.pagina-perfil-lovable .perfil-aba.ativa,
+body.pagina-perfil-lovable .perfil-aba[aria-selected="true"]{
+  color:#171005!important;
+  background:linear-gradient(180deg,var(--perfil-gold-2),var(--perfil-gold))!important;
+  font-weight:700!important;
+}
+
+body.pagina-perfil-lovable .perfil-painel{
+  color:var(--perfil-paper)!important;
+}
+
+/* ---------- cards de eventos: deixa de parecer um papel branco ---------- */
+body.pagina-perfil-lovable .grade-perfil{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:18px!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-card{
+  overflow:hidden!important;
+  border:1px solid rgba(244,239,231,.11)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#17130f,#100e0b)!important;
+  color:var(--perfil-paper)!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.20)!important;
+  transform:none!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-card:hover{
+  transform:translateY(-4px)!important;
+  border-color:rgba(240,184,62,.42)!important;
+  box-shadow:0 26px 56px rgba(0,0,0,.30)!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-media{
+  background:#19150f!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-media .capa{
+  filter:saturate(.95) contrast(1.04) brightness(.86)!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-conteudo,
+body.pagina-perfil-lovable .grade-perfil .evento-rodape{
+  color:var(--perfil-paper)!important;
+  background:transparent!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-card h3{
+  color:#fff!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-meta,
+body.pagina-perfil-lovable .grade-perfil .v261-card-desc,
+body.pagina-perfil-lovable .grade-perfil .organizador-card{
+  color:rgba(244,239,231,.54)!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .evento-rodape{
+  border-top-color:rgba(244,239,231,.09)!important;
+}
+
+body.pagina-perfil-lovable .grade-perfil .fav-card,
+body.pagina-perfil-lovable .grade-perfil .btn-interesse,
+body.pagina-perfil-lovable .grade-perfil button{
+  border-color:rgba(244,239,231,.13)!important;
+  background:rgba(255,255,255,.018)!important;
+  color:rgba(244,239,231,.78)!important;
+}
+
+/* Compatibilidade com cards de inscrições/participação V25. */
+body.pagina-perfil-lovable .v252-inscricao-card,
+body.pagina-perfil-lovable .v252-card{
+  overflow:hidden!important;
+  border:1px solid rgba(244,239,231,.11)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#17130f,#100e0b)!important;
+  color:var(--perfil-paper)!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.2)!important;
+}
+body.pagina-perfil-lovable .v252-inscricao-corpo,
+body.pagina-perfil-lovable .v252-inscricao-corpo h3,
+body.pagina-perfil-lovable .v252-inscricao-corpo p,
+body.pagina-perfil-lovable .v252-numeros,
+body.pagina-perfil-lovable .v252-numeros span,
+body.pagina-perfil-lovable .v252-meta{color:inherit!important}
+
+/* ---------- formulários e painéis ---------- */
+body.pagina-perfil-lovable .superficie-lovable,
+body.pagina-perfil-lovable .bloco-form-lovable{
+  border-color:var(--perfil-line)!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.026),rgba(255,255,255,.009))!important;
+  color:var(--perfil-paper)!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable .bloco-kicker{
+  color:var(--perfil-gold)!important;
+  font-family:'Space Mono',monospace!important;
+  letter-spacing:.15em!important;
+}
+
+body.pagina-perfil-lovable .campo label,
+body.pagina-perfil-lovable .item-switch-lovable,
+body.pagina-perfil-lovable .texto-risco{
+  color:rgba(244,239,231,.72)!important;
+}
+
+body.pagina-perfil-lovable .dica{
+  color:rgba(244,239,231,.45)!important;
+}
+
+body.pagina-perfil-lovable input,
+body.pagina-perfil-lovable textarea,
+body.pagina-perfil-lovable select{
+  border:1px solid rgba(244,239,231,.13)!important;
+  border-radius:9px!important;
+  background:rgba(7,6,5,.56)!important;
+  color:var(--perfil-paper)!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable input:focus,
+body.pagina-perfil-lovable textarea:focus,
+body.pagina-perfil-lovable select:focus{
+  outline:none!important;
+  border-color:rgba(240,184,62,.62)!important;
+  box-shadow:0 0 0 3px rgba(240,184,62,.09)!important;
+}
+
+body.pagina-perfil-lovable .btn-escuro{
+  border-color:var(--perfil-gold)!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,var(--perfil-gold-2),var(--perfil-gold))!important;
+  color:#171005!important;
+}
+
+body.pagina-perfil-lovable .btn-linha,
+body.pagina-perfil-lovable .link-botao{
+  border-color:rgba(244,239,231,.13)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.015)!important;
+  color:rgba(244,239,231,.75)!important;
+}
+
+body.pagina-perfil-lovable .btn-linha:hover,
+body.pagina-perfil-lovable .link-botao:hover{
+  border-color:rgba(244,239,231,.25)!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.045)!important;
+}
+
+body.pagina-perfil-lovable .zona-risco-lovable{
+  border-color:rgba(197,77,67,.25)!important;
+  background:linear-gradient(145deg,rgba(128,43,37,.09),rgba(255,255,255,.008))!important;
+}
+
+body.pagina-perfil-lovable .kicker-risco{color:#d4776e!important}
+
+body.pagina-perfil-lovable .perfil-vazio,
+body.pagina-perfil-lovable .estado-sem-sessao-card{
+  border-color:var(--perfil-line)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.015)!important;
+  color:var(--perfil-paper)!important;
+}
+
+/* Modais do perfil sem quebrar o restante do site. */
+body.pagina-perfil-lovable .cortina .folha{
+  border:1px solid rgba(244,239,231,.12)!important;
+  border-radius:15px!important;
+  background:#15120e!important;
+  color:var(--perfil-paper)!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.55)!important;
+}
+
+body.pagina-perfil-lovable .cortina .fechar{
+  color:rgba(244,239,231,.65)!important;
+}
+
+/* ---------- responsivo ---------- */
+@media(max-width:1180px){
+  body.pagina-perfil-lovable .topo-inner,
+  body.pagina-perfil-lovable .perfil-hero-inner,
+  body.pagina-perfil-lovable .perfil-main{
+    width:calc(100% - 32px)!important;
+  }
+  body.pagina-perfil-lovable .grade-perfil{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(max-width:760px){
+  body.pagina-perfil-lovable .topo-inner{min-height:62px!important}
+  body.pagina-perfil-lovable .marca small{display:none!important}
+  body.pagina-perfil-lovable .btn-voltar-mural{display:none!important}
+  body.pagina-perfil-lovable .perfil-hero-inner{
+    min-height:0!important;
+    padding:28px 0 25px!important;
+    grid-template-columns:66px minmax(0,1fr)!important;
+    gap:16px!important;
+  }
+  body.pagina-perfil-lovable .perfil-avatar-bloco{
+    width:66px!important;height:66px!important;flex-basis:66px!important;border-radius:14px!important
+  }
+  body.pagina-perfil-lovable .perfil-apresentacao h1{font-size:40px!important}
+  body.pagina-perfil-lovable .perfil-hero-acoes{grid-column:1/-1!important}
+  body.pagina-perfil-lovable #btnCriarHero{width:100%!important}
+  body.pagina-perfil-lovable .perfil-main{padding-top:20px!important}
+  body.pagina-perfil-lovable .grade-perfil{grid-template-columns:1fr!important}
+}
