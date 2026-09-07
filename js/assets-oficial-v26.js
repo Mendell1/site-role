@@ -1,8 +1,8 @@
 /* ROLÊ V26 — assets oficiais e hero físico em alta qualidade. */
 (() => {
   'use strict';
-  if (window.__roleV26AssetsOficiais) return;
-  window.__roleV26AssetsOficiais = true;
+  if (window.__roleV26AssetsOficiaisV2) return;
+  window.__roleV26AssetsOficiaisV2 = true;
 
   const mapa = {
     'assets/icons/categoria-cultura.png': 'preview-v25/assets/icons/categoria-cultura.png',
@@ -10,7 +10,7 @@
   };
 
   let heroPromise = null;
-  let heroBlobUrl = null;
+  let heroDataUrl = null;
 
   function corrigirIcones(){
     document.querySelectorAll('img.v26-icon-png').forEach(img => {
@@ -22,25 +22,20 @@
   }
 
   async function obterHeroHQ(){
-    if (heroBlobUrl) return heroBlobUrl;
+    if (heroDataUrl) return heroDataUrl;
     if (heroPromise) return heroPromise;
 
     heroPromise = (async () => {
-      const resposta = await fetch('assets/hero-v26-wide-approved-hq.b64?v=20260906-2305', {
-        cache: 'no-store'
+      const resposta = await fetch('assets/hero-v26-wide-approved-hq.b64?v=20260907-0035', {
+        cache: 'reload'
       });
       if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
 
       const base64 = (await resposta.text()).replace(/\s+/g, '');
       if (!base64.startsWith('UklG')) throw new Error('payload do hero não é WebP base64 válido');
 
-      const binario = atob(base64);
-      const bytes = new Uint8Array(binario.length);
-      for (let i = 0; i < binario.length; i++) bytes[i] = binario.charCodeAt(i);
-
-      const blob = new Blob([bytes], { type: 'image/webp' });
-      heroBlobUrl = URL.createObjectURL(blob);
-      return heroBlobUrl;
+      heroDataUrl = `data:image/webp;base64,${base64}`;
+      return heroDataUrl;
     })().catch(erro => {
       heroPromise = null;
       throw erro;
@@ -57,7 +52,10 @@
 
     hero.style.setProperty('position', 'relative', 'important');
     hero.style.setProperty('overflow', 'hidden', 'important');
-    hero.style.setProperty('background', '#090806', 'important');
+    /* IMPORTANTE: não usar o shorthand `background` aqui. Ele apagava a
+       background-image definida pelo CSS oficial e deixava o hero preto. */
+    hero.style.removeProperty('background');
+    hero.style.setProperty('background-color', '#090806', 'important');
     hero.style.setProperty('isolation', 'isolate', 'important');
 
     let img = hero.querySelector('.v26-hero-bg-fisico');
@@ -80,7 +78,9 @@
         zIndex: '0',
         pointerEvents: 'none',
         userSelect: 'none',
-        display: 'block'
+        display: 'block',
+        visibility: 'visible',
+        opacity: '1'
       });
 
       img.addEventListener('load', () => {
@@ -89,7 +89,7 @@
       });
 
       img.addEventListener('error', () => {
-        console.error('[V26] Falha ao decodificar hero HQ.');
+        console.error('[V26] Falha ao decodificar hero HQ; mantendo fallback CSS.');
       });
 
       hero.prepend(img);
@@ -100,6 +100,7 @@
       if (img.src !== src) img.src = src;
     } catch (erro) {
       console.error('[V26] Falha ao carregar payload HQ do hero:', erro);
+      /* O CSS hero-oficial-v26-v2.css continua sendo o fallback. */
     }
 
     let overlay = hero.querySelector('.v26-hero-overlay-fisico');
