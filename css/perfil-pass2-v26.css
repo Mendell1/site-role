@@ -1,0 +1,179 @@
+/* ROLÊ V26 — perfil pass 2
+   Ajuste fino após comparação com o print real. */
+
+body.pagina-perfil-lovable.v26-perfil-mockup{
+  --pm-gold:#efb536;
+  --pm-gold-2:#ffd15e;
+}
+
+/* Hero mais baixo, menos escuro e mais fotográfico. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero{
+  min-height:248px!important;
+  background-image:
+    linear-gradient(90deg,rgba(7,6,5,.91) 0%,rgba(7,6,5,.76) 34%,rgba(7,6,5,.39) 62%,rgba(7,6,5,.58) 100%),
+    var(--perfil-hero-hq, url('../preview-v25/assets/evento-musica.jpg'))!important;
+  background-size:100% 100%,cover!important;
+  background-position:center center,center 51%!important;
+  background-repeat:no-repeat,no-repeat!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero::before{
+  background:
+    radial-gradient(520px 210px at 48% 30%,rgba(239,181,54,.055),transparent 72%),
+    linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.10))!important;
+  backdrop-filter:blur(.6px) saturate(.96)!important;
+  -webkit-backdrop-filter:blur(.6px) saturate(.96)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero::after{
+  background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 54%,rgba(0,0,0,.07))!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
+  width:min(1320px,calc(100% - 72px))!important;
+  min-height:248px!important;
+  padding:24px 0 22px!important;
+  grid-template-columns:128px minmax(0,1fr) auto!important;
+  gap:28px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
+  width:128px!important;
+  height:128px!important;
+  border-radius:17px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco img{
+  border-radius:16px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-apresentacao h1{
+  font-size:clamp(52px,4.5vw,72px)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-bio-resumo{
+  max-width:720px!important;
+  margin-top:10px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-metricas{
+  margin-top:12px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-decor-v26.esquerda{
+  top:63px!important;
+  opacity:.82;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-decor-v26.direita{
+  top:52px!important;
+  opacity:.82;
+}
+
+/* Faixa e conteúdo um pouco mais largos, como no mockup. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-abas,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-main{
+  width:min(1320px,calc(100% - 72px))!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-main{
+  padding-top:22px!important;
+}
+
+/* Remove o rótulo solto do lado direito. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-eventos-resumo-v26{
+  display:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-eventos-cabecalho-v26{
+  justify-content:flex-start!important;
+  margin-bottom:20px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-eventos-cabecalho-v26 h2{
+  font-size:clamp(40px,3.7vw,55px)!important;
+}
+
+/* Cards maiores e com largura controlada; um único evento não fica perdido. */
+body.pagina-perfil-lovable.v26-perfil-mockup #gradeMeusEventos.grade-perfil,
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(350px,400px))!important;
+  justify-content:start!important;
+  align-items:start!important;
+  gap:20px!important;
+  width:100%!important;
+  max-width:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-card{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  border-radius:15px!important;
+  border-color:rgba(245,239,230,.14)!important;
+  background:linear-gradient(180deg,#17130f 0%,#100d0a 100%)!important;
+  box-shadow:0 20px 48px rgba(0,0,0,.24)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-media{
+  width:100%!important;
+  min-height:190px!important;
+  max-height:none!important;
+  aspect-ratio:16/8.7!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-conteudo{
+  padding:15px 16px 14px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-card h3{
+  font-size:23px!important;
+  line-height:1.05!important;
+  margin-top:8px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta{
+  gap:6px 14px!important;
+  margin-top:10px!important;
+  font-size:11.5px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-rodape{
+  min-height:48px!important;
+  margin-top:12px!important;
+  padding-top:11px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .btn-interesse{
+  min-height:36px!important;
+  padding-inline:13px!important;
+  border-color:rgba(239,181,54,.52)!important;
+  color:var(--pm-gold-2)!important;
+}
+
+@media(max-width:1180px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero{
+    min-height:auto!important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
+    width:calc(100% - 40px)!important;
+    min-height:auto!important;
+    padding:24px 0!important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup #gradeMeusEventos.grade-perfil,
+  body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil{
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr))!important;
+  }
+}
+
+@media(max-width:700px){
+  body.pagina-perfil-lovable.v26-perfil-mockup #gradeMeusEventos.grade-perfil,
+  body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil{
+    grid-template-columns:1fr!important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-media{
+    min-height:170px!important;
+  }
+}
