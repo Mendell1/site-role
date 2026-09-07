@@ -1,0 +1,42 @@
+/* ROLÊ V26 — alinhamento final da faixa de categorias com o mural */
+
+@media (min-width:1181px){
+  body.v26-home .cats,
+  body.v26-home .mural{
+    width:min(1512px,calc(100% - 126px))!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.v26-home .cats{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+
+  body.v26-home .mural{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+
+  body.v26-home .mural-toolbar{
+    width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+@media (max-width:1180px){
+  body.v26-home .cats,
+  body.v26-home .mural{
+    width:calc(100% - 32px)!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.v26-home .cats{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+}
