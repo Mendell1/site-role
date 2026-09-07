@@ -95,9 +95,10 @@ if (SUPABASE_URL.startsWith('COLE')) {
   if(eh('perfil.html')){
     estiloLocal('css/perfil-identidade-v26.css?v=20260907-1345','v26-perfil-identidade');
     estiloLocal('css/perfil-mockup-v26.css?v=20260907-1410','v26-perfil-mockup');
-    scriptLocal('js/perfil-mockup-v26.js?v=20260907-1410','v26-perfil-mockup');
+    scriptLocal('js/perfil-mockup-v26.js?v=20260907-1455','v26-perfil-mockup');
     estiloLocal('css/perfil-pass2-v26.css?v=20260907-1435','v26-perfil-pass2');
     scriptLocal('js/perfil-pass2-v26.js?v=20260907-1435','v26-perfil-pass2');
+    estiloLocal('css/perfil-topo-home-v26.css?v=20260907-1455','v26-perfil-topo-home');
   }
 
   if(eh('index.html')){
