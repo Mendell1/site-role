@@ -4,7 +4,7 @@
   if (window.__roleV26AssetsOficiaisV4) return;
   window.__roleV26AssetsOficiaisV4 = true;
 
-  const VERSAO = '20260907-0140';
+  const VERSAO = '20260907-0225';
   const BASE64_ESPERADO = 182088;
   const BYTES_ESPERADOS = 136564;
   const HERO_LARGURA = 2172;
@@ -17,7 +17,10 @@
     'assets/hero-v26-q80-part01.txt',
     'assets/hero-v26-q80-part02.txt',
     'assets/hero-v26-q80-part03.txt',
-    'assets/hero-v26-q80-part04.txt',
+    'assets/hero-v26-q80-part04a.txt',
+    'assets/hero-v26-q80-part04b.txt',
+    'assets/hero-v26-q80-part04c.txt',
+    'assets/hero-v26-q80-part04d.txt',
     'assets/hero-v26-q80-part05.txt',
     'assets/hero-v26-q80-part06.txt',
     'assets/hero-v26-q80-part07.txt',
