@@ -1,0 +1,189 @@
+/* ROLÊ V26 — topo do perfil idêntico à linguagem da home */
+
+@media (min-width:1181px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo{
+    position:sticky!important;
+    top:0!important;
+    z-index:60!important;
+    min-height:70px!important;
+    padding:0 28px!important;
+    background:rgba(9,8,6,.86)!important;
+    backdrop-filter:blur(20px) saturate(130%)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(130%)!important;
+    border-bottom:1px solid rgba(244,239,231,.10)!important;
+    box-shadow:0 10px 35px rgba(0,0,0,.18)!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo-inner{
+    width:min(1480px,100%)!important;
+    max-width:none!important;
+    min-height:70px!important;
+    height:70px!important;
+    margin:0 auto!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:24px!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca{
+    display:flex!important;
+    align-items:center!important;
+    gap:13px!important;
+    flex:0 0 auto!important;
+    color:#f4efe7!important;
+    text-decoration:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca-role{
+    font-family:'Anton',sans-serif!important;
+    font-size:29px!important;
+    font-weight:400!important;
+    letter-spacing:.025em!important;
+    line-height:1!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca-role>span{
+    color:#f0b83e!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca small{
+    display:block!important;
+    margin:0!important;
+    color:rgba(244,239,231,.46)!important;
+    font-family:'Space Mono',monospace!important;
+    font-size:8px!important;
+    font-weight:700!important;
+    line-height:1!important;
+    letter-spacing:.28em!important;
+    white-space:nowrap!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca::before,
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca::after,
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca-role::before,
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca-role::after,
+  body.pagina-perfil-lovable.v26-perfil-mockup .v26-logo-pin{
+    display:none!important;
+    content:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26{
+    display:flex!important;
+    align-self:stretch!important;
+    align-items:center!important;
+    gap:34px!important;
+    margin:0 0 0 auto!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26 a{
+    position:relative!important;
+    display:flex!important;
+    align-items:center!important;
+    height:100%!important;
+    min-height:70px!important;
+    padding:0!important;
+    color:rgba(244,239,231,.72)!important;
+    font-family:'Archivo',sans-serif!important;
+    font-size:13px!important;
+    font-weight:600!important;
+    line-height:1!important;
+    text-decoration:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26 a:hover,
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26 a.ativo{
+    color:#fff!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26 a.ativo::after{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    height:2px!important;
+    background:#f0b83e!important;
+    box-shadow:0 0 14px rgba(240,184,62,.60)!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo-mobile-acoes{
+    display:flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    margin-left:0!important;
+    flex:0 0 auto!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup #btnMenuMobile{
+    display:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .direita{
+    display:flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    margin-left:4px!important;
+    flex:0 0 auto!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .btn,
+  body.pagina-perfil-lovable.v26-perfil-mockup .btn-icone.sino{
+    min-height:40px!important;
+    height:40px!important;
+    padding:0 14px!important;
+    border-radius:10px!important;
+    border:1px solid rgba(244,239,231,.13)!important;
+    background:rgba(255,255,255,.015)!important;
+    color:rgba(244,239,231,.82)!important;
+    font-size:11.5px!important;
+    font-weight:600!important;
+    box-shadow:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .btn-icone.sino{
+    width:40px!important;
+    min-width:40px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#f0b83e!important;
+    background:rgba(255,255,255,.02)!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .btn:hover{
+    background:rgba(255,255,255,.055)!important;
+    border-color:rgba(244,239,231,.25)!important;
+    color:#fff!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .btn.ativo{
+    background:rgba(255,255,255,.03)!important;
+    border-color:rgba(244,239,231,.17)!important;
+    color:#fff!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .btn-forte{
+    min-height:40px!important;
+    padding:0 20px!important;
+    background:linear-gradient(180deg,#ffcc57,#f0b83e)!important;
+    border-color:#f0b83e!important;
+    color:#171005!important;
+    box-shadow:0 8px 25px rgba(240,184,62,.16)!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .topo .btn-forte:hover{
+    transform:translateY(-1px)!important;
+    filter:brightness(1.04)!important;
+    color:#171005!important;
+  }
+}
+
+@media (max-width:1180px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26{
+    display:none!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .marca small{
+    display:none!important;
+  }
+}
