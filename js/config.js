@@ -94,6 +94,8 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('perfil.html')){
     estiloLocal('css/perfil-identidade-v26.css?v=20260907-1345','v26-perfil-identidade');
+    estiloLocal('css/perfil-mockup-v26.css?v=20260907-1410','v26-perfil-mockup');
+    scriptLocal('js/perfil-mockup-v26.js?v=20260907-1410','v26-perfil-mockup');
   }
 
   if(eh('index.html')){
