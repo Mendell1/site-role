@@ -1,0 +1,93 @@
+/* ROLÊ V26 — polimento visual final
+   Ajustes leves de hierarquia, respiro e densidade sem alterar regras do app. */
+
+/* Hero um pouco mais compacto para os eventos entrarem mais cedo na tela. */
+@media (min-width:1181px){
+  body.v26-home .v26-hero-grid{
+    min-height:365px!important;
+    padding-top:14px!important;
+    padding-bottom:12px!important;
+  }
+
+  body.v26-home .hero-conteudo{
+    padding-top:8px!important;
+    padding-bottom:8px!important;
+  }
+
+  body.v26-home .v26-hero-arte{
+    min-height:350px!important;
+  }
+}
+
+/* Embaçado discreto apenas no fundo: o conteúdo continua nítido. */
+body.v26-home .hero.v26-hero-img-ok::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  background:rgba(8,7,5,.035)!important;
+  backdrop-filter:blur(2px) saturate(.97)!important;
+  -webkit-backdrop-filter:blur(2px) saturate(.97)!important;
+}
+
+body.v26-home .hero-conteudo,
+body.v26-home .v26-hero-grid{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* Mais respiro entre filtros/categorias e a navegação do mural. */
+body.v26-home .faixa{
+  margin-bottom:16px!important;
+}
+
+body.v26-home .mural{
+  padding-top:0!important;
+}
+
+/* Menos bordas competindo entre si. */
+body.v26-home .cat{
+  border-color:rgba(244,239,231,.10)!important;
+}
+
+body.v26-home .cat:hover{
+  border-color:rgba(244,239,231,.22)!important;
+}
+
+body.v26-home .mural-toolbar{
+  border-color:rgba(244,239,231,.09)!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.14)!important;
+}
+
+body.v26-home .visoes{
+  border-color:rgba(244,239,231,.08)!important;
+  background:rgba(255,255,255,.012)!important;
+}
+
+body.v26-home .evento-card{
+  border-color:rgba(244,239,231,.11)!important;
+}
+
+body.v26-home .busca{
+  border-color:rgba(244,239,231,.18)!important;
+}
+
+/* “Mural” continua selecionado, mas sem disputar atenção com “Todos os eventos”. */
+body.v26-home .visao[aria-pressed="true"]{
+  background:rgba(240,184,62,.13)!important;
+  color:#f3bd47!important;
+  border:1px solid rgba(240,184,62,.38)!important;
+  box-shadow:none!important;
+}
+
+/* Seções com separação visual mais calma. */
+body.v26-home .linha-topo{
+  padding-top:18px!important;
+}
+
+@media (max-width:1180px){
+  body.v26-home .faixa{margin-bottom:12px!important}
+  body.v26-home .mural{padding-top:0!important}
+}
