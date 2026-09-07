@@ -1,4 +1,4 @@
-/* ROLÊ V26 — assets oficiais e hero físico, sem depender de background-image. */
+/* ROLÊ V26 — assets oficiais e hero físico em alta qualidade. */
 (() => {
   'use strict';
   if (window.__roleV26AssetsOficiais) return;
@@ -9,6 +9,9 @@
     'assets/icons/categoria-gastronomia.png': 'preview-v25/assets/icons/categoria-gastronomia.png'
   };
 
+  let heroPromise = null;
+  let heroBlobUrl = null;
+
   function corrigirIcones(){
     document.querySelectorAll('img.v26-icon-png').forEach(img => {
       const atual = img.getAttribute('src') || '';
@@ -18,7 +21,35 @@
     });
   }
 
-  function aplicarHeroFisico(){
+  async function obterHeroHQ(){
+    if (heroBlobUrl) return heroBlobUrl;
+    if (heroPromise) return heroPromise;
+
+    heroPromise = (async () => {
+      const resposta = await fetch('assets/hero-v26-wide-approved-hq.b64?v=20260906-2305', {
+        cache: 'no-store'
+      });
+      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+
+      const base64 = (await resposta.text()).replace(/\s+/g, '');
+      if (!base64.startsWith('UklG')) throw new Error('payload do hero não é WebP base64 válido');
+
+      const binario = atob(base64);
+      const bytes = new Uint8Array(binario.length);
+      for (let i = 0; i < binario.length; i++) bytes[i] = binario.charCodeAt(i);
+
+      const blob = new Blob([bytes], { type: 'image/webp' });
+      heroBlobUrl = URL.createObjectURL(blob);
+      return heroBlobUrl;
+    })().catch(erro => {
+      heroPromise = null;
+      throw erro;
+    });
+
+    return heroPromise;
+  }
+
+  async function aplicarHeroFisico(){
     const hero = document.querySelector('.hero');
     if (!hero) return;
 
@@ -38,7 +69,6 @@
       img.decoding = 'async';
       img.loading = 'eager';
       img.fetchPriority = 'high';
-      img.src = 'assets/hero-v26-wide-approved.webp?v=20260906-2240';
 
       Object.assign(img.style, {
         position: 'absolute',
@@ -46,7 +76,7 @@
         width: '100%',
         height: '100%',
         objectFit: 'cover',
-        objectPosition: 'center 58%',
+        objectPosition: 'center center',
         zIndex: '0',
         pointerEvents: 'none',
         userSelect: 'none',
@@ -55,14 +85,21 @@
 
       img.addEventListener('load', () => {
         hero.classList.add('v26-hero-img-ok');
-        console.info('[V26] Hero físico carregado:', img.naturalWidth, 'x', img.naturalHeight);
-      }, { once:true });
+        console.info('[V26] Hero HQ físico carregado:', img.naturalWidth, 'x', img.naturalHeight);
+      });
 
       img.addEventListener('error', () => {
-        console.error('[V26] Falha ao carregar asset físico do hero:', img.src);
-      }, { once:true });
+        console.error('[V26] Falha ao decodificar hero HQ.');
+      });
 
       hero.prepend(img);
+    }
+
+    try {
+      const src = await obterHeroHQ();
+      if (img.src !== src) img.src = src;
+    } catch (erro) {
+      console.error('[V26] Falha ao carregar payload HQ do hero:', erro);
     }
 
     let overlay = hero.querySelector('.v26-hero-overlay-fisico');
@@ -75,7 +112,7 @@
         inset: '0',
         zIndex: '1',
         pointerEvents: 'none',
-        background: 'linear-gradient(90deg, rgba(7,6,5,.42) 0%, rgba(7,6,5,.22) 28%, rgba(7,6,5,.06) 50%, rgba(7,6,5,0) 72%)'
+        background: 'linear-gradient(90deg, rgba(7,6,5,.68) 0%, rgba(7,6,5,.48) 27%, rgba(7,6,5,.18) 48%, rgba(7,6,5,.03) 68%, rgba(7,6,5,0) 100%)'
       });
       img.after(overlay);
     }
@@ -96,7 +133,8 @@
 
     const obs = new MutationObserver(() => {
       corrigirIcones();
-      aplicarHeroFisico();
+      const hero = document.querySelector('.hero');
+      if (hero && !hero.querySelector('.v26-hero-bg-fisico')) aplicarHeroFisico();
     });
     obs.observe(document.documentElement, { childList:true, subtree:true });
   }
