@@ -108,7 +108,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/perfil-switches-v26.css?v=20260908-0330','v26-perfil-switches');
     estiloLocal('css/perfil-avatar-card-v26.css?v=20260908-0400','v26-perfil-avatar-card');
     estiloLocal('css/perfil-foto-conta-v26.css?v=20260908-0420','v26-perfil-foto-conta');
-    scriptLocal('js/perfil-foto-conta-v26.js?v=20260908-0420','v26-perfil-foto-conta');
+    scriptLocal('js/perfil-foto-conta-v26.js?v=20260908-0450','v26-perfil-foto-conta');
     scriptLocal('js/perfil-recuperacao-v26.js?v=20260908-0425','v26-perfil-recuperacao');
   }
 
