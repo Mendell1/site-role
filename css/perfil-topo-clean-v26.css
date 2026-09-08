@@ -1,0 +1,10 @@
+/* ROLÊ V26 — limpa ações duplicadas do topo do perfil */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-nav-v26,
+body.pagina-perfil-lovable.v26-perfil-mockup #btnPerfil,
+body.pagina-perfil-lovable.v26-perfil-mockup #btnCriar{
+  display:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .topo .direita{
+  margin-left:auto!important;
+}
