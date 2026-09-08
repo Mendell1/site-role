@@ -1,0 +1,120 @@
+/* ============================================================
+   ROLÊ V26 — troca de foto em Conta e segurança
+   ============================================================ */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-v26{
+  padding:22px!important;
+  border:1px solid rgba(245,239,230,.12)!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(22,18,14,.96),rgba(13,11,9,.98))!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.18)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-cabecalho-v26 h3{
+  margin:3px 0 6px!important;
+  color:#fff!important;
+  font:600 18px 'Archivo',sans-serif!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-cabecalho-v26 .dica{
+  max-width:650px!important;
+  margin:0!important;
+  color:rgba(245,239,230,.52)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-corpo-v26{
+  display:flex!important;
+  align-items:center!important;
+  gap:22px!important;
+  margin-top:18px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+  width:112px!important;
+  height:112px!important;
+  flex:0 0 112px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border-radius:24px!important;
+  color:#171006!important;
+  background:linear-gradient(180deg,#faf7f1,#eee7dc)!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.28),0 0 0 1px rgba(239,181,54,.18)!important;
+  font:400 31px 'Anton',sans-serif!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-acoes-v26{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-input-v26{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-escolher-v26{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:40px!important;
+  margin:0!important;
+  padding:0 15px!important;
+  cursor:pointer!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-arquivo-v26{
+  width:100%!important;
+  margin:0!important;
+  color:rgba(245,239,230,.43)!important;
+  font:500 10.5px 'Archivo',sans-serif!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup #btnSalvarFotoContaV26{
+  min-height:40px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
+  background:linear-gradient(180deg,#ffd15e,#efb536)!important;
+  border:1px solid #efb536!important;
+  color:#171006!important;
+  font-weight:700!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup #btnSalvarFotoContaV26:disabled{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+  filter:saturate(.55)!important;
+}
+
+@media(max-width:700px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-corpo-v26{
+    align-items:flex-start!important;
+    gap:16px!important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+    width:86px!important;
+    height:86px!important;
+    flex-basis:86px!important;
+    border-radius:19px!important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-acoes-v26{
+    flex:1!important;
+  }
+}
