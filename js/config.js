@@ -101,6 +101,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/perfil-topo-home-v26.css?v=20260907-1455','v26-perfil-topo-home');
     estiloLocal('css/perfil-topo-icons-v26.css?v=20260908-0240','v26-perfil-topo-icons');
     scriptLocal('js/perfil-topo-icons-v26.js?v=20260908-0240','v26-perfil-topo-icons');
+    estiloLocal('css/perfil-topo-clean-v26.css?v=20260908-0245','v26-perfil-topo-clean');
   }
 
   if(eh('index.html')){
