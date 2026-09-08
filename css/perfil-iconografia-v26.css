@@ -112,6 +112,47 @@ body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba[
   color:var(--perfil-icon-gold-2);
 }
 
+/*
+   Minhas inscrições é criada dinamicamente pelo módulo de participação.
+   O estado visual agora segue o painel realmente visível, mesmo se outro
+   módulo deixar uma classe .ativa antiga em outra aba.
+*/
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba[data-tab="inscricoes"]{
+  color:var(--perfil-icon-gold-2)!important;
+  background:linear-gradient(180deg,rgba(239,181,54,.10),rgba(239,181,54,.035))!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba[data-tab="inscricoes"] > .perfil-icon-v26{
+  color:var(--perfil-icon-gold-2)!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba[data-tab="inscricoes"]::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  height:3px!important;
+  border-radius:3px 3px 0 0!important;
+  background:var(--perfil-icon-gold-2)!important;
+  box-shadow:0 0 14px rgba(239,181,54,.30)!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba:not([data-tab="inscricoes"]){
+  color:rgba(245,239,230,.66)!important;
+  background:transparent!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba:not([data-tab="inscricoes"]) > .perfil-icon-v26{
+  color:var(--perfil-icon-muted)!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup:has(.perfil-painel[data-pane="inscricoes"]:not([hidden]))
+  .perfil-abas-faixa-v26 .perfil-aba:not([data-tab="inscricoes"])::after{
+  display:none!important;
+}
+
 /* Metadados dos cards. */
 body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta > li{
   display:flex!important;
