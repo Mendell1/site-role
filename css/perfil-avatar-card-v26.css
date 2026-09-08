@@ -1,41 +1,41 @@
 /* ============================================================
    ROLÊ V26 — moldura premium do avatar do perfil
-   Aproxima o avatar do mockup: cartão vertical arredondado,
-   fundo claro, personagem inteiro e selo dourado sobreposto.
+   Ajuste fino: menos alta, um pouco mais larga e com mais respiro.
    ============================================================ */
 
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
-  grid-template-columns:146px minmax(0,1fr) auto!important;
+  grid-template-columns:136px minmax(0,1fr) auto!important;
   gap:28px!important;
 }
 
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
   position:relative!important;
-  width:146px!important;
-  height:168px!important;
-  padding:7px!important;
+  width:136px!important;
+  height:150px!important;
+  padding:6px!important;
   box-sizing:border-box!important;
-  border-radius:24px!important;
+  border-radius:22px!important;
   overflow:visible!important;
   display:grid!important;
   place-items:center!important;
+  align-self:center!important;
   background:linear-gradient(180deg,#faf7f1 0%,#eee7dc 100%)!important;
   border:1px solid rgba(255,255,255,.72)!important;
   box-shadow:
-    0 22px 52px rgba(0,0,0,.34),
-    0 0 0 1px rgba(239,181,54,.22),
+    0 18px 44px rgba(0,0,0,.31),
+    0 0 0 1px rgba(239,181,54,.18),
     inset 0 1px 0 rgba(255,255,255,.88)!important;
 }
 
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco::before{
   content:""!important;
   position:absolute!important;
-  inset:6px!important;
+  inset:5px!important;
   z-index:0!important;
   pointer-events:none!important;
-  border-radius:18px!important;
-  border:1px solid rgba(23,16,6,.07)!important;
-  background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0))!important;
+  border-radius:17px!important;
+  border:1px solid rgba(23,16,6,.065)!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0))!important;
 }
 
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
@@ -46,41 +46,41 @@ body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
   display:block!important;
   object-fit:contain!important;
   object-position:center bottom!important;
-  border-radius:18px!important;
+  border-radius:17px!important;
   background:transparent!important;
   filter:none!important;
 }
 
-/* Selo/coroa: parcialmente para fora da moldura, como no mockup. */
+/* Selo/coroa: sobreposto no canto inferior direito, sem pesar a moldura. */
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admin-badge-v26{
-  right:-11px!important;
-  bottom:14px!important;
+  right:-10px!important;
+  bottom:10px!important;
   z-index:8!important;
-  width:39px!important;
-  height:39px!important;
+  width:37px!important;
+  height:37px!important;
   border-radius:50%!important;
   color:#171006!important;
   background:linear-gradient(180deg,#ffd15e 0%,#efb536 100%)!important;
   border:4px solid #0b0907!important;
   box-shadow:
-    0 9px 22px rgba(0,0,0,.38),
-    0 0 0 1px rgba(239,181,54,.34)!important;
+    0 8px 20px rgba(0,0,0,.36),
+    0 0 0 1px rgba(239,181,54,.30)!important;
 }
 
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admin-badge-v26 .perfil-icon-v26{
-  width:18px!important;
-  height:18px!important;
-  flex-basis:18px!important;
+  width:17px!important;
+  height:17px!important;
+  flex-basis:17px!important;
 }
 
 @media(max-width:900px){
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
-    grid-template-columns:118px minmax(0,1fr)!important;
+    grid-template-columns:112px minmax(0,1fr)!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
-    width:118px!important;
-    height:138px!important;
-    border-radius:21px!important;
+    width:112px!important;
+    height:126px!important;
+    border-radius:20px!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
     border-radius:15px!important;
@@ -89,22 +89,22 @@ body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admi
 
 @media(max-width:620px){
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
-    grid-template-columns:92px minmax(0,1fr)!important;
+    grid-template-columns:90px minmax(0,1fr)!important;
     gap:18px!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
-    width:92px!important;
-    height:108px!important;
+    width:90px!important;
+    height:102px!important;
     padding:5px!important;
-    border-radius:18px!important;
+    border-radius:17px!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
-    border-radius:13px!important;
+    border-radius:12px!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admin-badge-v26{
-    width:32px!important;
-    height:32px!important;
+    width:31px!important;
+    height:31px!important;
     right:-8px!important;
-    bottom:9px!important;
+    bottom:8px!important;
   }
 }
