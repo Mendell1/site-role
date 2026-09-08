@@ -102,9 +102,9 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/perfil-topo-icons-v26.css?v=20260908-0240','v26-perfil-topo-icons');
     scriptLocal('js/perfil-topo-icons-v26.js?v=20260908-0240','v26-perfil-topo-icons');
     estiloLocal('css/perfil-topo-clean-v26.css?v=20260908-0245','v26-perfil-topo-clean');
-    estiloLocal('css/perfil-iconografia-v26.css?v=20260908-0255','v26-perfil-iconografia');
+    estiloLocal('css/perfil-iconografia-v26.css?v=20260908-0318','v26-perfil-iconografia');
     scriptLocal('js/perfil-iconografia-v26.js?v=20260908-0255','v26-perfil-iconografia');
-    scriptLocal('js/perfil-tabs-active-fix-v26.js?v=20260908-0305','v26-perfil-tabs-active-fix');
+    scriptLocal('js/perfil-tabs-active-fix-v26.js?v=20260908-0318','v26-perfil-tabs-active-fix');
   }
 
   if(eh('index.html')){
