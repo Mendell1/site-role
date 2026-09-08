@@ -1,0 +1,36 @@
+/* ROLÊ V26 — ícones do cabeçalho do perfil */
+body.pagina-perfil-lovable .perfil-topo-icon{
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+  display:block;
+}
+
+body.pagina-perfil-lovable #btnPerfil,
+body.pagina-perfil-lovable #btnAdmin{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+
+body.pagina-perfil-lovable #btnNotificacoes .perfil-topo-icon{
+  width:17px;
+  height:17px;
+}
+
+body.pagina-perfil-lovable #btnNotificacoes{
+  color:#f0b83e!important;
+}
+
+body.pagina-perfil-lovable #btnPerfil .perfil-topo-icon,
+body.pagina-perfil-lovable #btnAdmin .perfil-topo-icon{
+  color:currentColor;
+  opacity:.95;
+}
+
+body.pagina-perfil-lovable .perfil-topo-icon-label{
+  display:inline-block;
+  line-height:1;
+  white-space:nowrap;
+}
