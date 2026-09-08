@@ -1,0 +1,151 @@
+/* ============================================================
+   ROLÊ V26 — ICONOGRAFIA OFICIAL DO PERFIL
+   ============================================================ */
+body.pagina-perfil-lovable.v26-perfil-mockup{
+  --perfil-icon-gold:#efb536;
+  --perfil-icon-gold-2:#ffd15e;
+  --perfil-icon-muted:rgba(245,239,230,.66);
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-icon-v26{
+  width:15px;
+  height:15px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 15px;
+  color:currentColor;
+  line-height:0;
+  vertical-align:-2px;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-icon-v26 svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* Remove os símbolos/pseudoícones antigos para não duplicar. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-kicker::before,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco::after,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba::before{
+  content:none!important;
+  display:none!important;
+}
+
+/* Coroa preenchida do título. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-kicker{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-kicker > .perfil-icon-v26{
+  width:14px;
+  height:14px;
+  flex-basis:14px;
+  color:var(--perfil-icon-gold-2);
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-kicker > .perfil-icon-v26 svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+
+/* Selo da coroa sobre o avatar. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-admin-badge-v26{
+  position:absolute;
+  right:-8px;
+  bottom:-8px;
+  z-index:5;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#171006;
+  background:linear-gradient(180deg,var(--perfil-icon-gold-2),var(--perfil-icon-gold));
+  border:4px solid #0b0907;
+  box-shadow:0 8px 24px rgba(0,0,0,.36),0 0 0 1px rgba(239,181,54,.20);
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-admin-badge-v26 .perfil-icon-v26{
+  width:17px;
+  height:17px;
+  flex-basis:17px;
+  color:#171006;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-admin-badge-v26 svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+
+/* Métricas do hero. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-metricas li{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-metricas li > .perfil-icon-v26{
+  width:13px;
+  height:13px;
+  flex-basis:13px;
+  color:var(--perfil-icon-gold);
+}
+
+/* Abas. Ícone acompanha a cor do texto; ativa fica dourada. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba > .perfil-icon-v26{
+  width:15px;
+  height:15px;
+  flex-basis:15px;
+  color:var(--perfil-icon-muted);
+  transition:color .18s ease,transform .18s ease;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba:hover > .perfil-icon-v26{
+  color:#fff;
+  transform:translateY(-1px);
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba.ativa > .perfil-icon-v26,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-abas-faixa-v26 .perfil-aba[aria-selected="true"] > .perfil-icon-v26{
+  color:var(--perfil-icon-gold-2);
+}
+
+/* Metadados dos cards. */
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta > li{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta > li > .perfil-icon-v26{
+  width:13px;
+  height:13px;
+  flex-basis:13px;
+  color:var(--perfil-icon-gold);
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta .meta-sep{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin-left:3px!important;
+  color:var(--perfil-icon-gold)!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .grade-perfil .evento-meta .meta-sep .perfil-icon-v26{
+  width:12px;
+  height:12px;
+  flex-basis:12px;
+}
+
+@media(max-width:700px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-icon-v26{
+    width:14px;
+    height:14px;
+    flex-basis:14px;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-admin-badge-v26{
+    width:32px;
+    height:32px;
+  }
+}
