@@ -105,6 +105,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/perfil-iconografia-v26.css?v=20260908-0318','v26-perfil-iconografia');
     scriptLocal('js/perfil-iconografia-v26.js?v=20260908-0255','v26-perfil-iconografia');
     scriptLocal('js/perfil-tabs-active-fix-v26.js?v=20260908-0318','v26-perfil-tabs-active-fix');
+    estiloLocal('css/perfil-switches-v26.css?v=20260908-0330','v26-perfil-switches');
   }
 
   if(eh('index.html')){
