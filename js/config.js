@@ -134,5 +134,6 @@ if (SUPABASE_URL.startsWith('COLE')) {
     scriptLocal('js/assets-oficial-v26.js?v=20260907-0225','v26-assets-oficial');
     estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
     estiloLocal('css/polimento-v26.css?v=20260907-1340','v26-polimento-final');
+    estiloLocal('css/home-publicar-organizador-v26.css?v=20260909-0135','v26-home-publicar-organizador');
   }
 })();
