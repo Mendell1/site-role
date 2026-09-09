@@ -1,0 +1,47 @@
+/* ============================================================
+   ROLÊ V26 — prévia quadrada da foto em Conta e segurança
+   Mantém a mesma identidade do card principal do perfil.
+   ============================================================ */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+  width:104px!important;
+  height:104px!important;
+  flex:0 0 104px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  background:linear-gradient(180deg,#faf7f1 0%,#eee7dc 100%)!important;
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.28),
+    0 0 0 1px rgba(239,181,54,.20),
+    inset 0 1px 0 rgba(255,255,255,.86)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:17px!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 span{
+  width:100%!important;
+  height:100%!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:17px!important;
+}
+
+@media(max-width:700px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+    width:86px!important;
+    height:86px!important;
+    flex-basis:86px!important;
+    border-radius:16px!important;
+  }
+
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img,
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 span{
+    border-radius:15px!important;
+  }
+}
