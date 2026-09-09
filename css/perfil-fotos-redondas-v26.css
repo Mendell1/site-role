@@ -1,0 +1,81 @@
+/* ============================================================
+   ROLÊ V26 — fotos de perfil redondas
+   Mantém avatar principal e prévia de Conta e segurança no mesmo padrão.
+   ============================================================ */
+
+/* Avatar principal do hero */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner{
+  grid-template-columns:136px minmax(0,1fr) auto!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
+  width:136px!important;
+  height:136px!important;
+  border-radius:50%!important;
+  padding:6px!important;
+  overflow:visible!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco::before{
+  border-radius:50%!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:50%!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admin-badge-v26{
+  right:-9px!important;
+  bottom:8px!important;
+}
+
+/* Prévia em Conta e segurança */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+  width:104px!important;
+  height:104px!important;
+  flex:0 0 104px!important;
+  border-radius:50%!important;
+  border:3px solid rgba(239,181,54,.85)!important;
+  background:linear-gradient(180deg,#faf7f1 0%,#eee7dc 100%)!important;
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.28),
+    0 0 0 4px rgba(239,181,54,.09)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 span{
+  width:100%!important;
+  height:100%!important;
+  border-radius:50%!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img{
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
+@media(max-width:900px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
+    width:112px!important;
+    height:112px!important;
+  }
+}
+
+@media(max-width:700px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+    width:86px!important;
+    height:86px!important;
+    flex-basis:86px!important;
+  }
+}
+
+@media(max-width:620px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
+    width:90px!important;
+    height:90px!important;
+  }
+}
