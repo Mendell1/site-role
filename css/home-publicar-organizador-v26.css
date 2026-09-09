@@ -1,0 +1,71 @@
+/* ============================================================
+   ROLÊ V26 — botão de solicitação de organizador na Home
+   Remove o visual chamativo/emoji e integra ao cabeçalho.
+   ============================================================ */
+
+body.v26-home #btnCriar[data-v259-solicitar]{
+  min-width:144px!important;
+  min-height:40px!important;
+  padding:0 14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(240,184,62,.46)!important;
+  background:rgba(240,184,62,.035)!important;
+  color:#f4efe7!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  font-weight:700!important;
+  transform:none!important;
+  filter:none!important;
+}
+
+body.v26-home #btnCriar[data-v259-solicitar]::before{
+  content:"+";
+  width:21px;
+  height:21px;
+  display:grid;
+  place-items:center;
+  flex:0 0 21px;
+  border-radius:50%;
+  background:rgba(240,184,62,.12);
+  border:1px solid rgba(240,184,62,.30);
+  color:#f0b83e;
+  font:700 15px/1 'Archivo',sans-serif;
+}
+
+body.v26-home #btnCriar[data-v259-solicitar]::after{
+  content:"Quero publicar";
+  color:#f4efe7;
+  font:700 11.5px/1 'Archivo',sans-serif;
+  letter-spacing:0;
+  white-space:nowrap;
+}
+
+body.v26-home #btnCriar[data-v259-solicitar]:hover{
+  background:rgba(240,184,62,.10)!important;
+  border-color:#f0b83e!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18)!important;
+  transform:translateY(-1px)!important;
+}
+
+body.v26-home #btnCriar[data-v259-solicitar]:hover::before{
+  background:#f0b83e;
+  color:#171005;
+}
+
+body.v26-home #btnCriar[data-v259-solicitar]:focus-visible{
+  outline:2px solid #f0b83e!important;
+  outline-offset:2px!important;
+}
+
+@media(max-width:720px){
+  body.v26-home #btnCriar[data-v259-solicitar]{
+    min-width:42px!important;
+    width:42px!important;
+    padding:0!important;
+  }
+  body.v26-home #btnCriar[data-v259-solicitar]::after{display:none}
+}
