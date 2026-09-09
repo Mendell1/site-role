@@ -200,7 +200,6 @@ body.perfil-crop-aberto-v26{
   will-change:transform,width,height!important;
 }
 
-/* escurece tudo fora do círculo sem recortar a imagem de fato */
 .perfil-crop-mascara-v26{
   position:absolute!important;
   left:50%!important;
@@ -365,4 +364,20 @@ body.perfil-crop-aberto-v26{
   .perfil-crop-reset-v26{
     align-self:flex-start!important;
   }
+}
+
+/* ===== BORDA DOURADA — PRÉVIA DA FOTO ===== */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
+  border-radius:50%!important;
+  border:2px solid #efb536!important;
+  overflow:hidden!important;
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.28),
+    0 0 0 2px rgba(255,255,255,.05),
+    0 0 16px rgba(239,181,54,.16)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 img,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26 span{
+  border-radius:50%!important;
 }
