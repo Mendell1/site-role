@@ -1,5 +1,6 @@
 /* ============================================================
    ROLÊ V26 — troca de foto em Conta e segurança
+   + editor de enquadramento antes do envio
    ============================================================ */
 body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-v26{
   padding:22px!important;
@@ -35,11 +36,11 @@ body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-preview-v26{
   display:grid!important;
   place-items:center!important;
   overflow:hidden!important;
-  border-radius:24px!important;
+  border-radius:50%!important;
   color:#171006!important;
   background:linear-gradient(180deg,#faf7f1,#eee7dc)!important;
-  border:1px solid rgba(255,255,255,.72)!important;
-  box-shadow:0 14px 32px rgba(0,0,0,.28),0 0 0 1px rgba(239,181,54,.18)!important;
+  border:3px solid rgba(239,181,54,.85)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.28),0 0 0 4px rgba(239,181,54,.09)!important;
   font:400 31px 'Anton',sans-serif!important;
 }
 
@@ -103,6 +104,223 @@ body.pagina-perfil-lovable.v26-perfil-mockup #btnSalvarFotoContaV26:disabled{
   filter:saturate(.55)!important;
 }
 
+/* ============================================================
+   EDITOR DE FOTO — inspirado no fluxo de editores de avatar,
+   mas com a identidade visual do Rolê.
+   ============================================================ */
+body.perfil-crop-aberto-v26{
+  overflow:hidden!important;
+}
+
+.perfil-crop-modal-v26[hidden]{
+  display:none!important;
+}
+
+.perfil-crop-modal-v26{
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:22px!important;
+  background:rgba(0,0,0,.76)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+}
+
+.perfil-crop-dialog-v26{
+  width:min(520px,calc(100vw - 32px))!important;
+  max-height:calc(100vh - 32px)!important;
+  overflow:auto!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#1c1916 0%,#11100e 100%)!important;
+  box-shadow:0 28px 90px rgba(0,0,0,.58)!important;
+  color:#f5efe6!important;
+}
+
+.perfil-crop-topo-v26{
+  min-height:72px!important;
+  padding:0 22px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+}
+
+.perfil-crop-topo-v26 h2{
+  margin:0!important;
+  font:700 21px 'Archivo',sans-serif!important;
+  color:#fff!important;
+}
+
+.perfil-crop-fechar-v26{
+  width:38px!important;
+  height:38px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:rgba(255,255,255,.62)!important;
+  font:300 30px/1 'Archivo',sans-serif!important;
+  cursor:pointer!important;
+}
+
+.perfil-crop-fechar-v26:hover{
+  background:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+
+.perfil-crop-area-v26{
+  --crop-size:250px;
+  position:relative!important;
+  width:calc(100% - 44px)!important;
+  height:350px!important;
+  margin:22px auto 0!important;
+  overflow:hidden!important;
+  border-radius:12px!important;
+  background:#252321!important;
+  cursor:grab!important;
+  touch-action:none!important;
+  user-select:none!important;
+}
+
+.perfil-crop-area-v26.arrastando{
+  cursor:grabbing!important;
+}
+
+.perfil-crop-area-v26 > img{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  max-width:none!important;
+  max-height:none!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+  will-change:transform,width,height!important;
+}
+
+/* escurece tudo fora do círculo sem recortar a imagem de fato */
+.perfil-crop-mascara-v26{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:var(--crop-size)!important;
+  height:var(--crop-size)!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 999px rgba(4,4,4,.57)!important;
+  pointer-events:none!important;
+}
+
+.perfil-crop-guia-v26{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:var(--crop-size)!important;
+  height:var(--crop-size)!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:50%!important;
+  border:4px solid #fff!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.18),0 8px 28px rgba(0,0,0,.24)!important;
+  pointer-events:none!important;
+}
+
+.perfil-crop-carregando-v26{
+  position:absolute!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  color:rgba(255,255,255,.72)!important;
+  font:600 12px 'Archivo',sans-serif!important;
+  background:#201e1c!important;
+  z-index:4!important;
+}
+
+.perfil-crop-carregando-v26[hidden]{
+  display:none!important;
+}
+
+.perfil-crop-controles-v26{
+  display:grid!important;
+  grid-template-columns:24px 1fr 30px!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:20px 30px 4px!important;
+}
+
+.perfil-crop-controles-v26 input[type="range"]{
+  width:100%!important;
+  accent-color:#efb536!important;
+  cursor:pointer!important;
+}
+
+.perfil-crop-zoom-icone-v26{
+  display:grid!important;
+  place-items:center!important;
+  color:rgba(255,255,255,.62)!important;
+  line-height:1!important;
+}
+
+.perfil-crop-zoom-icone-v26.pequeno{font-size:12px!important}
+.perfil-crop-zoom-icone-v26.grande{font-size:20px!important}
+
+.perfil-crop-ajuda-v26{
+  margin:8px 28px 18px!important;
+  color:rgba(245,239,230,.48)!important;
+  font:500 11px/1.45 'Archivo',sans-serif!important;
+  text-align:center!important;
+}
+
+.perfil-crop-rodape-v26{
+  min-height:76px!important;
+  padding:14px 20px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  border-top:1px solid rgba(255,255,255,.07)!important;
+}
+
+.perfil-crop-rodape-v26 > div{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+
+.perfil-crop-reset-v26{
+  border:0!important;
+  padding:8px 4px!important;
+  background:transparent!important;
+  color:#efb536!important;
+  font:600 12px 'Archivo',sans-serif!important;
+  cursor:pointer!important;
+}
+
+.perfil-crop-reset-v26:hover{
+  color:#ffd15e!important;
+  text-decoration:underline!important;
+}
+
+.perfil-crop-dialog-v26 .btn-linha,
+.perfil-crop-dialog-v26 .btn-escuro{
+  min-height:42px!important;
+  padding:0 18px!important;
+  border-radius:9px!important;
+  font-weight:700!important;
+}
+
+.perfil-crop-aplicar-v26{
+  background:linear-gradient(180deg,#ffd15e,#efb536)!important;
+  border-color:#efb536!important;
+  color:#171006!important;
+}
+
+.perfil-crop-aplicar-v26:disabled{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+}
+
 @media(max-width:700px){
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-corpo-v26{
     align-items:flex-start!important;
@@ -112,9 +330,39 @@ body.pagina-perfil-lovable.v26-perfil-mockup #btnSalvarFotoContaV26:disabled{
     width:86px!important;
     height:86px!important;
     flex-basis:86px!important;
-    border-radius:19px!important;
   }
   body.pagina-perfil-lovable.v26-perfil-mockup .perfil-foto-conta-acoes-v26{
     flex:1!important;
+  }
+
+  .perfil-crop-modal-v26{
+    padding:10px!important;
+  }
+  .perfil-crop-dialog-v26{
+    width:100%!important;
+    max-height:calc(100vh - 20px)!important;
+  }
+  .perfil-crop-area-v26{
+    --crop-size:min(68vw,230px);
+    width:calc(100% - 28px)!important;
+    height:min(72vw,320px)!important;
+    margin-top:14px!important;
+  }
+  .perfil-crop-controles-v26{
+    padding-inline:20px!important;
+  }
+  .perfil-crop-rodape-v26{
+    align-items:stretch!important;
+    flex-direction:column!important;
+  }
+  .perfil-crop-rodape-v26 > div{
+    width:100%!important;
+  }
+  .perfil-crop-rodape-v26 .btn-linha,
+  .perfil-crop-rodape-v26 .btn-escuro{
+    flex:1!important;
+  }
+  .perfil-crop-reset-v26{
+    align-self:flex-start!important;
   }
 }
