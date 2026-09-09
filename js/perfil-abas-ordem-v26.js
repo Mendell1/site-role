@@ -1,7 +1,9 @@
 /* ============================================================
-   ROLÊ V26 — ordem visual das abas do perfil
-   Inverte as posições de "Meus eventos" e "Conta e segurança"
-   sem alterar qual aba está ativa nem a lógica dos painéis.
+   ROLÊ V26 — ordem visual + aba padrão do perfil
+   - Conta e segurança fica no início da barra
+   - Meus eventos fica no fim
+   - Ao entrar no perfil, Conta e segurança abre por padrão
+   - Depois que a pessoa escolhe outra aba, não forçamos mais nada
    ============================================================ */
 (() => {
   'use strict';
@@ -17,6 +19,13 @@
     'organizador-v25-9',
     'eventos'
   ];
+
+  let usuarioEscolheuAba = false;
+
+  function haRotaExplicita(){
+    const params = new URLSearchParams(location.search);
+    return params.has('organizador') || params.has('tab') || params.has('aba');
+  }
 
   function aplicarOrdem(){
     const abas = document.querySelector('.perfil-abas');
@@ -39,21 +48,56 @@
     return true;
   }
 
-  function iniciar(){
-    aplicarOrdem();
+  function abrirContaComoPadrao(){
+    if (usuarioEscolheuAba || haRotaExplicita()) return false;
 
-    // As abas extras são criadas por módulos que carregam logo depois.
-    // Reaplica por alguns instantes e encerra para não observar a página à toa.
+    const abas = document.querySelector('.perfil-abas');
+    const main = document.getElementById('perfilMain');
+    if (!abas || !main) return false;
+
+    const botaoConta = abas.querySelector('.perfil-aba[data-tab="conta"]');
+    const painelConta = main.querySelector('.perfil-painel[data-pane="conta"]');
+    if (!botaoConta || !painelConta) return false;
+
+    abas.querySelectorAll('.perfil-aba').forEach(btn => {
+      const ativo = btn === botaoConta;
+      btn.classList.toggle('ativa', ativo);
+      btn.setAttribute('aria-selected', String(ativo));
+    });
+
+    main.querySelectorAll('.perfil-painel[data-pane]').forEach(painel => {
+      painel.hidden = painel !== painelConta;
+    });
+
+    return true;
+  }
+
+  function iniciar(){
+    document.addEventListener('click', e => {
+      const aba = e.target.closest && e.target.closest('.perfil-aba');
+      if (aba && e.isTrusted) usuarioEscolheuAba = true;
+    }, true);
+
+    aplicarOrdem();
+    abrirContaComoPadrao();
+
+    // Alguns módulos criam abas logo depois do carregamento.
+    // Reaplica só no começo para garantir ordem e aba inicial sem
+    // atrapalhar a navegação escolhida pela pessoa.
     let tentativas = 0;
     const timer = setInterval(() => {
       tentativas++;
       aplicarOrdem();
-      if (tentativas >= 12) clearInterval(timer);
+      abrirContaComoPadrao();
+      if (tentativas >= 12 || usuarioEscolheuAba) clearInterval(timer);
     }, 180);
 
     const abas = document.querySelector('.perfil-abas');
     if (abas) {
-      const obs = new MutationObserver(() => aplicarOrdem());
+      const obs = new MutationObserver(() => {
+        aplicarOrdem();
+        abrirContaComoPadrao();
+      });
       obs.observe(abas, { childList: true });
       setTimeout(() => obs.disconnect(), 3000);
     }
