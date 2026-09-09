@@ -108,3 +108,22 @@ body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > .perfil-admi
     bottom:7px!important;
   }
 }
+
+/* ===== BORDA DOURADA — AVATAR PRINCIPAL ===== */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco{
+  border:3px solid #efb536!important;
+  border-radius:50%!important;
+  overflow:visible!important;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.34),
+    0 0 0 2px rgba(255,255,255,.07),
+    0 0 20px rgba(239,181,54,.20)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco::before{
+  border-radius:50%!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco > img{
+  border-radius:50%!important;
+}
