@@ -1,0 +1,117 @@
+/* ============================================================
+   ROLÊ V26 — aba Organizador no perfil
+   Corrige contraste do módulo V25.9, originalmente desenhado
+   para superfícies claras, para a identidade escura/dourada V26.
+   ============================================================ */
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"]{
+  color:#f4f1eb;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-perfil{
+  color:#f4f1eb;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-card{
+  background:linear-gradient(180deg,rgba(20,17,13,.98),rgba(13,12,10,.98))!important;
+  border:1px solid rgba(239,181,54,.18)!important;
+  color:#f4f1eb!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.22)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-card h2,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-card h3,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-card strong{
+  color:#f8f5ee!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-intro,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-card p,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .dica{
+  color:#c9c1b5!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .bloco-kicker,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-kicker{
+  color:#efb536!important;
+}
+
+/* Checklist de elegibilidade: remove o branco estourado e mantém a leitura. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-checklist span{
+  background:#16130e!important;
+  color:#d9d2c7!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-checklist .ok{
+  background:rgba(239,181,54,.11)!important;
+  color:#f2c95f!important;
+  border-color:rgba(239,181,54,.42)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-checklist .pendente{
+  background:rgba(255,255,255,.045)!important;
+  color:#aaa196!important;
+  border-color:rgba(255,255,255,.11)!important;
+}
+
+/* Campos do formulário */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .campo label{
+  color:#d9d2c7!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] input,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] textarea,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] select{
+  background:#0d0c0a!important;
+  color:#f5f1ea!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  box-shadow:none!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] input::placeholder,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] textarea::placeholder{
+  color:#706a61!important;
+  opacity:1!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] input:focus,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] textarea:focus,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] select:focus{
+  outline:none!important;
+  border-color:#efb536!important;
+  box-shadow:0 0 0 3px rgba(239,181,54,.11)!important;
+}
+
+/* Checkbox/regras */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .aceite{
+  color:#c9c1b5!important;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .aceite input{
+  accent-color:#efb536;
+}
+
+/* Alertas e estados, caso apareçam. */
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-alerta{
+  background:rgba(239,181,54,.08)!important;
+  border-color:rgba(239,181,54,.28)!important;
+  color:#e9dfcf!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-status-grande{
+  background:rgba(239,181,54,.10)!important;
+  color:#efb536!important;
+  border:1px solid rgba(239,181,54,.22)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-selos span,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-resumo span{
+  background:rgba(255,255,255,.035)!important;
+  color:#d8d0c5!important;
+  border-color:rgba(255,255,255,.11)!important;
+}
+
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="organizador-v25-9"] .v259-resumo b{
+  color:#efb536!important;
+}
