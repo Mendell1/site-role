@@ -14,6 +14,8 @@
   const fmtData=iso=>iso?new Date(iso).toLocaleDateString('pt-BR'):'—';
   let session=null;
   let perfil=null;
+  let cargaPerfil=0;
+  let renderAcesso=0;
   let aplicando=false;
   let observer=null;
   let timerAplicar=null;
@@ -36,11 +38,15 @@
   }
 
   async function carregarPerfil(){
+    const carga=++cargaPerfil;
     const r=await db.auth.getSession();
+    if(carga!==cargaPerfil) return perfil;
     session=r.data?.session||null;
-    perfil=null;
-    if(!session) return null;
-    const {data,error}=await db.from('perfis').select('id,nome,email,papel,bloqueado,cadastro_completo,cidade,contato,data_nascimento,aceitou_regras,verificado,seguidores_total,organizador_nome,organizador_descricao,organizador_desde,organizador_revogado_em,organizador_revogacao_motivo,exclusao_prevista,suspenso_ate').eq('id',session.user.id).single();
+    if(!session){ perfil=null; return null; }
+    const usuarioId=session.user.id;
+    if(perfil?.id!==usuarioId) perfil=null;
+    const {data,error}=await db.from('perfis').select('id,nome,email,papel,bloqueado,cadastro_completo,cidade,contato,data_nascimento,aceitou_regras,verificado,seguidores_total,organizador_nome,organizador_descricao,organizador_desde,organizador_revogado_em,organizador_revogacao_motivo,exclusao_prevista,suspenso_ate').eq('id',usuarioId).single();
+    if(carga!==cargaPerfil || session?.user.id!==usuarioId) return perfil;
     if(!error) perfil=data;
     return perfil;
   }
@@ -139,26 +145,26 @@
     await renderAcessoPerfil();
   }
 
-  function elegibilidadeHtml(){
+  function elegibilidadeHtml(perfilAtual=perfil){
     const itens=[
-      ['Conta ativa',!!perfil&&!perfil.bloqueado&&!perfil.exclusao_prevista],
-      ['Perfil completo',!!perfil?.cadastro_completo],
-      ['Data de nascimento preenchida',!!perfil?.data_nascimento],
-      ['Regras de convivência aceitas',perfil?.aceitou_regras===true]
+      ['Conta ativa',!!perfilAtual&&!perfilAtual.bloqueado&&!perfilAtual.exclusao_prevista],
+      ['Perfil completo',!!perfilAtual?.cadastro_completo],
+      ['Data de nascimento preenchida',!!perfilAtual?.data_nascimento],
+      ['Regras de convivência aceitas',perfilAtual?.aceitou_regras===true]
     ];
     return '<div class="v259-checklist">'+itens.map(([t,ok])=>'<span class="'+(ok?'ok':'pendente')+'">'+(ok?'✓':'○')+' '+esc(t)+'</span>').join('')+'</div>';
   }
 
-  function formularioSolicitacao(ultima){
-    const cidade=perfil?.cidade||ultima?.cidade||'';
-    const contato=perfil?.contato||ultima?.contato||'';
+  function formularioSolicitacao(ultima,perfilAtual=perfil){
+    const cidade=perfilAtual?.cidade||ultima?.cidade||'';
+    const contato=perfilAtual?.contato||ultima?.contato||'';
     return '<section class="superficie-lovable v259-card v259-form-card">'+
       '<p class="bloco-kicker">TORNE-SE ORGANIZADOR</p><h2>Quero publicar eventos</h2>'+
       '<p class="v259-intro">O acesso de organizador é aprovado pela moderação. Depois da aprovação você poderá publicar eventos, controlar vagas, participantes, check-in e métricas.</p>'+
-      elegibilidadeHtml()+
-      (perfil?.organizador_revogado_em?'<div class="v259-alerta"><strong>Acesso anterior revogado</strong><p>'+esc(perfil.organizador_revogacao_motivo||'A moderação retirou o acesso de organizador.')+'</p></div>':'')+
+      elegibilidadeHtml(perfilAtual)+
+      (perfilAtual?.organizador_revogado_em?'<div class="v259-alerta"><strong>Acesso anterior revogado</strong><p>'+esc(perfilAtual.organizador_revogacao_motivo||'A moderação retirou o acesso de organizador.')+'</p></div>':'')+
       (ultima?.status==='recusada'?'<div class="v259-alerta"><strong>Última solicitação não aprovada</strong><p>'+esc(ultima.observacao_admin||'Revise seus dados e você pode enviar uma nova solicitação.')+'</p></div>':'')+
-      '<div class="campo"><label for="v259_nome">Nome do organizador, projeto ou grupo *</label><input id="v259_nome" maxlength="100" value="'+esc(ultima?.nome_organizacao||perfil?.nome||'')+'" placeholder="Ex.: Associação Cultural do Bairro"></div>'+
+      '<div class="campo"><label for="v259_nome">Nome do organizador, projeto ou grupo *</label><input id="v259_nome" maxlength="100" value="'+esc(ultima?.nome_organizacao||perfilAtual?.nome||'')+'" placeholder="Ex.: Associação Cultural do Bairro"></div>'+
       '<div class="linha-form-lovable linha-2"><div class="campo"><label for="v259_cidade">Cidade/região de atuação *</label><input id="v259_cidade" maxlength="100" value="'+esc(cidade)+'" placeholder="São Paulo — Zona Leste"></div><div class="campo"><label for="v259_tipos">Que eventos pretende organizar? *</label><input id="v259_tipos" maxlength="300" value="'+esc(ultima?.tipos_eventos||'')+'" placeholder="Feiras, oficinas, campeonatos..."></div></div>'+
       '<div class="campo"><label for="v259_desc">Sobre o projeto/organização *</label><textarea id="v259_desc" maxlength="700" rows="4" placeholder="Conte brevemente quem organiza e que atividades realiza.">'+esc(ultima?.descricao||'')+'</textarea></div>'+
       '<div class="campo"><label for="v259_contato">Contato público <small>(opcional)</small></label><input id="v259_contato" maxlength="180" value="'+esc(contato)+'" placeholder="Instagram, site ou WhatsApp público"></div>'+
@@ -170,21 +176,27 @@
 
   async function renderAcessoPerfil(){
     const alvo=document.getElementById('conteudoOrganizadorV259');
-    if(!alvo||!perfil) return;
-    if(eAdmin()){
+    if(!alvo) return;
+    const renderAtual=++renderAcesso;
+    if(!perfil) await carregarPerfil();
+    if(renderAtual!==renderAcesso) return;
+    const perfilAtual=perfil;
+    if(!perfilAtual){ alvo.innerHTML='<div class="v259-alerta" role="status">Não foi possível carregar seu perfil. <button type="button" class="btn-linha" data-v259-recarregar>Tentar novamente</button></div>'; return; }
+    if(perfilAtual.papel==='admin'){
       alvo.innerHTML='<section class="superficie-lovable v259-card"><p class="bloco-kicker">ADMINISTRAÇÃO</p><h2>Administrador da plataforma</h2><p>Administradores já possuem acesso completo às ferramentas de eventos e à análise de solicitações de organizadores.</p><div class="acoes"><a class="btn-escuro link-botao" href="admin.html">Abrir painel administrativo</a><a class="btn-linha link-botao" href="index.html?criar=1">Publicar evento</a></div></section>';
       return;
     }
-    if(perfil.papel==='organizador'){
-      alvo.innerHTML='<section class="superficie-lovable v259-card v259-aprovado"><div class="v259-status-grande">🎪</div><div><p class="bloco-kicker">ACESSO APROVADO</p><h2>'+esc(perfil.organizador_nome||perfil.nome)+'</h2><p>Você pode publicar e administrar seus próprios eventos.</p>'+
-        '<div class="v259-selos"><span>🎪 Organizador</span>'+(perfil.verificado?'<span class="verificado">✓ Verificado</span>':'')+(perfil.organizador_desde?'<span>Desde '+esc(fmtData(perfil.organizador_desde))+'</span>':'')+'</div>'+
+    if(perfilAtual.papel==='organizador'){
+      alvo.innerHTML='<section class="superficie-lovable v259-card v259-aprovado"><div class="v259-status-grande">🎪</div><div><p class="bloco-kicker">ACESSO APROVADO</p><h2>'+esc(perfilAtual.organizador_nome||perfilAtual.nome)+'</h2><p>Você pode publicar e administrar seus próprios eventos.</p>'+
+        '<div class="v259-selos"><span>🎪 Organizador</span>'+(perfilAtual.verificado?'<span class="verificado">✓ Verificado</span>':'')+(perfilAtual.organizador_desde?'<span>Desde '+esc(fmtData(perfilAtual.organizador_desde))+'</span>':'')+'</div>'+
         '<div class="acoes"><a class="btn-escuro link-botao" href="index.html?criar=1">＋ Publicar evento</a><button type="button" class="btn-linha" data-v259-abrir-painel>Painel do organizador</button></div></div></section>';
       return;
     }
 
     alvo.innerHTML='<p class="dica">Carregando sua solicitação...</p>';
-    const {data,error}=await db.from('solicitacoes_organizador_v25_9').select('*').eq('usuario_id',perfil.id).order('criado_em',{ascending:false}).limit(5);
-    if(error){alvo.innerHTML='<div class="v259-alerta">Não foi possível carregar suas solicitações agora.</div>';return;}
+    const {data,error}=await db.from('solicitacoes_organizador_v25_9').select('*').eq('usuario_id',perfilAtual.id).order('criado_em',{ascending:false}).limit(5);
+    if(renderAtual!==renderAcesso || session?.user.id!==perfilAtual.id) return;
+    if(error){alvo.innerHTML='<div class="v259-alerta">Não foi possível carregar suas solicitações agora. <button type="button" class="btn-linha" data-v259-recarregar>Tentar novamente</button></div>';return;}
     const lista=data||[];
     const pendente=lista.find(x=>x.status==='pendente');
     const ultima=lista[0]||null;
@@ -192,7 +204,7 @@
       alvo.innerHTML='<section class="superficie-lovable v259-card"><div class="v259-status-grande">◷</div><div><p class="bloco-kicker">SOLICITAÇÃO EM ANÁLISE</p><h2>'+esc(pendente.nome_organizacao)+'</h2><p>A moderação ainda está analisando seu pedido. Você receberá uma notificação quando houver decisão.</p><div class="v259-resumo"><span><b>Enviada</b>'+esc(fmt(pendente.criado_em))+'</span><span><b>Região</b>'+esc(pendente.cidade)+'</span><span><b>Eventos</b>'+esc(pendente.tipos_eventos)+'</span></div><div class="acoes"><button type="button" class="btn-linha" data-v259-cancelar="'+esc(pendente.id)+'">Cancelar solicitação</button></div></div></section>';
       return;
     }
-    alvo.innerHTML=formularioSolicitacao(ultima);
+    alvo.innerHTML=formularioSolicitacao(ultima,perfilAtual);
   }
 
   async function enviarSolicitacao(){
@@ -428,6 +440,7 @@
       }
       bloquearAcoesIndex(e);
 
+      if(e.target.closest('[data-v259-recarregar]')){ await carregarPerfil(); await renderAcessoPerfil(); return; }
       const enviar=e.target.closest('#btnSolicitarOrganizadorV259');
       if(enviar){e.preventDefault();await enviarSolicitacao();return;}
       const cancelar=e.target.closest('[data-v259-cancelar]');
