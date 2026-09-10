@@ -57,7 +57,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html','perfil.html')){
     estilo('css/participacao-v25.css','v25-2');
-    script('js/participacao-v25.js?v=20260910-review1','v25-2');
+    script('js/participacao-v25.js?v=20260910-audit1','v25-2');
   }
 
   if(eh('index.html','perfil.html')){
@@ -74,11 +74,11 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 
   estilo('css/revisao-v25.css','v25-5-review');
-  script('js/revisao-v25.js','v25-5-review');
+  script('js/revisao-v25.js?v=20260910-audit1','v25-5-review');
 
   if(eh('index.html')){
     estilo('css/v25-6.css','v25-6');
-    script('js/recorrencia-v25.js?v=20260910-publicar-visual','v25-6-recorrencia');
+    script('js/recorrencia-v25.js?v=20260910-audit1','v25-6-recorrencia');
     script('js/mapa-raio-v25.js','v25-6-mapa-raio');
   }
 
@@ -89,7 +89,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html','perfil.html','admin.html','organizador.html')){
     estilo('css/acesso-organizador-v25.css','v25-9-organizador');
-    script('js/acesso-organizador-v25.js?v=20260910-review1','v25-9-organizador');
+    script('js/acesso-organizador-v25.js?v=20260910-audit1','v25-9-organizador');
   }
 
   if(eh('perfil.html')){
