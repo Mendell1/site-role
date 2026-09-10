@@ -574,14 +574,14 @@ function renderPainelMapa(){
       '<div class="mapa-card-corpo">'+
         '<span class="tag categoria-pill" data-cat="'+escapa(selecionado.categoria_id)+'"><i aria-hidden="true"></i>'+escapa(selecionado.categoria_nome||'Evento')+'</span>'+
         '<h3>'+escapa(selecionado.nome)+'</h3>'+
-        '<p class="mapa-endereco"><span aria-hidden="true">⌖</span> '+escapa(enderecoCompleto(selecionado))+' — '+escapa([selecionado.bairro,selecionado.cidade].filter(Boolean).join(', '))+'</p>'+
-        '<p class="mapa-quando">'+escapa(dataMapa(selecionado))+' · '+escapa(hora(selecionado))+' · '+escapa(precoMapa(selecionado))+'</p>'+
-        '<button type="button" class="btn-escuro mapa-ver-evento" data-mapa-abrir="'+selecionado.id+'">Ver evento</button>'+
+        '<p class="mapa-endereco">'+iconeDetalhe('local')+'<span>'+escapa(enderecoCompleto(selecionado))+'<br>'+escapa([selecionado.bairro,selecionado.cidade].filter(Boolean).join(', '))+'</span></p>'+
+        '<p class="mapa-quando"><span class="mapa-meta">'+iconeDetalhe('calendario')+escapa(dataMapa(selecionado))+'</span><span class="mapa-meta">'+iconeDetalhe('hora')+escapa(hora(selecionado))+'</span><span class="mapa-meta mapa-preco">'+iconeDetalhe('ingresso')+escapa(precoMapa(selecionado))+'</span></p>'+
+        '<button type="button" class="btn-escuro mapa-ver-evento" data-mapa-abrir="'+selecionado.id+'">Ver detalhes do evento <span aria-hidden="true">→</span></button>'+
       '</div>'+
     '</article>';
 
   lista.innerHTML=eventosMapa.map(ev=>
-    '<button type="button" class="mapa-lista-item'+(ev.id===selecionado.id?' ativo':'')+'" data-mapa-selecionar="'+ev.id+'">'+
+    '<button type="button" class="mapa-lista-item'+(ev.id===selecionado.id?' ativo':'')+'" data-mapa-selecionar="'+ev.id+'" aria-pressed="'+(ev.id===selecionado.id)+'">'+
       '<i class="mapa-lista-ponto '+classeCategoriaMapa(ev)+'" aria-hidden="true"></i>'+
       '<span><strong>'+escapa(ev.nome)+'</strong><small>'+escapa((ev.bairro||ev.cidade||'Local'))+' · '+escapa(dataMapa(ev))+'</small></span>'+
     '</button>'
