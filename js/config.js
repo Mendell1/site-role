@@ -114,7 +114,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     scriptLocal('js/perfil-recuperacao-v26.js?v=20260908-0425','v26-perfil-recuperacao');
     scriptLocal('js/perfil-abas-ordem-v26.js?v=20260910-review1','v26-perfil-abas-ordem');
     estiloLocal('css/perfil-organizador-dark-v26.css?v=20260910-02','v26-perfil-organizador-dark');
-    estiloLocal('css/perfil-revisao-v26.css?v=20260910-review1','v26-perfil-revisao');
+    estiloLocal('css/perfil-revisao-v26.css?v=20260910-review2','v26-perfil-revisao');
   }
 
   if(eh('index.html')){
