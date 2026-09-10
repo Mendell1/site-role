@@ -19,6 +19,10 @@ let denunciando = null;
 let buscaTimer = null;
 let recarregando = null;
 let detalheAtual = null;
+let revisaoEventos = 0;
+let revisaoMapa = 0;
+let revisaoCalendario = 0;
+let revisaoFormulario = 0;
 
 const favoritos = new Set();
 const interesses = new Set();
@@ -66,6 +70,12 @@ function caminhoStoragePublico(url,bucket){
 async function removerArquivoPublico(bucket,url){
   const caminho=caminhoStoragePublico(url,bucket);
   if(!caminho) return;
+  if(bucket==='eventos'){
+    // A RLS oculta eventos inativos de organizadores; só admin pode provar ausência de referências.
+    if(typeof Sessao==='undefined' || typeof Sessao.eAdmin!=='function' || !Sessao.eAdmin()) return;
+    const {count,error}=await db.from('eventos').select('id',{count:'exact',head:true}).eq('imagem_url',url);
+    if(error || count==null || count>0) return;
+  }
   const {error}=await db.storage.from(bucket).remove([caminho]);
   if(error) console.warn('Não foi possível remover arquivo antigo de '+bucket,error);
 }
@@ -238,27 +248,37 @@ function esqueletos(){
 }
 
 async function carregarEventos({append=false,silencioso=false}={}){
-  if(!append){ estado.pagina=0; if(!silencioso) esqueletos(); }
+  const revisao = ++revisaoEventos;
+  const pagina = append ? estado.pagina + 1 : 0;
+  if(!append && !silencioso) esqueletos();
   const base = db.from('eventos_lista').select('*',{count:'exact'});
   const aplicado = aplicarFiltros(base,{modo:'lista'});
 
   if(aplicado.vazio){
-    EVENTOS=[]; estado.total=0; renderMural(); return;
+    EVENTOS=[]; estado.pagina=0; estado.total=0; renderMural(); return;
   }
 
-  const inicio = estado.pagina * POR_PAGINA;
+  const inicio = pagina * POR_PAGINA;
   const fim = inicio + POR_PAGINA - 1;
   const { data, error, count } = await aplicado.query
     .order('data_evento',{ascending:true})
     .order('hora_evento',{ascending:true})
+    .order('id',{ascending:true})
     .range(inicio,fim);
 
+  if(revisao !== revisaoEventos) return;
+
   if(error){
-    campo('grade').innerHTML='<div class="erro-box"><strong>Não deu para carregar</strong>'+escapa(error.message)+'</div>';
-    campo('contagem').textContent='erro';
+    if(append){
+      avisar('Não foi possível carregar mais eventos. Tente novamente.');
+    }else{
+      campo('grade').innerHTML='<div class="erro-box"><strong>Não deu para carregar</strong>'+escapa(error.message)+'</div>';
+      campo('contagem').textContent='erro';
+    }
     return;
   }
 
+  estado.pagina = pagina;
   estado.total = count || 0;
   EVENTOS = append ? EVENTOS.concat(data||[]) : (data||[]);
   renderMural();
@@ -331,10 +351,13 @@ async function filtrosMudaram(){
 }
 
 campo('btnMais').addEventListener('click', async e=>{
-  e.currentTarget.disabled=true;
-  estado.pagina++;
-  await carregarEventos({append:true,silencioso:true});
-  e.currentTarget.disabled=false;
+  const btn=e.currentTarget;
+  btn.disabled=true;
+  try{
+    await carregarEventos({append:true,silencioso:true});
+  }finally{
+    btn.disabled=false;
+  }
 });
 
 /* ============================================================
@@ -562,6 +585,7 @@ function selecionarEventoMapa(id,{centralizar=true}={}){
 }
 
 async function carregarMapa(focoId=null){
+  const revisao=++revisaoMapa;
   criarMapaEventos();
   if(!mapaEventos) return;
   camadaMarcadores.clearLayers();
@@ -578,7 +602,8 @@ async function carregarMapa(focoId=null){
     return;
   }
 
-  const {data,error}=await aplicado.query.order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).limit(200);
+  const {data,error}=await aplicado.query.order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).order('id',{ascending:true}).limit(200);
+  if(revisao!==revisaoMapa) return;
   if(error){
     campo('mapaStatus').textContent='Erro ao carregar mapa: '+error.message;
     eventosMapa=[];
@@ -607,6 +632,7 @@ async function carregarMapa(focoId=null){
 
   ajustarMapa(mapaEventos);
   setTimeout(()=>{
+    if(revisao!==revisaoMapa) return;
     mapaEventos.invalidateSize();
     const foco=eventoMapaSelecionadoId && marcadoresMapa.get(eventoMapaSelecionadoId);
     if(focoId && foco){ mapaEventos.setView(foco.getLatLng(),15); }
@@ -811,6 +837,7 @@ function fimDoMes(d){ return new Date(d.getFullYear(),d.getMonth()+1,0); }
 function mesmaData(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 
 async function carregarCalendario(){
+  const revisao=++revisaoCalendario;
   const mes=estado.mesCalendario;
   const inicio=new Date(mes.getFullYear(),mes.getMonth(),1);
   const fim=fimDoMes(mes);
@@ -820,7 +847,8 @@ async function carregarCalendario(){
   const base=db.from('eventos_lista').select('*');
   const aplicado=aplicarFiltros(base,{modo:'calendario',inicio:dataISO(inicio),fim:dataISO(fim)});
   if(aplicado.vazio){ renderCalendario([]); return; }
-  const {data,error}=await aplicado.query.order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).limit(500);
+  const {data,error}=await aplicado.query.order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).order('id',{ascending:true}).limit(500);
+  if(revisao!==revisaoCalendario) return;
   if(error){ campo('calendarioGrade').innerHTML='<div class="cal-vazio">Erro: '+escapa(error.message)+'</div>'; return; }
   renderCalendario(data||[]);
 }
@@ -1713,10 +1741,12 @@ campo('btnEntrar').addEventListener('click',()=>{
   abrir('modalLogin');
 });
 if(campo('btnSair')) campo('btnSair').addEventListener('click',async()=>{
+  try{
   await sair(); favoritos.clear(); interesses.clear(); estado.aba='todos';
   document.querySelectorAll('.aba').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.aba==='todos')));
   campo('tituloLista').textContent='Próximos eventos';
   avisar('Você saiu da conta');
+  }catch(err){ avisar(traduzirErro(err)); }
 });
 
 campo('btnLogar').addEventListener('click',async e=>{
@@ -1784,6 +1814,8 @@ campo('btnCadastrar').addEventListener('click',async e=>{
    PUBLICAR / EDITAR / EXCLUIR
    ============================================================ */
 function limparFormulario(){
+  revisaoFormulario++;
+  campo('btnPublicar').disabled=false;
   ['f_nome','f_desc','f_cep','f_end','f_numero','f_complemento','f_bairro','f_cidade','f_vagas','f_contato'].forEach(id=>campo(id).value='');
   numeroAnterior='';
   campo('cepStatus').textContent='';
@@ -1806,6 +1838,8 @@ async function abrirEdicao(id){
     ev=r.data;
   }
   editando=id;
+  revisaoFormulario++;
+  campo('btnPublicar').disabled=false;
   limparPontoFormulario();
   campo('f_nome').value=ev.nome; campo('f_desc').value=ev.descricao||''; campo('f_cat').value=ev.categoria_id;
   campo('f_data').value=ev.data_evento; campo('f_hora').value=hora(ev); campo('f_end').value=ev.endereco||'';
@@ -1842,10 +1876,14 @@ campo('btnPublicar').addEventListener('click',async e=>{
   const rotulo=btn.textContent; btn.disabled=true; btn.textContent='Salvando...';
 
   let imagemNova=null;
-  const eventoAnterior=editando ? EVENTOS.find(x=>x.id===editando) : null;
+  let eventoSalvo=false;
+  const idEdicao=editando;
+  const revisao=revisaoFormulario;
+  const usuarioId=meuId();
+  const eventoAnterior=idEdicao ? EVENTOS.find(x=>x.id===idEdicao) : null;
   const imagemAntiga=eventoAnterior && eventoAnterior.imagem_url;
   try{
-    imagemNova=await enviarImagem(campo('f_img').files[0]);
+    const arquivo=campo('f_img').files[0];
     const dados={
       nome, descricao:campo('f_desc').value.trim()||null, categoria_id:campo('f_cat').value,
       data_evento:data, hora_evento:campo('f_hora').value||'19:00', endereco:campo('f_end').value.trim()||null,
@@ -1856,23 +1894,38 @@ campo('btnPublicar').addEventListener('click',async e=>{
       situacao:campo('f_situacao').value||'agendado',
       latitude:coordOuNull('f_lat'), longitude:coordOuNull('f_lng')
     };
+    imagemNova=await enviarImagem(arquivo);
+    if(!usuarioId || meuId()!==usuarioId) throw new Error('Sua sessão mudou. Entre novamente antes de salvar.');
+    if(revisao!==revisaoFormulario) throw new Error('O formulário mudou durante o envio. Revise e envie novamente.');
     if(imagemNova) dados.imagem_url=imagemNova.url;
     let id;
-    if(editando){
-      const {error}=await db.from('eventos').update(dados).eq('id',editando); if(error) throw error; id=editando;
+    if(idEdicao){
+      const {error}=await db.from('eventos').update(dados).eq('id',idEdicao).select('id').single(); if(error) throw error; id=idEdicao;
     }else{
-      dados.criador_id=meuId();
+      dados.criador_id=usuarioId;
       const {data:criado,error}=await db.from('eventos').insert(dados).select('id').single(); if(error) throw error; id=criado.id;
     }
-    if(imagemNova && imagemAntiga && imagemAntiga!==imagemNova.url) await removerArquivoPublico('eventos',imagemAntiga);
-    fecharTudo(); await carregarEventos(); avisar(editando?'Alterações salvas':'Evento publicado'); editando=null;
+    eventoSalvo=true;
+    if(imagemNova && imagemAntiga && imagemAntiga!==imagemNova.url){
+      try{ await removerArquivoPublico('eventos',imagemAntiga); }
+      catch(erroLimpeza){ console.warn('Evento salvo, mas a imagem antiga não pôde ser limpa',erroLimpeza); }
+    }
+    if(revisao===revisaoFormulario && meuId()===usuarioId){
+      campo('modalCriar').classList.remove('aberta');
+      editando=null;
+    }
+    await carregarEventos(); avisar(idEdicao?'Alterações salvas':'Evento publicado');
     if(estado.visualizacao==='mapa') await carregarMapa(id);
     setTimeout(()=>{ const el=document.querySelector('[data-ev="'+id+'"]'); if(el) el.scrollIntoView({block:'center'}); },150);
   }catch(err){
-    if(imagemNova) await db.storage.from('eventos').remove([imagemNova.caminho]);
-    console.error(err); avisar(traduzirErroBanco(err));
+    if(imagemNova && !eventoSalvo){
+      try{ await db.storage.from('eventos').remove([imagemNova.caminho]); }
+      catch(erroLimpeza){ console.warn('Não foi possível limpar o upload temporário',erroLimpeza); }
+    }
+    console.error(err);
+    avisar(eventoSalvo?'Evento salvo. Atualize a página para carregar as alterações.':traduzirErroBanco(err));
   }
-  finally{ btn.disabled=false; btn.textContent=rotulo; }
+  finally{ if(revisao===revisaoFormulario){ btn.disabled=false; btn.textContent=rotulo; } }
 });
 
 async function excluirEvento(id){
@@ -1980,3 +2033,4 @@ window.addEventListener('load', ()=>{
     }, 650);
   }
 });
+
