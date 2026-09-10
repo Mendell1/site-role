@@ -1,0 +1,72 @@
+/* Descoberta de eventos e agenda para telas pequenas. */
+.hero-desc-curta{display:none}
+#painelFiltros[hidden],#filtrosAtivos[hidden],#filtrosContagem[hidden],#btnLimparFiltros[hidden],#painelFiltros .v256-raio[hidden]{display:none!important}
+.descoberta-filtros-barra{display:flex;align-items:center;gap:12px;margin-top:12px}
+#btnFiltros,#btnLimparFiltros{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:9px 14px;border:1px solid #7d6239;border-radius:9px;background:#201b14eb;color:#f2e6d0;font:600 12px/1.2 'Archivo',sans-serif;cursor:pointer}
+#btnFiltros svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+#btnFiltros[aria-expanded="true"]{background:#3b2e1b;border-color:#efbe55;color:#f4cc7e}
+#btnLimparFiltros{background:transparent;border-color:transparent;color:#ebca8a;text-decoration:underline;text-underline-offset:3px}
+#filtrosContagem{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border-radius:50%;background:#f0bf55;color:#241c0f}
+#filtrosAtivos{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.filtro-ativo{display:inline-block;padding:6px 9px;border:1px solid #6d5530;border-radius:7px;background:#2b2217ed;color:#f1dba9;font:500 11px/1.35 'Archivo',sans-serif;max-width:100%;overflow-wrap:anywhere}
+#painelFiltros{margin-top:12px;padding:16px;border:1px solid #59472f;border-radius:12px;background:#1e1913f7}
+#painelFiltros .filtros-titulo{margin:0 0 10px;color:#ddc593;font:600 12px/1.4 'Archivo',sans-serif}
+body.v26-home #painelFiltros .atalhos{display:flex!important;flex-wrap:wrap!important;gap:8px;overflow:visible;width:100%;margin:0!important;padding:0!important}
+body.v26-home #painelFiltros .chip{min-height:40px;height:auto;padding:10px 12px!important;font:600 11px/1.3 'Archivo',sans-serif!important;letter-spacing:0!important;white-space:nowrap;gap:7px;border-color:#59472f;background:#282116;color:#dfd4c1;flex:none}
+body.v26-home #painelFiltros .chip[aria-pressed="true"]{color:#261d10;background:#f0bf55;border-color:#f0bf55}
+#painelFiltros .v256-raio{flex-basis:100%;max-width:360px;margin:4px 0 0;padding:5px;border-color:#59472f;background:#2a2116}
+#painelFiltros .v256-raio button{min-height:36px;font-size:12px}
+#painelFiltros .v254-dica-busca{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:14px 0 0;padding-top:12px;border-top:1px solid #4c3d2a;font-size:10px;color:#ccb98e}
+#painelFiltros .v254-dica-busca button{text-align:left;white-space:normal;color:#e6d8bf;font:400 12px/1.5 'Archivo',sans-serif}
+.vazio [data-limpar-filtros],.perto-vazio-v23 [data-limpar-filtros],.agenda-vazia button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 16px;margin:14px 5px 0;border:1px solid #cf9f45;border-radius:9px;background:#f0bf55;color:#241d12;font:600 12px/1.3 'Archivo',sans-serif;cursor:pointer}
+#btnFiltros:focus-visible,#btnLimparFiltros:focus-visible,[data-limpar-filtros]:focus-visible,.agenda-evento:focus-visible{outline:3px solid #f5cd75;outline-offset:3px}
+#agendaCalendario{display:none}
+@media(max-width:700px){
+  body.visual-lovable.v26-home .hero{padding:20px 16px 18px!important;min-height:0!important;height:auto!important}
+  body.visual-lovable.v26-home .v26-hero-grid{padding:0!important;margin:0!important;width:100%!important;max-width:none!important;min-height:0!important;display:block!important}
+  body.visual-lovable.v26-home .hero-conteudo{width:100%!important;max-width:none!important;padding:0!important;min-height:0!important}
+  body.visual-lovable.v26-home .hero-kicker{font-size:8px!important;line-height:1.5;letter-spacing:.11em!important;margin:0!important;gap:10px!important}
+  body.visual-lovable.v26-home .hero h1{font-size:clamp(30px,8.5vw,48px)!important;line-height:1.08!important;letter-spacing:-.015em!important;margin:12px 0 10px!important;max-width:none!important}
+  body.visual-lovable.v26-home .hero h1 em{font-size:inherit!important;line-height:inherit!important}
+  body.visual-lovable.v26-home .hero-desc{font-size:13px!important;line-height:1.5!important;margin:0 0 16px!important;max-width:36em}
+  .hero-desc-longa{display:none}
+  .hero-desc-curta{display:inline}
+  body.visual-lovable.v26-home .busca{display:flex!important;width:100%!important;max-width:none!important;height:48px!important;margin:0!important;border-radius:10px!important}
+  body.visual-lovable.v26-home .busca input{font-size:14px!important;padding:12px 8px 12px 38px!important;min-width:0!important;min-height:0!important;height:48px!important;flex:1;width:0!important}
+  body.visual-lovable.v26-home .busca-icone{width:18px!important;left:13px!important;margin-left:0!important;flex:none}
+  body.visual-lovable.v26-home .busca button{width:94px!important;min-width:94px!important;padding:0 10px!important;height:48px!important;font-size:11px!important;gap:6px!important}
+  body.visual-lovable.v26-home .busca button svg{width:15px!important;height:15px!important}
+  .descoberta-filtros-barra{margin-top:10px;gap:6px}
+  #btnFiltros,#btnLimparFiltros{min-height:40px;font-size:12px}
+  body.visual-lovable.v26-home .faixa{padding-block:9px!important}
+  body.visual-lovable.v26-home #cats{padding-block:0!important;gap:7px!important}
+  body.visual-lovable.v26-home .mural{padding:12px 16px 26px!important;margin:0 auto!important;width:100%!important;max-width:none!important;box-sizing:border-box}
+  body.visual-lovable.v26-home .mural-toolbar{margin-bottom:14px!important;padding:8px!important;gap:8px!important}
+  body.visual-lovable.v26-home #abas .aba{min-height:40px!important;padding:10px 12px!important}
+  body.visual-lovable.v26-home .linha-topo{margin-bottom:14px!important;padding:0!important;min-height:0!important}
+  body.visual-lovable.v26-home .v26-secao-cabecalho h2{font-size:22px!important}
+  #viewCalendario .calendario-lovable-painel{min-width:0!important;width:100%!important;padding:16px!important;overflow:visible!important;box-sizing:border-box}
+  #viewCalendario .cal-topo{display:flex!important;flex-direction:column;align-items:flex-start!important;gap:12px;min-width:0!important;width:100%;margin-bottom:18px}
+  #viewCalendario #calTitulo{min-width:0!important;width:auto!important;font:700 19px/1.3 'Archivo',sans-serif!important;text-transform:none}
+  #viewCalendario #calTitulo::first-letter{text-transform:uppercase}
+  #viewCalendario .cal-controles{display:flex;gap:8px;justify-content:flex-start;width:100%}
+  #viewCalendario .cal-controles .btn{min-height:40px!important;min-width:42px!important;padding:8px 12px!important;font-size:12px!important}
+  #viewCalendario .cal-semana,#viewCalendario #calendarioGrade{display:none!important}
+  #agendaCalendario{display:block;min-width:0}
+  .agenda-dia+.agenda-dia{margin-top:22px}
+  .agenda-dia h3{display:flex;align-items:center;gap:8px;font:600 13px/1.5 'Archivo',sans-serif;color:#d3c0a0;margin:0 0 10px;text-transform:none;flex-wrap:wrap}
+  .agenda-dia h3>span{font-size:10px;border-radius:5px;background:#51401f;color:#f8d887;padding:2px 6px}
+  .agenda-evento{display:flex;align-items:center;gap:12px;width:100%;min-width:0;padding:12px;border:1px solid #56462f;border-radius:12px;background:#251e15;color:#f3ecdf;text-align:left;cursor:pointer}
+  .agenda-evento+.agenda-evento{margin-top:8px}
+  .agenda-evento>img{width:56px;height:70px;object-fit:cover;border-radius:7px;flex:none}
+  .agenda-evento-info{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+  .agenda-evento-info strong{font:600 16px/1.35 'Archivo',sans-serif;overflow-wrap:anywhere}
+  .agenda-horario{color:#edc579;font:600 11px/1.4 'Archivo',sans-serif}
+  .agenda-local{color:#cdbfa9;font:400 11px/1.5 'Archivo',sans-serif;overflow-wrap:anywhere}
+  .agenda-situacao{font:600 10px/1.4 'Archivo',sans-serif;color:#f2ba87}
+  .agenda-seta{font-size:25px;color:#dab56e;flex:none}
+  .agenda-vazia{padding:20px 6px;color:#cfc0a7;text-align:center;font:400 13px/1.6 'Archivo',sans-serif}
+  .agenda-vazia strong{display:block;font-size:17px;color:#f4ead7}
+  .agenda-vazia [data-agenda-hoje]{background:transparent;color:#ebd5ad;border-color:#665237}
+}
+@media(max-width:360px){.agenda-evento{padding:10px;gap:8px}.agenda-evento>img{width:44px;height:62px}.agenda-seta{display:none}}
