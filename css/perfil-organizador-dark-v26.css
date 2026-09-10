@@ -258,3 +258,40 @@ body.pagina-perfil-lovable.v26-perfil-mockup #btnCriarHero[hidden] {
     width: 100%;
   }
 }
+
+/* As regras antigas de desktop sobrescreviam a composição do celular. */
+@media (max-width: 600px) {
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-inner {
+    display: grid !important;
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    width: calc(100% - 32px) !important;
+    gap: 18px !important;
+    align-items: start !important;
+    padding: 24px 0 !important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-avatar-bloco {
+    width: 72px !important;
+    height: 72px !important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-apresentacao {
+    min-width: 0;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-apresentacao h1 {
+    font-size: 32px !important;
+    line-height: 1.08 !important;
+    overflow-wrap: anywhere;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-metricas {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+    line-height: 1.5 !important;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-hero-acoes {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-main {
+    width: calc(100% - 32px) !important;
+  }
+}
