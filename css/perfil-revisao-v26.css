@@ -1,0 +1,76 @@
+/* Revisão das abas do perfil: leitura, estados e ações. */
+body.pagina-perfil-lovable .topo [hidden] { display:none !important; }
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="dados"] > .superficie-lovable,
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel[data-pane="conta"] > .pilha-paineis {
+  width:100%; max-width:960px; margin-inline:auto; box-sizing:border-box;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .pilha-paineis > .max-2col {
+  width:100%; max-width:none; box-sizing:border-box;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel :is(.campo input,.campo textarea,.campo select) {
+  min-height:46px; font-size:16px; line-height:1.5; padding:12px 14px; box-sizing:border-box;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel .campo label {
+  font-size:13px; line-height:1.5;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel :is(.dica,.perfil-vazio p,.item-switch-lovable) {
+  font-size:14px; line-height:1.6; color:#c9c1b5;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel :is(input,textarea)::placeholder {
+  color:#aaa296 !important; opacity:1;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel :is(button,.link-botao) {
+  min-height:44px;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel :is(button,a,input,textarea,select):focus-visible {
+  outline:2px solid #f0b83e !important; outline-offset:3px;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel button:disabled {
+  cursor:not-allowed; opacity:.55;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup :is(.perfil-vazio,.perfil-erro) {
+  padding:28px; border:1px solid rgba(240,184,62,.20); border-radius:14px;
+  background:#12100c; color:#f4efe7; line-height:1.6; box-sizing:border-box;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .perfil-erro {
+  grid-column:1 / -1;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup :is(.v252-kicker,.v257-kicker) {
+  color:#efb536 !important; font-size:11px; letter-spacing:.12em;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .v252-perfil-topo h2 {
+  font-family:'Archivo',sans-serif; font-size:30px; font-weight:700; line-height:1.2; margin:12px 0;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup #listaInscricoesV252 {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),420px)); gap:22px; align-items:start;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup #listaInscricoesV252 > .perfil-vazio {
+  grid-column:1 / -1;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .v252-inscricao-card {
+  min-width:0; border:1px solid rgba(240,184,62,.2); border-radius:14px; overflow:hidden; background:#12100c;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .v252-inscricao-corpo {
+  padding:20px; color:#f4efe7;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup .v252-inscricao-corpo p {
+  color:#c9c1b5; font-size:14px; line-height:1.6; overflow-wrap:anywhere;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup #listaInscricoesV252 :is(.v252-btn,.v252-link,button) {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:44px; padding:10px 14px; border:1px solid #947335 !important;
+  border-radius:8px; background:#1a150c !important; color:#f4efe7 !important;
+  text-decoration:none; font-size:13px; line-height:1.5;
+}
+body.pagina-perfil-lovable.v26-perfil-mockup #listaInscricoesV252 :is(.v252-btn,.v252-link,button):hover {
+  background:#302511 !important; border-color:#f0b83e !important;
+}
+@media(max-width:600px){
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel .linha-2 {
+    display:grid; grid-template-columns:1fr; gap:16px;
+  }
+  body.pagina-perfil-lovable.v26-perfil-mockup .perfil-painel .linha-2 .campo { min-width:0; }
+  body.pagina-perfil-lovable.v26-perfil-mockup .rodape-form-lovable,
+  body.pagina-perfil-lovable.v26-perfil-mockup .linha-botoes-lovable { flex-wrap:wrap; gap:12px; }
+  body.pagina-perfil-lovable.v26-perfil-mockup #listaInscricoesV252 { grid-template-columns:minmax(0,1fr); }
+}
