@@ -80,7 +80,50 @@
 
   function categoriasCards(){document.querySelectorAll('.v261-categoria-media').forEach(el=>{if(el.dataset.v26IconReady==='1' && el.querySelector('.v26-ui-icon'))return;const texto=limparPrefixo(el.textContent);const chave=texto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();el.innerHTML=icon(categorias[chave]||'tag')+`<span class="v26-icon-label">${texto}</span>`;el.dataset.v26IconReady='1'})}
 
-  function aplicar(){topo();buscaEFiltros();categoriasUI();abasEVisoes();categoriasCards()}
+
+  // O select continua como fonte do valor para publicar e editar eventos.
+  function categoriaFormulario(){
+    const select=document.getElementById('f_cat');
+    if(!select || !select.options.length)return;
+    let group=document.getElementById('categoriasPublicar');
+    if(!group){
+      group=document.createElement('div');
+      group.id='categoriasPublicar';
+      group.className='categorias-publicar';
+      group.setAttribute('role','radiogroup');
+      group.setAttribute('aria-label','Categoria');
+      select.after(group);
+      select.hidden=true;
+      group.addEventListener('change',event=>{
+        if(!event.target.matches('input[type="radio"]'))return;
+        select.value=event.target.value;
+        select.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      select.addEventListener('change',categoriaFormulario);
+      new MutationObserver(categoriaFormulario).observe(document.getElementById('modalCriar'),{attributes:true,attributeFilter:['class','hidden','style']});
+    }
+    const signature=JSON.stringify(Array.from(select.options,o=>[o.value,o.textContent]));
+    if(group.dataset.options!==signature){
+      group.replaceChildren();
+      Array.from(select.options).forEach(option=>{
+        const label=document.createElement('label');
+        label.className='categoria-publicar';
+        label.dataset.cat=option.value;
+        const radio=document.createElement('input');
+        radio.type='radio';radio.name='categoria-publicar';radio.value=option.value;
+        const visual=document.createElement('span');
+        visual.className='categoria-publicar-visual';
+        visual.innerHTML=icon(categorias[option.value]||'more');
+        const title=document.createElement('span');
+        title.textContent=option.textContent.replace(/^[^\p{L}\p{N}]+/u,'').trim();
+        visual.appendChild(title);label.append(radio,visual);group.appendChild(label);
+      });
+      group.dataset.options=signature;
+    }
+    group.querySelectorAll('input').forEach(radio=>{radio.checked=radio.value===select.value;radio.disabled=select.disabled;});
+  }
+
+  function aplicar(){categoriaFormulario();topo();buscaEFiltros();categoriasUI();abasEVisoes();categoriasCards()}
   let agendado=false;
   function agendar(){if(agendado)return;agendado=true;requestAnimationFrame(()=>{agendado=false;aplicar()})}
   function iniciar(){if(!document.body.classList.contains('v26-home'))document.body.classList.add('v26-home');aplicar();const obs=new MutationObserver(agendar);obs.observe(document.body,{childList:true,subtree:true})}
