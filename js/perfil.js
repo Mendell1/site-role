@@ -75,7 +75,18 @@ function carregarPreferenciasDoPerfil(p){
 }
 
 
-function preencherFormularioPerfil(p){
+function dadosPerfilAlterados(){
+  if(!perfilOriginal) return false;
+  const p=perfilOriginal;
+  const campos={p_nome:p.nome||'',p_cidade:p.cidade||'',p_bio:(p.bio||'').slice(0,280),p_contato:p.contato||''};
+  const avisos={sw_interesse:p.notif_eventos!==false,sw_comentarios:p.notif_comentarios!==false,sw_denuncias:p.notif_denuncias!==false,sw_resumo:p.notif_resumo===true};
+  return Object.entries(campos).some(([id,v])=>campo(id)&&campo(id).value!==v)
+    || Object.entries(avisos).some(([id,v])=>campo(id)&&campo(id).checked!==v)
+    || !!campo('p_foto')?.files?.length;
+}
+function preencherFormularioPerfil(p,forcar=false){
+  if(!p) return;
+  if(!forcar && perfilOriginal?.id===p.id && dadosPerfilAlterados()) return;
   perfilOriginal = { ...p };
   if(campo('p_nome')) campo('p_nome').value = p.nome || '';
   if(campo('p_cidade')) campo('p_cidade').value = p.cidade || '';
@@ -129,7 +140,7 @@ function renderCards(lista, destinoId, vazioId){
       '</div>'+
       '<div class="evento-conteudo">'+
         '<div class="evento-tags"><span class="tag categoria-pill" data-cat="'+escapa(ev.categoria_id)+'"><i aria-hidden="true"></i>'+escapa(ev.categoria_nome||'Evento')+'</span>'+situacao+'</div>'+
-        '<h3>'+escapa(ev.nome)+'</h3>'+
+        '<h3><a href="index.html?evento='+encodeURIComponent(ev.id)+'">'+escapa(ev.nome)+'</a></h3>'+
         '<ul class="evento-meta">'+
           '<li><span aria-hidden="true">▣</span> '+escapa(dataLista(d))+' <span class="meta-sep">◷</span> '+escapa(hora(ev))+'</li>'+
           '<li><span aria-hidden="true">⌖</span> '+escapa([ev.bairro,ev.cidade].filter(Boolean).join(', ') || 'Local a confirmar')+'</li>'+
@@ -143,7 +154,7 @@ function renderCards(lista, destinoId, vazioId){
             )+
             '<span>'+escapa(ev.criador_nome||Sessao.perfil?.nome||'Você')+'</span></div>'+
           '<div class="evento-acoes">'+
-            '<button class="fav-card" data-fav="'+ev.id+'" type="button" aria-pressed="'+(fav?'true':'false')+'">'+(fav?'★':'☆')+'</button>'+
+            '<button class="fav-card" aria-label="'+(fav?'Remover dos favoritos':'Adicionar aos favoritos')+'" data-fav="'+ev.id+'" type="button" aria-pressed="'+(fav?'true':'false')+'">'+(fav?'★':'☆')+'</button>'+
             '<button class="interesse-card '+(interesse?'ativo':'')+'" data-interesse="'+ev.id+'" type="button" aria-pressed="'+(interesse?'true':'false')+'">'+(interesse?'Tenho interesse':'Marcar interesse')+'</button>'+
           '</div>'+
         '</div>'+
@@ -153,23 +164,33 @@ function renderCards(lista, destinoId, vazioId){
 }
 
 async function carregarMeusVinculos(){
-  favoritos.clear(); interesses.clear();
-  if(!Sessao.logado()) return;
+  if(!Sessao.logado()) return false;
   const [fav, itr] = await Promise.all([
     db.from('favoritos').select('evento_id').eq('usuario_id', meuId()),
     db.from('interesses').select('evento_id').eq('usuario_id', meuId())
   ]);
-  if(!fav.error) (fav.data||[]).forEach(x=>favoritos.add(x.evento_id));
-  if(!itr.error) (itr.data||[]).forEach(x=>interesses.add(x.evento_id));
+  if(fav.error||itr.error) return false;
+  favoritos.clear(); interesses.clear();
+  (fav.data||[]).forEach(x=>favoritos.add(x.evento_id));
+  (itr.data||[]).forEach(x=>interesses.add(x.evento_id));
+  return true;
 }
 
+function mostrarErroEventosPerfil(){
+  for(const [grade,vazio] of [['gradeMeusEventos','vazioMeusEventos'],['gradeFavoritos','vazioFavoritos']]){
+    if(campo(vazio)) campo(vazio).hidden=true;
+    if(campo(grade)) campo(grade).innerHTML='<div class="perfil-erro" role="status"><strong>Não foi possível carregar os eventos</strong><p>Confira sua conexão e tente novamente.</p><button type="button" class="btn-linha" data-recarregar-eventos>Tentar novamente</button></div>';
+  }
+  renderResumoPerfil();
+}
 async function carregarEventosPerfil(){
   if(!Sessao.logado()) return;
-  await carregarMeusVinculos();
+  if(!await carregarMeusVinculos()){ mostrarErroEventosPerfil(); return; }
   const [meus, favs] = await Promise.all([
     db.from('eventos_lista').select('*').eq('criador_id', meuId()).eq('ativo', true).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}),
     favoritos.size ? db.from('eventos_lista').select('*').in('id', [...favoritos]).eq('ativo', true).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}) : Promise.resolve({data:[], error:null})
   ]);
+  if(meus.error||favs.error){ mostrarErroEventosPerfil(); return; }
   meusEventos = meus.data || [];
   favoritosEventos = favs.data || [];
   renderCards(meusEventos, 'gradeMeusEventos', 'vazioMeusEventos');
@@ -260,7 +281,7 @@ async function salvarPerfilPagina(){
 
     if(fotoNova && fotoAntiga && fotoAntiga!==fotoNova.url) await removerArquivoPublico('avatares', fotoAntiga);
     Sessao.perfil = { ...Sessao.perfil, ...data };
-    perfilOriginal = { ...Sessao.perfil };
+    preencherFormularioPerfil(Sessao.perfil,true);
     atualizarTopo();
     renderResumoPerfil();
     avisar('Perfil atualizado');
@@ -274,8 +295,7 @@ async function salvarPerfilPagina(){
 
 function descartarPerfil(){
   if(!perfilOriginal) return;
-  preencherFormularioPerfil(perfilOriginal);
-  carregarPreferenciasDoPerfil(perfilOriginal);
+  preencherFormularioPerfil(perfilOriginal,true);
   avisar('Alterações descartadas');
 }
 
@@ -459,7 +479,6 @@ window.aoMudarSessao = async function(){
     return;
   }
   if(campo('btnCriar')) campo('btnCriar').hidden = false;
-  carregarPreferenciasDoPerfil(Sessao.perfil);
   await carregarEventosPerfil();
   await carregarNotificacoes();
 };
@@ -484,6 +503,7 @@ if(campo('btnLerTodas')) campo('btnLerTodas').addEventListener('click', async ()
 
 /* ----------------- Modais e links internos ----------------- */
 document.addEventListener('click', async e=>{
+  if(e.target.closest('[data-recarregar-eventos]')){ await carregarEventosPerfil(); return; }
   const fecha = e.target.closest('[data-fecha]');
   if(fecha){ fecharTudo(); return; }
 
