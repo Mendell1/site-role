@@ -24,7 +24,7 @@ body.v26-home #btnCriar{
 }
 
 body.v26-home #btnCriar::before{
-  content:"+";
+  content:"+" / "";
   width:21px;
   height:21px;
   display:grid;
@@ -39,7 +39,7 @@ body.v26-home #btnCriar::before{
 
 /* Organizador/admin */
 body.v26-home #btnCriar:not([data-v259-solicitar])::after{
-  content:"Publicar evento";
+  content:"Publicar evento" / "";
   color:#f4efe7;
   font:700 11.5px/1 'Archivo',sans-serif;
   letter-spacing:0;
@@ -48,7 +48,7 @@ body.v26-home #btnCriar:not([data-v259-solicitar])::after{
 
 /* Usuário comum */
 body.v26-home #btnCriar[data-v259-solicitar]::after{
-  content:"Quero publicar";
+  content:"Quero publicar" / "";
   color:#f4efe7;
   font:700 11.5px/1 'Archivo',sans-serif;
   letter-spacing:0;
@@ -80,3 +80,7 @@ body.v26-home #btnCriar:focus-visible{
   }
   body.v26-home #btnCriar::after{display:none}
 }
+
+/* O texto original permanece acessível; ícones antigos não se duplicam. */
+body.v26-home #btnCriar > * { display: none !important; }
+body.v26-home #btnCriar[hidden] { display: none !important; }
