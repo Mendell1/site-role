@@ -65,6 +65,7 @@ let favoritosEventos=[];
 const favoritos = new Set();
 const interesses = new Set();
 let perfilOriginal = null;
+let revisaoEventosPerfil = 0;
 
 function carregarPreferenciasDoPerfil(p){
   if(!p) return;
@@ -163,13 +164,13 @@ function renderCards(lista, destinoId, vazioId){
   }).join('');
 }
 
-async function carregarMeusVinculos(){
-  if(!Sessao.logado()) return false;
+async function carregarMeusVinculos(id=meuId(), revisao=revisaoEventosPerfil){
+  if(!id) return false;
   const [fav, itr] = await Promise.all([
-    db.from('favoritos').select('evento_id').eq('usuario_id', meuId()),
-    db.from('interesses').select('evento_id').eq('usuario_id', meuId())
+    db.from('favoritos').select('evento_id').eq('usuario_id', id),
+    db.from('interesses').select('evento_id').eq('usuario_id', id)
   ]);
-  if(fav.error||itr.error) return false;
+  if(meuId() !== id || revisao !== revisaoEventosPerfil || fav.error||itr.error) return false;
   favoritos.clear(); interesses.clear();
   (fav.data||[]).forEach(x=>favoritos.add(x.evento_id));
   (itr.data||[]).forEach(x=>interesses.add(x.evento_id));
@@ -184,12 +185,18 @@ function mostrarErroEventosPerfil(){
   renderResumoPerfil();
 }
 async function carregarEventosPerfil(){
-  if(!Sessao.logado()) return;
-  if(!await carregarMeusVinculos()){ mostrarErroEventosPerfil(); return; }
+  const id = meuId();
+  const revisao = ++revisaoEventosPerfil;
+  const aindaAtual = () => meuId() === id && revisao === revisaoEventosPerfil;
+  if(!id) return;
+  const vinculos = await carregarMeusVinculos(id, revisao);
+  if(!aindaAtual()) return;
+  if(!vinculos){ mostrarErroEventosPerfil(); return; }
   const [meus, favs] = await Promise.all([
-    db.from('eventos_lista').select('*').eq('criador_id', meuId()).eq('ativo', true).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}),
+    db.from('eventos_lista').select('*').eq('criador_id', id).eq('ativo', true).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}),
     favoritos.size ? db.from('eventos_lista').select('*').in('id', [...favoritos]).eq('ativo', true).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}) : Promise.resolve({data:[], error:null})
   ]);
+  if(!aindaAtual()) return;
   if(meus.error||favs.error){ mostrarErroEventosPerfil(); return; }
   meusEventos = meus.data || [];
   favoritosEventos = favs.data || [];
@@ -300,9 +307,10 @@ function descartarPerfil(){
 }
 
 async function carregarNotificacoes({abrirLista=false}={}){
-  if(!Sessao.logado()) return;
-  const { data, error } = await db.from('notificacoes').select('*').order('criado_em', { ascending:false }).limit(30);
-  if(error) return;
+  const id = meuId();
+  if(!id) return;
+  const { data, error } = await db.from('notificacoes').select('*').eq('usuario_id', id).order('criado_em', { ascending:false }).limit(30);
+  if(meuId() !== id || error) return;
   const naoLidas = data.filter(n=>!n.lida).length;
   if(campo('badgeNotificacoes')){
     campo('badgeNotificacoes').hidden = naoLidas === 0;
@@ -471,6 +479,10 @@ function definirAba(tab){
 
 window.aoMudarSessao = async function(){
   if(!Sessao.logado()){
+    ++revisaoEventosPerfil;
+    meusEventos = []; favoritosEventos = [];
+    favoritos.clear(); interesses.clear();
+    perfilOriginal = null;
     if(campo('btnCriar')) campo('btnCriar').hidden = true;
     campo('perfilHero').hidden = true;
     campo('perfilMain').hidden = true;
@@ -491,7 +503,10 @@ if(campo('btnCriarHero')) campo('btnCriarHero').addEventListener('click', ()=>lo
 if(campo('btnEntrar')) campo('btnEntrar').addEventListener('click', ()=>abrir('modalLogin'));
 if(campo('btnEntrarCentro')) campo('btnEntrarCentro').addEventListener('click', ()=>abrir('modalLogin'));
 if(campo('btnCadastroTopo')) campo('btnCadastroTopo').addEventListener('click', ()=>abrir('modalCadastro'));
-if(campo('btnSair')) campo('btnSair').addEventListener('click', async ()=>{ await sair(); avisar('Você saiu da conta'); location.href='index.html'; });
+if(campo('btnSair')) campo('btnSair').addEventListener('click', async ()=>{
+  try{ await sair(); avisar('Você saiu da conta'); location.href='index.html'; }
+  catch(err){ avisar('Não foi possível sair da conta. Confira sua conexão e tente novamente.'); }
+});
 if(campo('btnNotificacoes')) campo('btnNotificacoes').addEventListener('click', ()=>carregarNotificacoes({abrirLista:true}));
 if(campo('btnMinhasDenuncias')) campo('btnMinhasDenuncias').addEventListener('click', carregarMinhasDenuncias);
 if(campo('btnLerTodas')) campo('btnLerTodas').addEventListener('click', async ()=>{
@@ -744,3 +759,5 @@ async function processarRetornoExclusaoGoogle(){
 setTimeout(()=>window.aoMudarSessao && window.aoMudarSessao(), 350);
 setTimeout(processarRetornoExclusaoGoogle, 500);
 definirAba('eventos');
+
+
