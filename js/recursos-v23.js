@@ -376,7 +376,7 @@
     if(!id) return;
 
     obterEvento(id).then(ev=>{
-      if(!document.body.contains(folha) || folha.querySelector('.recursos-evento-v23')) return;
+      if(!document.body.contains(folha) || !folha.contains(alvo) || folha.querySelector('.recursos-evento-v23')) return;
       const lateral=folha.querySelector('.detalhe-coluna-lateral') || folha.querySelector('.detalhe-modal-scroll');
       if(!lateral) return;
       const bloco=document.createElement('div');
@@ -433,3 +433,5 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
+
