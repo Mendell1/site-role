@@ -7,6 +7,7 @@
 
   const PREFIXO='[V25.4/INTELIGÊNCIA]';
   let modoAtual=null;
+  let revisaoConsulta=0;
   let metadados=new Map();
 
   const el=id=>document.getElementById(id);
@@ -59,6 +60,7 @@
   }
 
   function limparModo(){
+    ++revisaoConsulta;
     modoAtual=null; metadados.clear();
     const caixa=el('interpretacaoV254'); if(caixa){caixa.hidden=true;caixa.innerHTML='';}
   }
@@ -93,6 +95,7 @@
     }
     caixa.innerHTML='<strong>O Rolê entendeu:</strong>'+(chips.length?chips.map(x=>'<span>'+escapa(x)+'</span>').join(''):'<span>busca por relevância</span>')+'<button type="button" data-v254-limpar>Limpar</button>';
     caixa.hidden=false;
+    if(typeof notificarFiltros==='function') notificarFiltros();
   }
 
   function decorarMotivos(){
@@ -114,11 +117,15 @@
   async function buscarInteligente(texto){
     const q=String(texto||'').trim();
     if(q.length<2) return;
+    const revisao=++revisaoConsulta;
+    if(typeof buscaTimer!=='undefined') clearTimeout(buscaTimer);
+    if(typeof revisaoEventos!=='undefined') ++revisaoEventos;
     modoAtual='busca'; metadados.clear();
     const grade=el('grade'); if(grade) grade.innerHTML='<div class="esqueleto"></div>'.repeat(6);
     const contagem=el('contagem'); if(contagem) contagem.textContent='interpretando sua busca...';
 
     const {data,error}=await db.rpc('buscar_eventos_inteligente_v25_4',{p_consulta:q,p_limite:36});
+    if(revisao!==revisaoConsulta) return;
     if(error){
       console.warn(PREFIXO,error);
       if(typeof avisar==='function') avisar('Não foi possível usar a busca inteligente agora.');
@@ -136,6 +143,9 @@
       const entrar=el('btnEntrar'); if(entrar) entrar.click();
       return;
     }
+    const revisao=++revisaoConsulta;
+    if(typeof buscaTimer!=='undefined') clearTimeout(buscaTimer);
+    if(typeof revisaoEventos!=='undefined') ++revisaoEventos;
     modoAtual='recomendados'; metadados.clear(); resetAbas(true);
     const grade=el('grade'); if(grade) grade.innerHTML='<div class="esqueleto"></div>'.repeat(6);
     const contagem=el('contagem'); if(contagem) contagem.textContent='montando seu mural...';
@@ -143,6 +153,7 @@
     if(caixa){caixa.hidden=false;caixa.innerHTML='<strong>✦ Para você</strong><span>Usando favoritos, interesses, alertas, cidade e organizadores seguidos.</span>';}
 
     const {data,error}=await db.rpc('recomendacoes_v25_4',{p_limite:18});
+    if(revisao!==revisaoConsulta) return;
     if(error){
       console.warn(PREFIXO,error);
       if(typeof avisar==='function') avisar('Não foi possível montar suas recomendações agora.');
@@ -176,7 +187,7 @@
       if(rec){e.preventDefault();e.stopImmediatePropagation();carregarRecomendacoes();return;}
 
       const limpar=e.target.closest('[data-v254-limpar]');
-      if(limpar){e.preventDefault();if(el('busca'))el('busca').value='';buscaNormal();return;}
+      if(limpar){e.preventDefault();if(typeof limparFiltros==='function') limparFiltros();else{if(el('busca'))el('busca').value='';buscaNormal();}return;}
 
       const buscar=e.target.closest('#btnBuscar');
       if(buscar){
@@ -196,6 +207,10 @@
     },true);
   }
 
+  document.addEventListener('role:limpar-filtros',limparModo);
+  const inputBusca=el('busca');
+  if(inputBusca) inputBusca.addEventListener('input',limparModo);
+
   function iniciar(){
     garantirInterface(); ligarEventos();
     setTimeout(garantirInterface,700);
@@ -205,3 +220,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
