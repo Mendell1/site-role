@@ -11,6 +11,7 @@
   const abertos=new Set();
   const mediaMobile=window.matchMedia('(max-width:760px)');
   let reposicaoPendente=false;
+  let proximoTituloModal=0;
 
   function melhorarAcessibilidade(){
     const aviso=document.getElementById('aviso');
@@ -33,6 +34,13 @@
 
     document.querySelectorAll('.cortina [role="dialog"]').forEach(dialog=>{
       dialog.setAttribute('aria-modal','true');
+      if(!dialog.getAttribute('aria-label') && !dialog.getAttribute('aria-labelledby')){
+        const titulo=dialog.querySelector('h1,h2,h3,h4');
+        if(titulo){
+          if(!titulo.id) titulo.id='role-modal-titulo-'+(++proximoTituloModal);
+          dialog.setAttribute('aria-labelledby',titulo.id);
+        }
+      }
       if(!dialog.hasAttribute('tabindex')) dialog.setAttribute('tabindex','-1');
     });
   }
@@ -114,8 +122,22 @@
     observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
 
     document.addEventListener('keydown',e=>{
+      const atuais=modaisAbertos();
+      const modal=atuais[atuais.length-1];
+      if(!modal) return;
+      if(e.key==='Tab'){
+        const focaveis=[...modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]')]
+          .filter(el=>el.getClientRects().length && !el.closest('[hidden]'));
+        if(!focaveis.length) return;
+        const primeiro=focaveis[0],ultimo=focaveis[focaveis.length-1],ativo=document.activeElement;
+        if(e.shiftKey && (ativo===primeiro || !focaveis.includes(ativo))){e.preventDefault();ultimo.focus();}
+        else if(!e.shiftKey && (ativo===ultimo || !focaveis.includes(ativo))){e.preventDefault();primeiro.focus();}
+        return;
+      }
       if(e.key!=='Escape') return;
-      if(fecharTopo()) e.preventDefault();
+      // O seletor de categoria trata Escape fechando apenas a própria lista.
+      if(modal.querySelector('.categoria-dropdown [aria-expanded="true"]')) return;
+      if(fecharTopo()){e.preventDefault();e.stopImmediatePropagation();}
     },true);
 
     if(typeof mediaMobile.addEventListener==='function') mediaMobile.addEventListener('change',agendarReposicaoParticipacao);
@@ -131,3 +153,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
