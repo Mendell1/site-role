@@ -452,7 +452,7 @@ function montarDetalhe(ev){
     '</div>'+
     '<div class="detalhe-rodape-fixo">'+
       '<div class="detalhe-rodape-esquerda">'+
-        ((ev.latitude!=null && ev.longitude!=null)?'<button class="btn-linha detalhe-acao-secundaria" data-ver-mapa="'+ev.id+'">'+iconeDetalhe('local')+'Ver no mapa</button>':'')+
+        ((ev.latitude!=null && ev.longitude!=null)?'<button class="btn-linha detalhe-acao-secundaria" data-ver-mapa="'+ev.id+'" aria-label="Ver localização no mapa">'+iconeDetalhe('local')+'Mapa</button>':'')+
         (souDono?'<button class="btn-linha detalhe-acao-secundaria" data-editar="'+ev.id+'">'+iconeDetalhe('editar')+'Editar</button><button class="btn-linha detalhe-acao-secundaria" data-excluir="'+ev.id+'">'+iconeDetalhe('excluir')+'Excluir</button>':'')+
       '</div>'+
       '<div class="detalhe-rodape-direita">'+
