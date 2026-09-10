@@ -15,6 +15,23 @@
 let perfilAtual = null;
 let adminsDisponiveis = [];
 let aba = 'denuncias';
+let revisaoPainel = 0;
+
+function painelSelecionado(){
+  return document.querySelector('.painel-aba[aria-pressed="true"]')?.dataset.painel || aba;
+}
+
+function iniciarCargaPainel(nome){
+  if(painelSelecionado()!==nome) return null;
+  const revisao=++revisaoPainel;
+  return ()=>revisao===revisaoPainel && painelSelecionado()===nome;
+}
+
+// Os módulos de Resumo e Organizadores compartilham o mesmo contêiner.
+window.RoleAdminPainel={iniciarCarga:iniciarCargaPainel,selecionado:painelSelecionado};
+document.addEventListener('click',e=>{
+  if(e.target.closest('.painel-aba')) revisaoPainel++;
+},true);
 
 const STATUS = {
   recebida:        { rotulo:'Recebida',              cor:'aberta'  },
@@ -119,8 +136,18 @@ async function iniciar(){
 }
 
 el('btnEntrar').addEventListener('click', async ()=>{
-  await db.auth.signOut();
-  location.href = 'index.html';
+  const botao=el('btnEntrar');
+  if(botao.disabled) return;
+  botao.disabled=true;
+  try{
+    const {error}=await db.auth.signOut();
+    if(error) throw error;
+    location.href = 'index.html';
+  }catch(error){
+    avisar('Não foi possível sair da conta. Tente novamente.');
+  }finally{
+    botao.disabled=false;
+  }
 });
 
 /* ============================================================
@@ -135,12 +162,23 @@ document.querySelector('.painel-abas').addEventListener('click', e=>{
 });
 
 function carregar(){
+  const selecionada=painelSelecionado();
+  if(!['denuncias','eventos','usuarios','auditoria'].includes(selecionada)) return;
+  aba=selecionada;
   el('lista').innerHTML = '<div class="esqueleto" style="min-height:70px;margin-bottom:10px"></div>'.repeat(3);
   if(aba==='denuncias') listarDenuncias();
   if(aba==='eventos')   listarEventos();
   if(aba==='usuarios')  listarUsuarios();
   if(aba==='auditoria') listarAuditoria();
 }
+
+function mostrarErroLista(error){
+  el('lista').innerHTML='<div class="vazio" role="status"><strong>Não foi possível carregar</strong>'+escapa(error.message||'Tente novamente.')+'<br><button type="button" class="mini" data-admin-recarregar>Tentar novamente</button></div>';
+  el('contagemPainel').textContent='Indisponível';
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-admin-recarregar]')) carregar();
+});
 
 function vazio(msg){
   el('lista').innerHTML = '<div class="vazio"><strong>Tudo limpo</strong>'+msg+'</div>';
@@ -151,11 +189,14 @@ function vazio(msg){
    DENÚNCIAS
    ============================================================ */
 async function listarDenuncias(){
+  const atual=iniciarCargaPainel('denuncias');
+  if(!atual) return;
   // Prazos são processados automaticamente pelo Supabase Cron.
   const [contadores, adminsResp] = await Promise.all([
     contarPorStatus(),
     db.from('perfis').select('id,nome').eq('papel','admin').order('nome')
   ]);
+  if(!atual()) return;
   adminsDisponiveis = adminsResp.data || [];
 
   let q = db.from('denuncias_lista').select('*', { count:'exact' });
@@ -184,7 +225,8 @@ async function listarDenuncias(){
     .order('criado_em', { ascending: filtros.ordem === 'antigas' })
     .range(inicio, inicio + POR_PAGINA_ADMIN - 1);
 
-  if(error){ avisar('Erro: ' + error.message); return; }
+  if(!atual()) return;
+  if(error){ mostrarErroLista(error); return; }
   totalDenuncias = count || 0;
 
   const pendentes = (contadores.recebida||0) + (contadores.em_analise||0) + (contadores.aguardando_info||0) + (contadores.em_recurso||0);
@@ -355,23 +397,27 @@ async function resolverDenuncia(id){
   if(medida === 'suspensao'){
     const d = prompt('Suspender por quantos dias?', '7');
     if(d === null) return;
-    dias = Number(d) || 7;
+    dias = Number(d);
+    if(!Number.isInteger(dias) || dias<1 || dias>3650){ avisar('Informe um número inteiro entre 1 e 3650 dias.'); return; }
   }
 
   const resposta = prompt('Mensagem para quem denunciou (opcional):', '');
   if(resposta === null) return;
 
   const dados = { status:'resolvida', decisao };
+  if(medida==='nenhuma') dados.medida='nenhuma';
   if(resposta.trim()) dados.resposta = resposta.trim();
 
-  const r = await db.from('denuncias').update(dados).eq('id', id);
+  const r = await db.from('denuncias').update(dados).eq('id', id).select('id').single();
   if(r.error){ avisar('Erro: ' + r.error.message); return; }
 
   if(medida !== 'nenhuma'){
     const m = await db.rpc('aplicar_medida', { p_denuncia:id, p_medida:medida, p_dias:dias });
-    if(m.error){ avisar('Status salvo, mas a medida falhou: ' + m.error.message); }
-  }else{
-    await db.from('denuncias').update({ medida:'nenhuma' }).eq('id', id);
+    if(m.error){
+      avisar('A decisão foi salva, mas a medida NÃO foi aplicada: '+m.error.message+'. Revise esta denúncia antes de encerrar o atendimento.');
+      await listarDenuncias();
+      return;
+    }
   }
 
   avisar('Denúncia resolvida. Quem denunciou foi notificado.');
@@ -425,12 +471,15 @@ function restaurarFiltros(){
    EVENTOS  (o admin enxerga inclusive os ocultos)
    ============================================================ */
 async function listarEventos(){
+  const atual=iniciarCargaPainel('eventos');
+  if(!atual) return;
   const { data, error } = await db
     .from('eventos')
     .select('id, nome, data_evento, cidade, ativo, situacao, imagem_url, criador_id, perfis:criador_id(nome)')
     .order('criado_em', { ascending:false });
 
-  if(error){ avisar('Erro: ' + error.message); return; }
+  if(!atual()) return;
+  if(error){ mostrarErroLista(error); return; }
   el('contagemPainel').textContent = data.length + (data.length===1?' evento':' eventos');
   if(!data.length){ vazio('Nenhum evento publicado ainda.'); return; }
 
@@ -456,12 +505,15 @@ async function listarEventos(){
    USUÁRIOS
    ============================================================ */
 async function listarUsuarios(){
+  const atual=iniciarCargaPainel('usuarios');
+  if(!atual) return;
   const { data, error } = await db
     .from('perfis')
     .select('id, nome, email, papel, bloqueado, criado_em')
     .order('criado_em', { ascending:false });
 
-  if(error){ avisar('Erro: ' + error.message); return; }
+  if(!atual()) return;
+  if(error){ mostrarErroLista(error); return; }
   el('contagemPainel').textContent = data.length + (data.length===1?' conta':' contas');
 
   el('lista').innerHTML = data.map(u=>{
@@ -492,10 +544,13 @@ async function listarUsuarios(){
    AUDITORIA — tudo que os administradores fizeram
    ============================================================ */
 async function listarAuditoria(){
+  const atual=iniciarCargaPainel('auditoria');
+  if(!atual) return;
   const { data, error } = await db.from('log_admin')
     .select('*').order('criado_em', { ascending:false }).limit(200);
 
-  if(error){ avisar('Erro: ' + error.message); return; }
+  if(!atual()) return;
+  if(error){ mostrarErroLista(error); return; }
   el('contagemPainel').textContent = data.length + (data.length===1?' registro':' registros');
 
   if(!data.length){ vazio('Nenhuma ação registrada ainda.'); return; }
@@ -521,8 +576,10 @@ document.addEventListener('click', async e=>{
     'button[data-bloquear],button[data-desbloquear],button[data-promover],button[data-rebaixar],' +
     'button[data-excluir-conta],button[data-status],button[data-historico],button[data-resolver],' +
     'button[data-evidencia],button[data-pedir-info],button[data-recurso-aceitar],button[data-recurso-negar]');
-  if(!alvo) return;
-
+  if(!alvo || alvo.disabled) return;
+  const rotuloOriginal=alvo.textContent;
+  alvo.disabled=true;
+  try{
   const d = alvo.dataset;
   let r;
 
@@ -573,11 +630,16 @@ document.addEventListener('click', async e=>{
   }
   else if(d.apagar){
     if(!confirm('Excluir este evento em definitivo? Some também dos favoritos e interesses de todo mundo.')) return;
-    const anterior=await db.from('eventos').select('id,imagem_url').eq('id',d.apagar).single();
-    r = await db.from('eventos').delete().eq('id', d.apagar);
+    r = await db.from('eventos').delete().eq('id', d.apagar).select('id,imagem_url').maybeSingle();
     if(!r.error){
-      const caminho=anterior.data && caminhoStoragePublico(anterior.data.imagem_url,'eventos');
-      if(caminho) await db.storage.from('eventos').remove([caminho]);
+      if(!r.data){ avisar('O evento já foi removido ou sua conta não pode excluí-lo.'); carregar(); return; }
+      const imagem=r.data.imagem_url;
+      const caminho=caminhoStoragePublico(imagem,'eventos');
+      if(caminho){
+        // Todas as ocorrências de uma série podem usar a mesma imagem.
+        const uso=await db.from('eventos').select('id',{count:'exact',head:true}).eq('imagem_url',imagem);
+        if(!uso.error && uso.count===0) await db.storage.from('eventos').remove([caminho]);
+      }
       avisar('Evento excluído');
     }
   }
@@ -647,6 +709,14 @@ document.addEventListener('click', async e=>{
     return;
   }
   carregar();
+  }catch(error){
+    console.error('Ação administrativa:',error);
+    avisar('Não foi possível concluir a ação. Confira o estado atual antes de tentar novamente.');
+  }finally{
+    alvo.disabled=false;
+    alvo.textContent=rotuloOriginal;
+  }
 });
 
 iniciar();
+
