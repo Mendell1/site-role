@@ -78,7 +78,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html')){
     estilo('css/v25-6.css','v25-6');
-    script('js/recorrencia-v25.js','v25-6-recorrencia');
+    script('js/recorrencia-v25.js?v=20260910-publicar-visual','v25-6-recorrencia');
     script('js/mapa-raio-v25.js','v25-6-mapa-raio');
   }
 
@@ -135,6 +135,6 @@ if (SUPABASE_URL.startsWith('COLE')) {
     scriptLocal('js/assets-oficial-v26.js?v=20260907-0225','v26-assets-oficial');
     estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
     estiloLocal('css/polimento-v26.css?v=20260907-1340','v26-polimento-final');
-    estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-01','v26-home-publicar-organizador');
+    estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-publicar-visual','v26-home-publicar-organizador');
   }
 })();
