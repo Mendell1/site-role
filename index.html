@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="css/auth-visual-v26.css?v=20260910-1">
 <link rel="stylesheet" href="css/evento-detalhe-v26.css?v=20260910-detail1">
 <link rel="stylesheet" href="css/mapa-visual-v26.css?v=20260910-map1">
+<link rel="stylesheet" href="css/descoberta-v26.css?v=20260910-discovery1">
 </head>
 <body class="visual-lovable">
 
@@ -44,18 +45,26 @@
   <div class="hero-conteudo">
     <p class="hero-kicker">MURAL CULTURAL URBANO · SÃO PAULO E REGIÃO</p>
     <h1>O QUE TÁ ROLANDO<br><em>PERTO DE VOCÊ</em></h1>
-    <p class="hero-desc">Feiras, campeonatos, bazares, oficinas e festas de bairro — tudo que costuma ficar preso em grupo de WhatsApp, reunido num lugar só.</p>
+    <p class="hero-desc"><span class="hero-desc-longa">Feiras, campeonatos, bazares, oficinas e festas de bairro — tudo que costuma ficar preso em grupo de WhatsApp, reunido num lugar só.</span><span class="hero-desc-curta">Descubra eventos no seu bairro e encontre seu próximo rolê.</span></p>
 
     <div class="busca">
       <span class="busca-icone" aria-hidden="true">⌕</span>
       <input id="busca" type="search" placeholder="Buscar por nome, bairro ou descrição" aria-label="Buscar evento">
       <button id="btnBuscar">Buscar</button>
     </div>
-    <div class="atalhos">
+    <div class="descoberta-filtros-barra">
+      <button type="button" id="btnFiltros" aria-controls="painelFiltros" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/></svg>Filtros <span id="filtrosContagem" hidden></span></button>
+      <button type="button" id="btnLimparFiltros" data-limpar-filtros hidden>Limpar filtros</button>
+    </div>
+    <div id="filtrosAtivos" aria-label="Filtros ativos" hidden></div>
+    <div id="painelFiltros" role="region" aria-label="Filtros de eventos" hidden>
+      <p class="filtros-titulo">Data, preço e localização</p>
+      <div class="atalhos">
       <button class="chip" data-atalho="hoje" aria-pressed="false">HOJE</button>
       <button class="chip" data-atalho="fds" aria-pressed="false">FIM DE SEMANA</button>
       <button class="chip" data-atalho="semana" aria-pressed="false">PRÓXIMOS 7 DIAS</button>
       <button class="chip" data-atalho="gratis" aria-pressed="false">GRÁTIS</button>
+      </div>
     </div>
   </div>
 
@@ -120,6 +129,7 @@
         <span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span><span>DOM</span>
       </div>
       <div class="cal-grade" id="calendarioGrade"></div>
+      <div id="agendaCalendario" aria-label="Agenda de eventos do mês"></div>
     </div>
   </section>
 </main>
@@ -615,13 +625,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=20260910-detail1"></script>
+<script src="js/config.js?v=20260910-discovery1"></script>
 <script src="js/senha.js"></script>
 <script src="js/auth.js?v=20260910-audit1"></script>
 <script src="js/google-auth.js?v=20260910-audit1"></script>
 <script src="js/nav-mobile.js"></script>
-<script src="js/app.js?v=20260910-map1"></script>
+<script src="js/app.js?v=20260910-discovery1"></script>
 <script src="js/recursos-v23.js?v=20260910-audit1"></script>
+<script src="js/descoberta-v26.js?v=20260910-discovery1"></script>
 </body>
 </html>
+
 
