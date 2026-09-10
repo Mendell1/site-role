@@ -113,7 +113,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     scriptLocal('js/perfil-foto-conta-v26.js?v=20260908-2130','v26-perfil-foto-conta');
     scriptLocal('js/perfil-recuperacao-v26.js?v=20260908-0425','v26-perfil-recuperacao');
     scriptLocal('js/perfil-abas-ordem-v26.js?v=20260909-0057','v26-perfil-abas-ordem');
-    estiloLocal('css/perfil-organizador-dark-v26.css?v=20260909-0115','v26-perfil-organizador-dark');
+    estiloLocal('css/perfil-organizador-dark-v26.css?v=20260910-01','v26-perfil-organizador-dark');
   }
 
   if(eh('index.html')){
@@ -134,6 +134,6 @@ if (SUPABASE_URL.startsWith('COLE')) {
     scriptLocal('js/assets-oficial-v26.js?v=20260907-0225','v26-assets-oficial');
     estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
     estiloLocal('css/polimento-v26.css?v=20260907-1340','v26-polimento-final');
-    estiloLocal('css/home-publicar-organizador-v26.css?v=20260909-0135','v26-home-publicar-organizador');
+    estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-01','v26-home-publicar-organizador');
   }
 })();
