@@ -65,7 +65,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/qr-compat-v25.js','v25-qr-compat');
     if(eh('index.html')) script('js/qr-evento-v25.js','v25-event-qr');
     estilo('css/checkin-v25.css','v25-3');
-    script('js/checkin-v25.js','v25-3');
+    script('js/checkin-v25.js?v=20260910-audit1','v25-3');
   }
 
   if(eh('index.html')){
