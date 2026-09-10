@@ -84,3 +84,46 @@ body.v26-home #btnCriar:focus-visible{
 /* O texto original permanece acessível; ícones antigos não se duplicam. */
 body.v26-home #btnCriar > * { display: none !important; }
 body.v26-home #btnCriar[hidden] { display: none !important; }
+
+/* Formulário alinhado à identidade da página inicial. */
+body.v26-home #modalCriar .folha{
+ background:#1c1915!important;color:#f4efe7!important;border:1px solid #40382d!important;
+ border-radius:16px!important;max-width:620px!important;padding:28px!important;
+ box-shadow:0 24px 90px #0008!important;color-scheme:dark;scrollbar-color:#62533d #1c1915;
+}
+body.v26-home #modalCriar #tituloForm{color:#f4efe7!important;margin:0 36px 8px 0!important;font-size:28px!important}
+body.v26-home #modalCriar .publicar-intro{font:400 14px/1.6 Archivo,sans-serif;color:#bfb5a6;margin:0 0 26px}
+body.v26-home #modalCriar .publicar-secao{font:600 17px/1.4 Archivo,sans-serif;letter-spacing:0;text-transform:none;color:#f0bd54;margin:28px 0 18px;padding-top:22px;border-top:1px solid #3c3429}
+body.v26-home #modalCriar .publicar-intro + .publicar-secao{border:0;padding-top:0;margin-top:0}
+body.v26-home #modalCriar .campo{margin-bottom:18px}
+body.v26-home #modalCriar .campo > label{color:#d3c9ba!important;font:500 12px/1.5 Archivo,sans-serif!important;letter-spacing:.2px!important;text-transform:none!important;margin-bottom:7px!important}
+body.v26-home #modalCriar .campo input:not([type=checkbox]):not([type=radio]),
+body.v26-home #modalCriar .campo textarea,
+body.v26-home #modalCriar .campo select,
+body.v26-home #modalCriar #categoriaSelecionada{
+ background:#25211c!important;color:#f4efe7!important;border:1px solid #514637!important;border-radius:8px!important;font:400 14px/1.5 Archivo,sans-serif!important;min-height:44px;box-sizing:border-box
+}
+body.v26-home #modalCriar input::placeholder,body.v26-home #modalCriar textarea::placeholder{color:#aaa092!important;opacity:1}
+body.v26-home #modalCriar .campo input:focus-visible,body.v26-home #modalCriar textarea:focus-visible,body.v26-home #modalCriar select:focus-visible,body.v26-home #modalCriar button:focus-visible{outline:2px solid #f0bd54!important;outline-offset:2px}
+body.v26-home #modalCriar .dica{color:#bfb5a6!important;font-size:12px!important;line-height:1.6}
+body.v26-home #modalCriar .categorias-publicar{background:#25211c;border-color:#62513a;box-shadow:0 12px 30px #0007}
+body.v26-home #modalCriar .categoria-publicar-visual{color:#f4efe7}
+body.v26-home #modalCriar .categoria-publicar input:checked + span,body.v26-home #modalCriar .categoria-publicar:hover .categoria-publicar-visual{background:#443720}
+body.v26-home #modalCriar #recorrenciaV256{background:#25211c!important;border:1px solid #514637!important;border-radius:10px!important;padding:16px!important;color:#f4efe7!important}
+body.v26-home #modalCriar #recorrenciaV256 strong{color:#f4efe7!important}
+body.v26-home #modalCriar .v256-kicker{color:#f0bd54!important}
+body.v26-home #modalCriar .v256-recorrencia-resumo,body.v26-home #modalCriar .v256-recorrencia-edicao{background:#30291f!important;color:#d3c9ba!important;border-color:#514637!important}
+body.v26-home #modalCriar .btn-linha{background:transparent!important;color:#e2d6c4!important;border:1px solid #62533e!important;border-radius:8px!important;min-height:42px}
+body.v26-home #modalCriar .btn-linha:hover{background:#332b20!important;border-color:#b99551!important}
+body.v26-home #modalCriar #btnPublicar{background:#f0bd54!important;color:#21180b!important;border:0!important;border-radius:8px!important;min-height:46px!important;padding:12px 30px!important;font-weight:700!important;flex:1}
+body.v26-home #modalCriar #btnPublicar:hover{background:#ffcd6b!important}
+body.v26-home #modalCriar .fechar{color:#cfc2af!important;background:transparent!important}
+body.v26-home #modalCriar #f_img{padding:14px!important;border-style:dashed!important}
+body.v26-home #modalCriar #f_img::file-selector-button{background:#3c3120;color:#f3c772;border:1px solid #806538;border-radius:6px;padding:8px 10px;margin-right:10px;cursor:pointer}
+body.v26-home #modalCriar .mapa-formulario{border:1px solid #514637;border-radius:10px;overflow:hidden}
+@media(max-width:600px){
+ body.v26-home #modalCriar .folha{padding:20px 16px!important;border-radius:12px!important;width:calc(100% - 16px)!important;max-height:calc(100dvh - 16px)!important}
+ body.v26-home #modalCriar #tituloForm{font-size:25px!important}
+ body.v26-home #modalCriar .publicar-secao{margin-top:24px}
+ body.v26-home #modalCriar .mapa-form-acoes{display:flex;flex-wrap:wrap;gap:8px}
+}
