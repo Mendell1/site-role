@@ -15,7 +15,7 @@
   function numero(v){ return Number(v||0).toLocaleString('pt-BR'); }
 
   function barra(rotulo,valor,maximo){
-    const pct=maximo>0?Math.max(2,Math.round((valor/maximo)*100)):0;
+    const pct=maximo>0 && valor>0?Math.max(2,Math.round((valor/maximo)*100)):0;
     return '<div class="admin-barra-linha-v23"><span>'+esc(rotulo)+'</span><div class="admin-barra-v23"><i style="width:'+pct+'%"></i></div><b>'+numero(valor)+'</b></div>';
   }
 
@@ -42,7 +42,7 @@
 
       lista.innerHTML='<section class="admin-resumo-v23">'+
         '<div class="admin-resumo-toolbar">'+
-          '<div><strong style="color:#fff1df">Visão geral do Rolê</strong><div class="meta">Dados reais do banco, sem valores fictícios.</div></div>'+ 
+          '<div><strong style="color:#fff1df">Visão geral do Rolê</strong><div class="meta">Acompanhe a atividade da comunidade e os conteúdos que precisam de atenção.</div></div>'+ 
           '<label>Período <select id="adminPeriodoV23"><option value="7"'+(dias===7?' selected':'')+'>7 dias</option><option value="30"'+(dias===30?' selected':'')+'>30 dias</option><option value="90"'+(dias===90?' selected':'')+'>90 dias</option><option value="365"'+(dias===365?' selected':'')+'>1 ano</option></select><button class="mini" id="adminAtualizarV23">Atualizar</button></label>'+ 
         '</div>'+ 
         '<div class="admin-kpis-v23">'+
