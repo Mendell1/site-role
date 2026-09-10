@@ -41,6 +41,8 @@
     '</a>';
   }
 
+  const hojeLocal=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
+
   async function iniciar(){
     const id=new URLSearchParams(location.search).get('id');
     if(!id){
@@ -50,7 +52,7 @@
 
     const [perfilResp,eventosResp]=await Promise.all([
       db.rpc('perfil_publico',{p_usuario:id}),
-      db.from('eventos_lista').select('*').eq('criador_id',id).gte('data_evento',new Date().toISOString().slice(0,10)).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).limit(30)
+      db.from('eventos_lista').select('*').eq('criador_id',id).gte('data_evento',hojeLocal()).order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).limit(30)
     ]);
 
     const p=Array.isArray(perfilResp.data)?perfilResp.data[0]:perfilResp.data;
@@ -60,7 +62,8 @@
     }
 
     document.title=p.nome+' — Rolê';
-    const eventos=eventosResp.error?[]:(eventosResp.data||[]);
+    if(eventosResp.error) throw eventosResp.error;
+    const eventos=eventosResp.data||[];
     alvo.innerHTML=
       '<section class="organizador-publico-hero">'+
         '<div class="organizador-publico-avatar">'+(p.foto_url?'<img src="'+esc(p.foto_url)+'" alt="Foto de '+esc(p.nome)+'">':esc(iniciais(p.nome)))+'</div>'+ 
@@ -85,3 +88,4 @@
     alvo.innerHTML='<div class="organizador-vazio"><strong>Não foi possível abrir o perfil</strong><p>Tente novamente em alguns instantes.</p></div>';
   });
 })();
+
