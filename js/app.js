@@ -539,7 +539,19 @@ function iconeMapa(ev,selecionado=false){
 
 function criarMapaEventos(){
   if(mapaEventos || !window.L) return;
-  mapaEventos=L.map('mapaEventos',{zoomControl:false,attributionControl:true}).setView([-23.5505,-46.6333],11);
+  // A navegação da página não deve arrastar nem ampliar o mapa por acidente.
+  // O zoom pelos botões e a seleção dos eventos continuam disponíveis.
+  mapaEventos=L.map('mapaEventos',{
+    zoomControl:false,
+    attributionControl:true,
+    dragging:false,
+    scrollWheelZoom:false,
+    doubleClickZoom:false,
+    touchZoom:false,
+    boxZoom:false,
+    keyboard:false,
+    tapHold:false
+  }).setView([-23.5505,-46.6333],11);
   L.control.zoom({position:'bottomright'}).addTo(mapaEventos);
   /* V18: usamos os tiles padrão do OpenStreetMap, que não exigem
      chave de API. O aspecto escuro é aplicado só por CSS na camada
