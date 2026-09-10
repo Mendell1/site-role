@@ -142,6 +142,8 @@
   <div class="folha" role="dialog" aria-modal="true">
     <button class="fechar" data-fecha>×</button>
     <h3 id="tituloForm">Publicar um evento</h3>
+    <p class="publicar-intro">Conte o que vai rolar e ajude mais pessoas a participar.</p>
+    <h4 class="publicar-secao">Sobre o evento</h4>
 
     <div class="campo"><label for="f_nome">Nome do evento *</label><input id="f_nome" placeholder="Ex: Feira Cultural do Jardim Sul"></div>
     <div class="campo"><label for="f_desc">Descrição</label><textarea id="f_desc" rows="3" placeholder="Conte o que vai acontecer, quem pode ir, o que levar..."></textarea></div>
@@ -158,11 +160,13 @@
       <p class="dica" style="margin-top:5px">Ao mudar a situação, quem marcou “Tenho interesse” recebe uma notificação.</p>
     </div>
 
+    <h4 class="publicar-secao">Data e horário</h4>
     <div class="duas">
       <div class="campo"><label for="f_data">Data *</label><input id="f_data" type="date"></div>
       <div class="campo"><label for="f_hora">Horário</label><input id="f_hora" type="time" value="19:00"></div>
     </div>
 
+    <h4 class="publicar-secao">Localização</h4>
     <div class="duas">
       <div class="campo">
         <label for="f_cep">CEP</label>
@@ -186,13 +190,6 @@
       <div class="campo"><label for="f_cidade">Cidade *</label><input id="f_cidade" placeholder="Ex: São Paulo"></div>
     </div>
 
-    <div class="duas">
-      <div class="campo"><label for="f_preco">Valor (0 = grátis)</label><input id="f_preco" type="number" min="0" step="0.01" placeholder="Ex: 20"></div>
-      <div class="campo"><label for="f_vagas">Vagas (opcional)</label><input id="f_vagas" type="number" min="1" placeholder="Ex: 50"></div>
-    </div>
-
-    <div class="campo"><label for="f_contato">Contato ou link (opcional)</label><input id="f_contato" placeholder="WhatsApp, Instagram ou site"></div>
-
     <div class="campo localizacao-campo">
       <label>Localização no mapa (opcional)</label>
       <p class="dica dica-mapa">Preencha o endereço e clique em “Encontrar endereço”, use sua localização ou clique diretamente no mapa.</p>
@@ -207,13 +204,22 @@
       <p class="dica" id="localizacaoStatus">Nenhum ponto marcado.</p>
     </div>
 
+    <h4 class="publicar-secao">Participação</h4>
+    <div class="duas">
+      <div class="campo"><label for="f_preco">Valor (0 = grátis)</label><input id="f_preco" type="number" min="0" step="0.01" placeholder="Ex: 20"></div>
+      <div class="campo"><label for="f_vagas">Vagas (opcional)</label><input id="f_vagas" type="number" min="1" placeholder="Ex: 50"></div>
+    </div>
+
+    <div class="campo"><label for="f_contato">Contato ou link (opcional)</label><input id="f_contato" placeholder="WhatsApp, Instagram ou site"></div>
+
+    <h4 class="publicar-secao">Imagem de divulgação</h4>
     <div class="campo"><label for="f_img">Imagem do evento (opcional)</label><input id="f_img" type="file" accept="image/*"></div>
 
     <div class="acoes">
       <button class="btn-escuro" id="btnPublicar">Publicar</button>
       <button class="btn-linha" data-fecha>Cancelar</button>
     </div>
-    <p class="dica">Campos com * são obrigatórios. A imagem vai para o armazenamento do Supabase e o evento fica visível para todo mundo na hora.</p>
+    <p class="dica">Campos com * são obrigatórios. Confira as informações antes de publicar: seu evento ficará visível para todos.</p>
   </div>
 </div>
 
@@ -605,7 +611,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/config.js?v=20260910-categorias-menu"></script>
+<script src="js/config.js?v=20260910-publicar-visual"></script>
 <script src="js/senha.js"></script>
 <script src="js/auth.js?v=20260910-review1"></script>
 <script src="js/google-auth.js"></script>
