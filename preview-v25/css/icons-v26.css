@@ -149,7 +149,7 @@
 
 /* Categorias do formulário: mesmos desenhos e paleta da home. */
 #modalCriar #f_cat[hidden]{display:none!important}
-#modalCriar .categorias-publicar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#modalCriar .categorias-publicar{display:grid;grid-template-columns:1fr;gap:0;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:264px;overflow-y:auto;z-index:20;background:#faf7f1;border:1px solid #c9c3b8;border-radius:6px;box-shadow:0 8px 24px #0003;padding:4px}
 #modalCriar .categoria-publicar{position:relative;margin:0;cursor:pointer;text-transform:none;letter-spacing:0}
 #modalCriar .categoria-publicar input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 #modalCriar .categoria-publicar-visual{display:flex;align-items:center;gap:8px;min-height:44px;padding:10px;border:1px solid #45413a;border-radius:9px;background:#211e19;color:#f4efe7;font:500 13px Archivo,sans-serif;box-sizing:border-box}
@@ -157,7 +157,7 @@
 #modalCriar .categoria-publicar input:focus-visible + span{outline:2px solid #f3bd3e;outline-offset:3px}
 #modalCriar .categoria-publicar:hover .categoria-publicar-visual{border-color:#a68c54}
 #modalCriar .categoria-publicar .v26-ui-icon{width:20px;height:20px;flex:0 0 20px}
-@media(max-width:520px){#modalCriar .categorias-publicar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){#modalCriar .categorias-publicar{display:grid;grid-template-columns:1fr;gap:0;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:264px;overflow-y:auto;z-index:20;background:#faf7f1;border:1px solid #c9c3b8;border-radius:6px;box-shadow:0 8px 24px #0003;padding:4px}}
 #modalCriar .categoria-publicar[data-cat="festas"] .v26-ui-icon{color:#f3bd3e}
 #modalCriar .categoria-publicar[data-cat="games"] .v26-ui-icon{color:#c96af2}
 #modalCriar .categoria-publicar[data-cat="esportes"] .v26-ui-icon{color:#2d8cff}
@@ -169,3 +169,24 @@
 #modalCriar .categoria-publicar[data-cat="profissional"] .v26-ui-icon{color:#efb441}
 #modalCriar .categoria-publicar[data-cat="feiras"] .v26-ui-icon{color:#48d690}
 #modalCriar .categoria-publicar[data-cat="outros"] .v26-ui-icon{color:#d8d2c9}
+
+#modalCriar .categoria-dropdown{position:relative}
+#modalCriar .categorias-publicar[hidden]{display:none!important}
+#modalCriar #categoriaSelecionada{display:flex;align-items:center;gap:9px;width:100%;min-height:42px;padding:10px 12px;border:1px solid #c9c3b8;border-radius:4px;background:#faf7f1;color:#211e19;font:400 14px Archivo,sans-serif;text-align:left;cursor:pointer}
+#modalCriar #categoriaSelecionada::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-left:auto;margin-right:2px}
+#modalCriar #categoriaSelecionada:focus-visible{outline:2px solid #ad7d19;outline-offset:2px}
+#modalCriar .categoria-publicar-visual{border:0;border-radius:3px;background:transparent;color:#211e19;min-height:40px;font-weight:400}
+#modalCriar .categoria-publicar input:checked + span{background:#eee4cc;box-shadow:none}
+#modalCriar .categoria-publicar:hover .categoria-publicar-visual{background:#eee4cc}
+#modalCriar #categoriaSelecionada .v26-ui-icon{width:20px;height:20px;flex:0 0 20px}
+#modalCriar #categoriaSelecionada[data-cat="festas"] .v26-ui-icon{color:#f3bd3e}
+#modalCriar #categoriaSelecionada[data-cat="games"] .v26-ui-icon{color:#c96af2}
+#modalCriar #categoriaSelecionada[data-cat="esportes"] .v26-ui-icon{color:#2d8cff}
+#modalCriar #categoriaSelecionada[data-cat="educacao"] .v26-ui-icon{color:#dfe7f5}
+#modalCriar #categoriaSelecionada[data-cat="cultura"] .v26-ui-icon{color:#ffbd32}
+#modalCriar #categoriaSelecionada[data-cat="gastronomia"] .v26-ui-icon{color:#ff861f}
+#modalCriar #categoriaSelecionada[data-cat="musica"] .v26-ui-icon{color:#c66cf4}
+#modalCriar #categoriaSelecionada[data-cat="social"] .v26-ui-icon{color:#f05d9c}
+#modalCriar #categoriaSelecionada[data-cat="profissional"] .v26-ui-icon{color:#efb441}
+#modalCriar #categoriaSelecionada[data-cat="feiras"] .v26-ui-icon{color:#48d690}
+#modalCriar #categoriaSelecionada[data-cat="outros"] .v26-ui-icon{color:#d8d2c9}
