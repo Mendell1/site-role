@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/moderacao-visual-v26.css?v=20260910-1">
 </head>
-<body class="visual-v12">
+<body class="visual-v12 role-moderacao">
 
 <header class="topo">
   <div class="topo-inner">
@@ -30,6 +31,7 @@
 </div>
 
 <main class="painel" id="painel" hidden>
+  <div class="moderacao-intro"><h1>Moderação</h1><p>Acompanhe denúncias, revise conteúdos e gerencie os acessos da comunidade.</p></div>
   <div class="painel-abas">
     <button class="painel-aba" data-painel="denuncias" aria-pressed="true">Denúncias <span class="contador" id="cntDenuncias" hidden>0</span></button>
     <button class="painel-aba" data-painel="eventos"  aria-pressed="false">Eventos</button>
@@ -50,6 +52,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/config.js"></script>
 <script src="js/admin.js"></script>
-<script src="js/admin-dashboard.js"></script>
+<script src="js/admin-dashboard.js?v=20260910-mod"></script>
 </body>
 </html>
