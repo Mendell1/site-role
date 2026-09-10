@@ -37,8 +37,8 @@
     box.className = 'v256-recorrencia';
     box.innerHTML =
       '<div class="v256-recorrencia-topo">'+
-        '<div><span class="v256-kicker">V25.6 · RECORRÊNCIA</span><strong>Repetir este evento</strong></div>'+
-        '<label class="v256-switch"><input id="f_recorrente" type="checkbox"><span></span></label>'+
+        '<div><span class="v256-kicker">RECORRÊNCIA</span><strong>Repetir este evento</strong></div>'+
+        '<label class="v256-switch"><input id="f_recorrente" type="checkbox" aria-label="Repetir este evento"><span></span></label>'+
       '</div>'+
       '<p class="dica">Crie várias datas de uma vez. Vagas, inscrições, ingresso e check-in ficam separados em cada encontro.</p>'+
       '<div id="recorrenciaOpcoesV256" class="v256-recorrencia-opcoes" hidden>'+
