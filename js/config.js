@@ -70,7 +70,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html')){
     estilo('css/inteligencia-v25.css','v25-4-inteligencia');
-    script('js/inteligencia-v25.js','v25-4-inteligencia');
+    script('js/inteligencia-v25.js?v=20260910-discovery1','v25-4-inteligencia');
   }
 
   estilo('css/revisao-v25.css','v25-5-review');
@@ -79,7 +79,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   if(eh('index.html')){
     estilo('css/v25-6.css','v25-6');
     script('js/recorrencia-v25.js?v=20260910-audit1','v25-6-recorrencia');
-    script('js/mapa-raio-v25.js','v25-6-mapa-raio');
+    script('js/mapa-raio-v25.js?v=20260910-discovery1','v25-6-mapa-raio');
   }
 
   if(eh('index.html','perfil.html','organizador.html')){
@@ -138,4 +138,5 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-publicar-visual','v26-home-publicar-organizador');
   }
 })();
+
 
