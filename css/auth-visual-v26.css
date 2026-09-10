@@ -1,0 +1,41 @@
+
+/* Entrada, cadastro e recuperação com a identidade do Rolê. */
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .folha{
+ background:#1d1914!important;color:#f1e9dc!important;border:1px solid #50412d!important;
+ border-radius:16px!important;width:calc(100% - 24px)!important;max-width:460px!important;padding:30px!important;
+ box-shadow:0 24px 90px #0009!important;color-scheme:dark;scrollbar-color:#695439 #1d1914;
+}
+body #modalCadastro .folha{max-width:500px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) h3{font:400 30px/1.25 Anton,sans-serif!important;color:#f6eddf!important;margin:0 30px 12px 0!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .modal-cabecalho{padding:0!important;background:none!important;border:0!important;margin-bottom:24px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .modal-descricao,
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .auth-intro{font:400 14px/1.6 Archivo,sans-serif!important;color:#c2b39c!important;margin:0 0 22px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .campo{padding:0!important;margin:0 0 18px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .campo label{display:block;color:#ddd0ba!important;font:500 13px/1.5 Archivo,sans-serif!important;text-transform:none!important;letter-spacing:0!important;margin-bottom:7px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .campo input{width:100%!important;box-sizing:border-box!important;min-height:46px!important;background:#28221a!important;border:1px solid #655237!important;border-radius:8px!important;color:#f6eddf!important;font:400 15px/1.5 Archivo,sans-serif!important;padding:11px 13px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) input::placeholder{color:#ad9d84!important;opacity:1}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .fechar{color:#cbbb9f!important;background:transparent!important;width:36px!important;height:36px!important;top:14px!important;right:14px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .acoes{padding:0!important;display:flex!important;gap:10px!important;flex-wrap:wrap!important;margin-top:22px!important;background:none!important;border:0!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .btn-escuro{flex:1!important;min-height:46px!important;border-radius:8px!important;background:#efbd59!important;color:#23190b!important;border:1px solid #efbd59!important;font:700 14px Archivo,sans-serif!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .btn-escuro:hover{background:#ffcf78!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .btn-linha{min-height:46px!important;border:1px solid #675437!important;border-radius:8px!important;background:transparent!important;color:#dccbb0!important;padding:10px 18px!important;font:500 13px Archivo,sans-serif!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) a{color:#f1c16a!important;text-underline-offset:3px}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) .dica{font:400 12px/1.6 Archivo,sans-serif!important;color:#bdae95!important}
+body #modalLogin .links-login{display:flex!important;justify-content:space-between!important;flex-wrap:wrap!important;gap:12px!important;padding:0!important;font:400 12px/1.6 Archivo,sans-serif!important;color:#bdae95!important}
+body #modalCadastro .requisitos{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px 14px!important;margin:12px 0 0!important;padding:12px 14px!important;background:#252018!important;border-radius:8px!important;list-style:none!important}
+body #modalCadastro .requisitos li{font:400 11px/1.6 Archivo,sans-serif!important;color:#bdae95!important}
+body #modalCadastro .requisitos li.ok{color:#a9dcaf!important}
+body #modalCadastro .aceite{display:flex!important;align-items:flex-start!important;gap:10px!important;padding:14px!important;background:#28221a!important;border:1px solid #50412d!important;border-radius:9px!important;font:400 12px/1.7 Archivo,sans-serif!important;color:#cfbfa5!important}
+body #modalCadastro .aceite input{flex:0 0 18px!important;width:18px!important;height:18px!important;margin:2px 0 0!important;accent-color:#efbd59}
+body :is(#modalLogin,#modalCadastro) .oauth-google-area{padding:0!important;margin-top:20px!important}
+body :is(#modalLogin,#modalCadastro) .oauth-divisor{color:#b8a88e!important;letter-spacing:.05em!important;margin:18px 0!important}
+body :is(#modalLogin,#modalCadastro) .oauth-divisor::before,body :is(#modalLogin,#modalCadastro) .oauth-divisor::after{background:#55452f!important}
+body :is(#modalLogin,#modalCadastro) .btn-google-oauth{min-height:46px!important;border-radius:8px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) :is(input,button,a):focus-visible{outline:2px solid #f2c267!important;outline-offset:3px!important}
+body :is(#modalLogin,#modalCadastro,#modalEsqueci) [hidden]{display:none!important}
+@media(max-width:520px){
+ body :is(#modalLogin,#modalCadastro,#modalEsqueci) .folha{padding:24px 20px!important;max-height:calc(100dvh - 16px)!important;border-radius:12px!important}
+ body :is(#modalLogin,#modalCadastro,#modalEsqueci) h3{font-size:28px!important}
+ body :is(#modalLogin,#modalCadastro,#modalEsqueci) .campo input{font-size:16px!important}
+ body #modalCadastro .requisitos{grid-template-columns:1fr!important}
+}
