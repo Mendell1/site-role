@@ -268,8 +268,11 @@
     }
   }
 
-  async function carregarAdminOrganizadores(){
+  async function carregarAdminOrganizadores(selecionar=false){
     if(pagina!=='admin.html'||!eAdmin()) return;
+    if(selecionar) document.querySelectorAll('.painel-aba').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.painel==='organizadores-v25-9')));
+    const atual=window.RoleAdminPainel?.iniciarCarga('organizadores-v25-9');
+    if(!atual) return;
     adminPainelAtivo=true;
     const lista=document.getElementById('lista');
     const titulo=document.getElementById('tituloPainel');
@@ -283,6 +286,7 @@
       db.from('perfis').select('id,nome,email,cidade,papel,verificado,seguidores_total,organizador_nome,organizador_desde').eq('papel','organizador').order('organizador_desde',{ascending:false}),
       db.from('perfis').select('id,nome,email,cidade,papel,bloqueado').eq('papel','usuario').eq('bloqueado',false).order('nome').limit(100)
     ]);
+    if(!atual() || !eAdmin()) return;
     if(solResp.error||orgResp.error||userResp.error){
       if(lista) lista.innerHTML='<div class="vazio"><strong>Não foi possível carregar</strong>Tente novamente em instantes.</div>';
       return;
@@ -292,6 +296,8 @@
     const perfisReq=new Map();
     if(ids.length){
       const r=await db.from('perfis').select('id,nome,email,cidade').in('id',ids);
+      if(!atual() || !eAdmin()) return;
+      if(r.error){ if(lista) lista.innerHTML='<div class="vazio"><strong>Não foi possível carregar os solicitantes</strong>Tente novamente em instantes.</div>'; return; }
       (r.data||[]).forEach(x=>perfisReq.set(x.id,x));
     }
     setText(contagem,solicitacoes.length+' pendente'+(solicitacoes.length===1?'':'s')+' · '+organizadores.length+' organizador'+(organizadores.length===1?'':'es'));
@@ -450,7 +456,7 @@
 
       const abaAdmin=e.target.closest('[data-painel="organizadores-v25-9"]');
       if(abaAdmin&&eAdmin()){
-        e.preventDefault();e.stopImmediatePropagation();await carregarAdminOrganizadores();return;
+        e.preventDefault();e.stopImmediatePropagation();await carregarAdminOrganizadores(true);return;
       }
       const aprovar=e.target.closest('[data-v259-aprovar]');
       if(aprovar){e.preventDefault();await decidirSolicitacao(aprovar.dataset.v259Aprovar,'aprovar');return;}
@@ -485,3 +491,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
