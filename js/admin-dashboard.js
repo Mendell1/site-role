@@ -5,7 +5,6 @@
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?'':v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
   let dias=30;
-  let carregando=false;
 
   function garantirCss(){
     if(document.querySelector('link[data-recursos-v23]')) return;
@@ -24,16 +23,18 @@
   }
 
   async function carregarResumo(){
-    if(carregando) return;
-    carregando=true;
+    const atual=window.RoleAdminPainel?.iniciarCarga('resumo');
+    if(!atual) return;
     const lista=$('lista');
-    if(!lista){ carregando=false; return; }
+    if(!lista) return;
+    const periodoDias=dias;
     lista.innerHTML='<div class="esqueleto" style="min-height:100px;margin-bottom:12px"></div>'.repeat(3);
     $('tituloPainel').textContent='Resumo do sistema';
     $('contagemPainel').textContent='últimos '+dias+' dias';
 
     try{
-      const {data,error}=await db.rpc('admin_metricas',{p_dias:dias});
+      const {data,error}=await db.rpc('admin_metricas',{p_dias:periodoDias});
+      if(!atual()) return;
       if(error) throw error;
       const totais=data.totais||{}, periodo=data.periodo||{}, situacoes=data.situacoes||{}, categorias=data.categorias||[];
       const situacaoNomes={agendado:'Agendados',adiado:'Adiados',esgotado:'Esgotados',cancelado:'Cancelados',finalizado:'Finalizados'};
@@ -64,9 +65,10 @@
         '</div>'+ 
       '</section>';
     }catch(err){
+      if(!atual()) return;
       console.error('Métricas administrativas:',err);
       lista.innerHTML='<div class="vazio"><strong>Não foi possível carregar o resumo</strong>'+esc(err.message||'Tente novamente.')+'</div>';
-    }finally{ carregando=false; }
+    }
   }
 
   function selecionarResumo(botao){
@@ -103,3 +105,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',instalar,{once:true});
   else instalar();
 })();
+
