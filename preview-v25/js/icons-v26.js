@@ -92,7 +92,28 @@
       group.className='categorias-publicar';
       group.setAttribute('role','radiogroup');
       group.setAttribute('aria-label','Categoria');
-      select.after(group);
+      const wrapper=document.createElement('div');
+      wrapper.className='categoria-dropdown';
+      const trigger=document.createElement('button');
+      trigger.type='button';trigger.id='categoriaSelecionada';
+      trigger.setAttribute('aria-expanded','false');
+      trigger.setAttribute('aria-controls',group.id);
+      const close=()=>{group.hidden=true;trigger.setAttribute('aria-expanded','false');};
+      trigger.addEventListener('click',()=>{
+        const opening=group.hidden;
+        group.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));
+        if(opening)group.querySelector('input:checked')?.focus();
+      });
+      wrapper.addEventListener('keydown',event=>{
+        if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();trigger.focus();}
+      });
+      document.addEventListener('click',event=>{if(!wrapper.contains(event.target))close();});
+      wrapper.addEventListener('focusout',event=>{if(!wrapper.contains(event.relatedTarget))close();});
+      group.addEventListener('click',event=>{
+        if(event.target.matches('input')){close();trigger.focus();}
+      });
+      group.hidden=true;
+      wrapper.append(trigger,group);select.after(wrapper);
       select.hidden=true;
       group.addEventListener('change',event=>{
         if(!event.target.matches('input[type="radio"]'))return;
@@ -120,6 +141,13 @@
       });
       group.dataset.options=signature;
     }
+    const trigger=document.getElementById('categoriaSelecionada');
+    const chosen=Array.from(group.children).find(label=>label.dataset.cat===select.value);
+    const markup=chosen?.querySelector('.categoria-publicar-visual')?.innerHTML || '';
+    if(trigger.innerHTML!==markup)trigger.innerHTML=markup;
+    trigger.dataset.cat=select.value;
+    trigger.setAttribute('aria-label','Categoria: '+(chosen?.textContent || 'Selecionar'));
+    trigger.disabled=select.disabled;
     group.querySelectorAll('input').forEach(radio=>{radio.checked=radio.value===select.value;radio.disabled=select.disabled;});
   }
 
