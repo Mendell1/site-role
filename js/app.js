@@ -291,7 +291,7 @@ function renderMural(novoId){
 
   if(!EVENTOS.length){
     grade.innerHTML='<div class="vazio"><strong>Nada por aqui ainda</strong>'+
-      (estado.aba==='meus'?'Você ainda não publicou nenhum evento.':'Tente limpar os filtros ou buscar por outro nome.')+'</div>';
+      (estado.aba==='meus'?'Você ainda não publicou nenhum evento.':'Tente limpar os filtros ou buscar por outro nome.')+'<br><button type="button" data-limpar-filtros>Limpar filtros</button></div>';
     return;
   }
 
@@ -345,6 +345,7 @@ async function atualizarConsultaAtual(){
 }
 
 async function filtrosMudaram(){
+  notificarFiltros();
   await carregarEventos();
   if(estado.visualizacao==='mapa') await carregarMapa();
   if(estado.visualizacao==='calendario') await carregarCalendario();
@@ -863,13 +864,20 @@ async function carregarCalendario(){
   const fim=fimDoMes(mes);
   campo('calTitulo').textContent=mes.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   campo('calendarioGrade').innerHTML='<div class="cal-vazio">Carregando calendário...</div>';
+  const agenda=campo('agendaCalendario');
+  if(agenda) agenda.innerHTML='<p class="agenda-vazia" role="status">Carregando agenda...</p>'; 
 
   const base=db.from('eventos_lista').select('*');
   const aplicado=aplicarFiltros(base,{modo:'calendario',inicio:dataISO(inicio),fim:dataISO(fim)});
   if(aplicado.vazio){ renderCalendario([]); return; }
   const {data,error}=await aplicado.query.order('data_evento',{ascending:true}).order('hora_evento',{ascending:true}).order('id',{ascending:true}).limit(500);
   if(revisao!==revisaoCalendario) return;
-  if(error){ campo('calendarioGrade').innerHTML='<div class="cal-vazio">Erro: '+escapa(error.message)+'</div>'; return; }
+  if(error){
+    const falha='<div class="agenda-vazia"><strong>Não foi possível carregar os eventos</strong><p>Confira sua conexão e tente novamente.</p><button type="button" data-agenda-tentar>Tentar novamente</button></div>';
+    campo('calendarioGrade').innerHTML=falha;
+    if(agenda) agenda.innerHTML=falha;
+    return;
+  }
   renderCalendario(data||[]);
 }
 
@@ -908,12 +916,40 @@ function renderCalendario(eventos){
     '</div>';
   }
   campo('calendarioGrade').innerHTML=html;
+  renderAgendaCalendario(porDia);
 }
+
+function renderAgendaCalendario(porDia){
+  const agenda=campo('agendaCalendario');
+  if(!agenda) return;
+  const mes=estado.mesCalendario;
+  const dias=[...porDia.keys()].sort((a,b)=>a-b);
+  if(!dias.length){
+    agenda.innerHTML='<div class="agenda-vazia"><strong>Nenhum evento neste mês</strong><p>Escolha outro mês ou limpe os filtros para ampliar a busca.</p><button type="button" data-limpar-filtros>Limpar filtros</button><button type="button" data-agenda-hoje>Ir para o mês atual</button></div>';
+    return;
+  }
+  agenda.innerHTML=dias.map(dia=>{
+    const data=new Date(mes.getFullYear(),mes.getMonth(),dia);
+    const rotulo=data.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+    const titulo=rotulo.charAt(0).toUpperCase()+rotulo.slice(1);
+    const lista=[...porDia.get(dia)].sort((a,b)=>(a.hora_evento||'').localeCompare(b.hora_evento||'')||String(a.id).localeCompare(String(b.id)));
+    return '<section class="agenda-dia" aria-labelledby="agenda-dia-'+dia+'"><h3 id="agenda-dia-'+dia+'">'+escapa(titulo)+(mesmaData(data,hoje)?'<span>Hoje</span>':'')+'</h3>'+lista.map(ev=>{
+      const local=[ev.bairro,ev.cidade].filter(Boolean).join(', ')||'Local a confirmar';
+      const situacao=ev.situacao&&ev.situacao!=='agendado'?'<span class="agenda-situacao">'+escapa(situacaoEvento(ev))+'</span>':'';
+      return '<button type="button" class="agenda-evento" data-cal-evento="'+escapa(ev.id)+'" aria-label="Ver evento '+escapa(ev.nome)+'"><img src="'+escapa(imagemFallback(ev))+'" alt="" loading="lazy"><span class="agenda-evento-info"><span class="agenda-horario">'+escapa(hora(ev)||'Horário a confirmar')+' · '+escapa(precoMapa(ev))+'</span><strong>'+escapa(ev.nome)+'</strong><span class="agenda-local">'+escapa(local)+'</span>'+situacao+'</span><span class="agenda-seta" aria-hidden="true">›</span></button>';
+    }).join('')+'</section>';
+  }).join('');
+}
+
 
 campo('calAnterior').addEventListener('click',()=>{ estado.mesCalendario=new Date(estado.mesCalendario.getFullYear(),estado.mesCalendario.getMonth()-1,1); carregarCalendario(); });
 campo('calProximo').addEventListener('click',()=>{ estado.mesCalendario=new Date(estado.mesCalendario.getFullYear(),estado.mesCalendario.getMonth()+1,1); carregarCalendario(); });
 campo('calHoje').addEventListener('click',()=>{ estado.mesCalendario=new Date(hoje.getFullYear(),hoje.getMonth(),1); carregarCalendario(); });
-campo('calendarioGrade').addEventListener('click',e=>{ const b=e.target.closest('[data-cal-evento]'); if(b) abrirDetalhe(b.dataset.calEvento); });
+campo('viewCalendario').addEventListener('click',e=>{
+  const b=e.target.closest('[data-cal-evento]'); if(b) abrirDetalhe(b.dataset.calEvento);
+  if(e.target.closest('[data-agenda-hoje]')) campo('calHoje').click();
+  if(e.target.closest('[data-agenda-tentar]')) carregarCalendario();
+});
 
 /* ============================================================
    TROCA DE VISUALIZAÇÃO
@@ -937,6 +973,23 @@ campo('visoes').addEventListener('click',e=>{ const b=e.target.closest('.visao')
 /* ============================================================
    CONTROLES DE FILTRO
    ============================================================ */
+function notificarFiltros(){ document.dispatchEvent(new Event('role:filtros-alterados')); }
+
+async function limparFiltros(){
+  clearTimeout(buscaTimer);
+  ++revisaoEventos; ++revisaoMapa; ++revisaoCalendario;
+  estado.busca=''; estado.cat=null; estado.atalhos.clear(); estado.aba='todos'; estado.pagina=0;
+  campo('busca').value='';
+  document.querySelectorAll('#cats .cat').forEach(b=>b.setAttribute('aria-pressed',String(!b.dataset.cat)));
+  document.querySelectorAll('.chip[data-atalho]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  document.querySelectorAll('#abas .aba').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.aba==='todos')));
+  campo('tituloLista').textContent='Próximos eventos';
+  document.dispatchEvent(new Event('role:limpar-filtros'));
+  notificarFiltros();
+  await filtrosMudaram();
+}
+
+
 campo('cats').addEventListener('click',async e=>{
   const b=e.target.closest('.cat'); if(!b) return;
   const valor=b.dataset.cat || null;
@@ -950,8 +1003,10 @@ campo('cats').addEventListener('click',async e=>{
 
 document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',async()=>{
   const a=ch.dataset.atalho;
-  estado.atalhos.has(a)?estado.atalhos.delete(a):estado.atalhos.add(a);
-  ch.setAttribute('aria-pressed',String(estado.atalhos.has(a)));
+  const ativar=!estado.atalhos.has(a);
+  if(['hoje','fds','semana'].includes(a)) ['hoje','fds','semana'].forEach(v=>estado.atalhos.delete(v));
+  if(ativar) estado.atalhos.add(a); else estado.atalhos.delete(a);
+  document.querySelectorAll('.chip[data-atalho]').forEach(b=>b.setAttribute('aria-pressed',String(estado.atalhos.has(b.dataset.atalho))));
   await filtrosMudaram();
 }));
 
@@ -2053,5 +2108,6 @@ window.addEventListener('load', ()=>{
     }, 650);
   }
 });
+
 
 
