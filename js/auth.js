@@ -7,7 +7,7 @@ const Sessao = {
   perfil: null,
   logado(){ return !!this.usuario; },
   ativa(){
-    if(!this.usuario || !this.perfil) return false;
+    if(!this.usuario || !this.perfil || this.perfil.id !== this.usuario.id) return false;
     if(this.perfil.cadastro_completo === false) return false;
     if(this.perfil.bloqueado) return false;
     if(this.perfil.exclusao_prevista) return false;
@@ -85,7 +85,8 @@ async function entrar(email, senha){
 }
 
 async function sair(){
-  await db.auth.signOut();
+  const { error } = await db.auth.signOut();
+  if(error) throw error;
 }
 
 async function carregarPerfil(id){
@@ -147,21 +148,29 @@ async function atualizarSessaoCarregada(sessao,revisao){
 }
 
 let canalPerfil = null;
+let revisaoCanalPerfil = 0;
 async function acompanharPerfil(){
-  if(canalPerfil){
-    await db.removeChannel(canalPerfil);
-    canalPerfil = null;
-  }
-  if(!Sessao.logado()) return;
+  const revisao = ++revisaoCanalPerfil;
+  const anterior = canalPerfil;
+  canalPerfil = null;
+  if(anterior) await db.removeChannel(anterior);
+  if(revisao !== revisaoCanalPerfil || !Sessao.logado()) return;
 
   const id = Sessao.usuario.id;
   canalPerfil = db.channel('meu-perfil-' + id)
     .on('postgres_changes', {
       event: 'UPDATE', schema: 'public', table: 'perfis', filter: 'id=eq.' + id
     }, async payload => {
+      // Uma resposta do canal anterior pode chegar após sair ou trocar de conta.
+      if(revisao !== revisaoCanalPerfil || Sessao.usuario?.id !== id || payload.new?.id !== id) return;
       Sessao.perfil = payload.new;
       if(Sessao.perfil && Sessao.perfil.bloqueado){
         avisar('Sua conta foi bloqueada pelo administrador');
+        await sair();
+        return;
+      }
+      if(Sessao.perfil.suspenso_ate && new Date(Sessao.perfil.suspenso_ate) > new Date()){
+        avisar('Sua conta está suspensa até ' + new Date(Sessao.perfil.suspenso_ate).toLocaleString('pt-BR'));
         await sair();
         return;
       }
@@ -194,9 +203,15 @@ function atualizarTopo(){
     if (avatar){
       const foto = Sessao.perfil && Sessao.perfil.foto_url;
       avatar.hidden = false;
-      avatar.innerHTML = foto
-        ? '<img src="' + foto + '" alt="">'
-        : (Sessao.perfil ? Sessao.perfil.nome : '?').charAt(0).toUpperCase();
+      avatar.textContent = '';
+      if(foto){
+        const imagem = document.createElement('img');
+        imagem.src = foto;
+        imagem.alt = '';
+        avatar.appendChild(imagem);
+      }else{
+        avatar.textContent = String(Sessao.perfil?.nome || '?').charAt(0).toUpperCase();
+      }
     }
     if (admin) admin.hidden = !Sessao.eAdmin();
   } else {
@@ -210,3 +225,5 @@ function atualizarTopo(){
     if (avatar) avatar.hidden = true;
   }
 }
+
+
