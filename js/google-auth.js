@@ -3,6 +3,12 @@
    ============================================================ */
 (() => {
   const TERMOS_GOOGLE = '1.0';
+  const usuarioAindaAtual = usuario => !!usuario && window.Sessao?.usuario?.id === usuario.id;
+
+  function fecharOnboarding(){
+    document.getElementById('modalCadastroGoogle')?.classList.remove('aberta');
+    document.body.classList.remove('oauth-cadastro-pendente');
+  }
 
   const mensagem = (texto) => {
     if (typeof window.avisar === 'function') window.avisar(texto);
@@ -132,10 +138,14 @@
 
     modal.querySelector('#btnConcluirGoogle').addEventListener('click', concluirCadastroGoogle);
     modal.querySelector('#btnSairGoogle').addEventListener('click', async () => {
-      await db.auth.signOut();
-      modal.classList.remove('aberta');
-      document.body.classList.remove('oauth-cadastro-pendente');
-      window.location.href = retornoOAuth();
+      try {
+        const { error } = await db.auth.signOut();
+        if(error) throw error;
+        fecharOnboarding();
+        window.location.href = retornoOAuth();
+      } catch (erro) {
+        modal.querySelector('#g_erro').textContent = 'Não foi possível sair da conta. Confira sua conexão e tente novamente.';
+      }
     });
   }
 
@@ -154,6 +164,8 @@
     const modal = document.getElementById('modalCadastroGoogle');
     if (!modal) return;
 
+    const usuario = window.Sessao?.usuario;
+    if(!usuario) return;
     const nascimento = modal.querySelector('#g_nascimento').value;
     const aceitou = modal.querySelector('#g_regras').checked;
     const erroEl = modal.querySelector('#g_erro');
@@ -189,13 +201,17 @@
       });
       if (error) throw error;
 
-      if (window.Sessao && Sessao.usuario && typeof window.carregarPerfil === 'function') {
-        Sessao.perfil = await window.carregarPerfil(Sessao.usuario.id);
-      } else if (window.Sessao && Sessao.usuario) {
+      if(!usuarioAindaAtual(usuario)) return;
+      if (typeof window.carregarPerfil === 'function') {
+        const perfil = await window.carregarPerfil(usuario.id);
+        if(!usuarioAindaAtual(usuario)) return;
+        Sessao.perfil = perfil;
+      } else {
         const { data } = await db.from('perfis')
           .select('*')
-          .eq('id', Sessao.usuario.id)
+          .eq('id', usuario.id)
           .single();
+        if(!usuarioAindaAtual(usuario)) return;
         if (data) Sessao.perfil = data;
       }
 
@@ -207,6 +223,7 @@
       if (typeof window.aoMudarSessao === 'function') await window.aoMudarSessao();
       else if (typeof window.render === 'function') window.render();
     } catch (erro) {
+      if(!usuarioAindaAtual(usuario)) return;
       console.error('Conclusão do cadastro Google:', erro);
       const texto = (erro && erro.message) || 'Não foi possível concluir o cadastro.';
       erroEl.textContent = texto;
@@ -233,7 +250,8 @@
       console.warn('Não foi possível verificar o cadastro Google:', error.message);
       return null;
     }
-    if (window.Sessao && Sessao.perfil) Sessao.perfil.cadastro_completo = data.cadastro_completo;
+    if(!usuarioAindaAtual(usuario)) return null;
+    if (Sessao.perfil?.id === usuario.id) Sessao.perfil.cadastro_completo = data.cadastro_completo;
     return data.cadastro_completo;
   }
 
@@ -247,8 +265,13 @@
       await new Promise(resolve => setTimeout(resolve, 80));
     }
 
+    if(!usuarioAindaAtual(usuario)) return;
     const completo = await obterEstadoCadastro(usuario);
-    if (completo !== false) return;
+    if(!usuarioAindaAtual(usuario)) return;
+    if (completo !== false) {
+      if(completo === true) fecharOnboarding();
+      return;
+    }
 
     instalarModalConclusao();
     const modal = document.getElementById('modalCadastroGoogle');
@@ -276,6 +299,8 @@
       if (sessao && sessao.user) {
         if (encaminharReautenticacaoExclusao(sessao.user)) return;
         setTimeout(() => verificarOnboarding(sessao.user), 100);
+      } else {
+        fecharOnboarding();
       }
     });
   }
@@ -283,3 +308,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
   else iniciar();
 })();
+
