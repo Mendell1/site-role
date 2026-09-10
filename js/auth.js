@@ -112,10 +112,22 @@ function traduzirErro(e){
   return 'Não foi possível concluir: ' + (e && e.message || 'erro desconhecido');
 }
 
-db.auth.onAuthStateChange(async (_evento, sessao) => {
-  Sessao.usuario = sessao ? sessao.user : null;
-  Sessao.perfil  = sessao ? await carregarPerfil(sessao.user.id) : null;
+let revisaoSessao=0;
+db.auth.onAuthStateChange((_evento, sessao) => {
+  const revisao=++revisaoSessao;
+  const mesmoUsuario=Sessao.usuario?.id===sessao?.user?.id;
+  Sessao.usuario=sessao?.user||null;
+  if(!mesmoUsuario || !sessao) Sessao.perfil=null;
+  // Libera o callback do Auth antes de consultar o banco ou renovar canais.
+  setTimeout(()=>atualizarSessaoCarregada(sessao,revisao).catch(erro=>{
+    console.error('Não foi possível atualizar a sessão:',erro.message);
+  }),0);
+});
 
+async function atualizarSessaoCarregada(sessao,revisao){
+  const perfil=sessao?await carregarPerfil(sessao.user.id):null;
+  if(revisao!==revisaoSessao) return;
+  Sessao.perfil=perfil;
   if (Sessao.perfil && Sessao.perfil.bloqueado) {
     await sair();
     avisar('Sua conta foi bloqueada pelo administrador');
@@ -131,7 +143,8 @@ db.auth.onAuthStateChange(async (_evento, sessao) => {
   await acompanharPerfil();
   if (window.aoMudarSessao) await window.aoMudarSessao();
   else if (window.render) render();
-});
+
+}
 
 let canalPerfil = null;
 async function acompanharPerfil(){
