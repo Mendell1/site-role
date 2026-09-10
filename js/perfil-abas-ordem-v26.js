@@ -75,7 +75,7 @@
   function iniciar(){
     document.addEventListener('click', e => {
       const aba = e.target.closest && e.target.closest('.perfil-aba');
-      if (aba && e.isTrusted) usuarioEscolheuAba = true;
+      if (aba) usuarioEscolheuAba = true;
     }, true);
 
     aplicarOrdem();
