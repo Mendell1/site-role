@@ -11,6 +11,8 @@
 
   let metaEditando = null;
   let observerDetalhe = null;
+  let revisaoEdicao = 0;
+  let revisaoDetalhe = 0;
 
   const $ = id => document.getElementById(id);
   const escapa = valor => String(valor == null ? '' : valor).replace(/[&<>\"]/g,c=>({
@@ -68,6 +70,11 @@
     const edicao = $('recorrenciaEdicaoV256');
 
     if(metaEditando){
+      if(metaEditando.carregando || metaEditando.erro){
+        check.disabled=true; opcoes.hidden=true; edicao.hidden=false;
+        edicao.textContent=metaEditando.carregando?'Carregando informações da recorrência...':'Não foi possível carregar a recorrência. Feche e abra a edição novamente.';
+        return;
+      }
       check.disabled = true;
       opcoes.hidden = true;
       edicao.hidden = false;
@@ -99,6 +106,7 @@
   }
 
   function resetNovo(){
+    revisaoEdicao++;
     metaEditando = null;
     if(!$('f_recorrente')) return;
     $('f_recorrente').checked = false;
@@ -111,11 +119,14 @@
 
   async function prepararEdicao(id){
     if(!id) return;
+    const revisao=++revisaoEdicao;
+    metaEditando={id,carregando:true};
+    atualizarFormulario();
     const {data,error} = await db.from('eventos_lista')
       .select('id,serie_id,recorrencia_tipo,recorrencia_intervalo,recorrencia_ordem,recorrencia_total')
       .eq('id',id).single();
-    if(error || !data) return;
-    metaEditando = data;
+    if(revisao!==revisaoEdicao) return;
+    metaEditando = error || !data ? {id,erro:true} : data;
     atualizarFormulario();
   }
 
@@ -180,20 +191,26 @@
   }
 
   async function criarSerie(botao){
+    if(botao.disabled) return;
     const erro=validarCriacao();
     if(erro){ avisar(erro); return; }
 
     const rotulo=botao.textContent;
+    const usuario=usuarioId();
+    const revisao=revisaoEdicao;
+    const evento=dadosFormulario(null);
+    const arquivo=$('f_img').files[0];
+    const tipo=$('f_rec_tipo').value;
+    const intervalo=Number($('f_rec_intervalo').value)||1;
+    const quantidade=Number($('f_rec_quantidade').value)||4;
     botao.disabled=true;
     botao.textContent='Criando série...';
     let imagem=null;
 
     try{
-      imagem=await subirImagem($('f_img').files[0]);
-      const evento=dadosFormulario(imagem && imagem.url);
-      const tipo=$('f_rec_tipo').value;
-      const intervalo=Number($('f_rec_intervalo').value)||1;
-      const quantidade=Number($('f_rec_quantidade').value)||4;
+      imagem=await subirImagem(arquivo);
+      if(usuarioId()!==usuario || revisaoEdicao!==revisao) throw new Error('O formulário ou a conta mudou durante o envio. Revise o evento e tente novamente.');
+      evento.imagem_url=imagem && imagem.url || null;
 
       const {data,error}=await db.rpc('criar_eventos_recorrentes_v25_6',{
         p_evento:evento,
@@ -203,6 +220,7 @@
       });
       if(error) throw error;
 
+      if(usuarioId()!==usuario || revisaoEdicao!==revisao){ avisar('Série enviada. Atualize o mural para ver as datas.'); return; }
       document.querySelectorAll('.cortina.aberta').forEach(m=>m.classList.remove('aberta'));
       avisar((data||[]).length+' datas criadas para o evento.');
       setTimeout(()=>location.reload(),850);
@@ -219,9 +237,13 @@
   }
 
   async function limparImagensOrfas(urls){
+    // A consulta de organizadores não enxerga referências ocultas pela RLS.
+    // A limpeza geral exige visão administrativa; envios novos não vinculados
+    // continuam sendo removidos diretamente quando a publicação falha.
+    if(typeof Sessao==='undefined' || Sessao.perfil?.papel!=='admin') return;
     for(const url of [...new Set((urls||[]).filter(Boolean))]){
       const {count,error}=await db.from('eventos').select('id',{count:'exact',head:true}).eq('imagem_url',url);
-      if(error || Number(count||0)>0) continue;
+      if(error || count!==0) continue;
       const marca='/storage/v1/object/public/eventos/';
       const i=String(url).indexOf(marca);
       if(i<0) continue;
@@ -294,17 +316,24 @@
     const id=alvo && (alvo.dataset.interesse||alvo.dataset.editar||alvo.dataset.denunciaId);
     if(!id) return;
     if(folha.querySelector('.v256-serie-card[data-evento="'+id+'"]')) return;
+    const revisao=++revisaoDetalhe;
+    const detalheAtual=()=>{
+      const atual=folha.querySelector('[data-interesse],[data-editar],[data-denuncia-tipo="evento"]');
+      const atualId=atual && (atual.dataset.interesse||atual.dataset.editar||atual.dataset.denunciaId);
+      return revisao===revisaoDetalhe && atualId===id;
+    };
 
     const {data:ev,error}=await db.from('eventos_lista')
       .select('id,serie_id,recorrencia_tipo,recorrencia_intervalo,recorrencia_ordem,recorrencia_total')
       .eq('id',id).single();
-    if(error || !ev || !ev.serie_id) return;
+    if(!detalheAtual() || error || !ev || !ev.serie_id) return;
 
-    const {data:datas}=await db.from('eventos_lista')
+    const {data:datas,error:erroDatas}=await db.from('eventos_lista')
       .select('id,data_evento,hora_evento,situacao')
       .eq('serie_id',ev.serie_id)
       .order('data_evento',{ascending:true})
-      .limit(12);
+      .limit(52);
+    if(erroDatas || !detalheAtual()) return;
 
     const card=document.createElement('section');
     card.className='v256-serie-card';
@@ -341,7 +370,7 @@
     if(criar) setTimeout(resetNovo,0);
 
     const editar=e.target.closest('[data-editar]');
-    if(editar) setTimeout(()=>prepararEdicao(editar.dataset.editar),80);
+    if(editar) prepararEdicao(editar.dataset.editar);
 
     const ocorrencia=e.target.closest('[data-v256-ocorrencia]');
     if(ocorrencia){
@@ -351,7 +380,7 @@
   },true);
 
   document.addEventListener('change',e=>{
-    if(e.target && e.target.id==='f_img' && metaEditando && metaEditando.serie_id && e.target.files && e.target.files.length){
+    if(e.target && e.target.id==='f_img' && metaEditando && (metaEditando.serie_id || metaEditando.carregando || metaEditando.erro) && e.target.files && e.target.files.length){
       e.target.value='';
       avisar('A imagem é compartilhada pela série. Nesta versão, edite texto/data desta ocorrência sem trocar a imagem.');
     }
@@ -360,7 +389,13 @@
   // Intercepta publicação somente quando a opção de recorrência está ativa.
   document.addEventListener('click',e=>{
     const btn=e.target.closest('#btnPublicar');
-    if(!btn || !$('f_recorrente') || !$('f_recorrente').checked || metaEditando) return;
+    if(!btn) return;
+    if(metaEditando?.carregando || metaEditando?.erro){
+      e.preventDefault(); e.stopImmediatePropagation();
+      avisar(metaEditando.carregando?'Aguarde as informações da recorrência.':'Reabra a edição para carregar a recorrência antes de salvar.');
+      return;
+    }
+    if(!$('f_recorrente') || !$('f_recorrente').checked || metaEditando) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     criarSerie(btn);
@@ -386,3 +421,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
