@@ -21,6 +21,7 @@
 
   let camadaUsuario = null;
   let timerFiltro = null;
+  let revisaoRaio=0;
 
   function avisar(texto){
     if(typeof window.avisar==='function') window.avisar(texto);
@@ -88,7 +89,7 @@
       estado.pagina=0;
     }
     const grade=document.getElementById('grade');
-    if(grade) grade.innerHTML='<div class="perto-vazio-v23"><strong>Nenhum evento neste raio</strong>Tente 5, 10 ou 25 km.</div>';
+    if(grade) grade.innerHTML='<div class="perto-vazio-v23"><strong>Nenhum evento neste raio</strong>Amplie o raio ou limpe os filtros.<br><button type="button" data-limpar-filtros>Limpar filtros</button></div>';
     const cont=document.getElementById('contagem');
     if(cont) cont.textContent='0 EVENTOS NO RAIO';
     const titulo=document.getElementById('tituloLista');
@@ -99,6 +100,7 @@
 
   async function buscarEventosNoRaio(){
     if(!estadoRaio.ativo || !estadoRaio.localizacao || estadoRaio.carregando) return;
+    const revisao=++revisaoRaio;
     estadoRaio.carregando=true;
     atualizarBotao();
 
@@ -113,6 +115,7 @@
         p_limite:200,
         p_raio_km:estadoRaio.raioKm
       });
+      if(revisao!==revisaoRaio || !estadoRaio.ativo) return;
       if(error) throw error;
 
       const ids=(ordem||[]).map(x=>x.evento_id);
@@ -126,6 +129,7 @@
         base=aplicado.query;
       }
       const {data,error:eventosErro}=await base.limit(200);
+      if(revisao!==revisaoRaio || !estadoRaio.ativo) return;
       if(eventosErro) throw eventosErro;
 
       const mapa=new Map((data||[]).map(x=>[x.id,x]));
@@ -147,11 +151,11 @@
 
       if(typeof estado!=='undefined' && estado.visualizacao==='mapa') renderMapaRaio(estadoRaio.eventos);
     }catch(err){
+      if(revisao!==revisaoRaio) return;
       console.error('[V25.6 mapa]',err);
       avisar('Não foi possível carregar os eventos deste raio.');
     }finally{
-      estadoRaio.carregando=false;
-      atualizarBotao();
+      if(revisao===revisaoRaio){ estadoRaio.carregando=false; atualizarBotao(); }
     }
   }
 
@@ -231,27 +235,37 @@
 
   function localizarEAtivar(){
     if(!navigator.geolocation){ avisar('Seu navegador não oferece localização.'); return; }
+    const revisao=++revisaoRaio;
     estadoRaio.carregando=true;
     atualizarBotao();
     navigator.geolocation.getCurrentPosition(pos=>{
+      if(revisao!==revisaoRaio) return;
       estadoRaio.localizacao={latitude:pos.coords.latitude,longitude:pos.coords.longitude};
       estadoRaio.ativo=true;
       estadoRaio.carregando=false;
       atualizarBotao();
       buscarEventosNoRaio();
     },()=>{
+      if(revisao!==revisaoRaio) return;
       estadoRaio.carregando=false;
       atualizarBotao();
       avisar('Permita a localização para usar o raio do mapa.');
     },{enableHighAccuracy:true,timeout:12000,maximumAge:120000});
   }
 
-  async function desativar(){
+  function limparEstadoRaio(){
+    ++revisaoRaio; clearTimeout(timerFiltro);
+    estadoRaio.carregando=false;
     estadoRaio.ativo=false;
     estadoRaio.eventos=[];
     estadoRaio.distancias.clear();
     limparCamadaUsuario();
     atualizarBotao();
+  }
+  document.addEventListener('role:limpar-filtros',limparEstadoRaio);
+
+  async function desativar(){
+    limparEstadoRaio();
     try{
       if(typeof filtrosMudaram==='function') await filtrosMudaram();
     }catch(err){ console.warn('[V25.6 mapa] restauração',err); }
@@ -319,3 +333,4 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
+
