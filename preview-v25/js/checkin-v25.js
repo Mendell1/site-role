@@ -125,7 +125,7 @@
     if(!uuid){ if(resultado) resultado.innerHTML='<div class="v253-resultado erro"><strong>Código inválido</strong><span>Confira o QR ou cole o código completo.</span></div>'; return; }
     if(!eventoScanner){ avisar253('Abra o scanner pelo evento'); return; }
     if(resultado) resultado.innerHTML='<div class="v253-resultado"><strong>Validando...</strong></div>';
-    const {data,error}=await db.rpc('checkin_ingresso_v25_3',{p_codigo:uuid});
+    const {data,error}=await db.rpc('checkin_ingresso_v25_3',{p_codigo:uuid,p_evento:eventoScanner});
     if(error){
       if(resultado) resultado.innerHTML='<div class="v253-resultado erro"><strong>Check-in recusado</strong><span>'+escapa(error.message||'Ingresso inválido')+'</span></div>';
       return;
