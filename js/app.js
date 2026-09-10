@@ -382,6 +382,21 @@ async function hidratarOrganizadorDetalhe(id){
     (p.contato?'<p class="detalhe-contato">Contato: '+escapa(p.contato)+'</p>':'');
 }
 
+function iconeDetalhe(nome){
+  const caminhos={
+    calendario:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18"/>',
+    hora:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    local:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+    ingresso:'<path d="M4 5h16a1 1 0 0 1 1 1v3a3 3 0 0 0 0 6v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3a3 3 0 0 0 0-6V6a1 1 0 0 1 1-1Z"/><path d="M15 5v3m0 3v2m0 3v3"/>',
+    pessoas:'<circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m3 10v-2a6 6 0 0 0-2-4"/>',
+    estrela:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>',
+    editar:'<path d="m16 3 5 5-12 12-6 1 1-6L16 3Zm-2 2 5 5"/>',
+    excluir:'<path d="M3 6h18M9 6V3h6v3m-10 0 1 15h12l1-15M10 10v7m4-7v7"/>',
+    bandeira:'<path d="M5 21V3m0 1c5-4 9 4 14 0v10c-5 4-9-4-14 0"/>'
+  };
+  return '<svg class="detalhe-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+(caminhos[nome]||'')+'</svg>';
+}
+
 function montarDetalhe(ev){
   detalheAtual=ev;
   const d=dataDe(ev), temInteresse=interesses.has(ev.id), souDono=ev.criador_id===meuId();
@@ -396,49 +411,54 @@ function montarDetalhe(ev){
     ev.situacao==='adiado' ? 'Este evento está marcado como adiado. Confira a nova data com o organizador.' :
     ev.situacao==='esgotado' ? 'Este evento está esgotado no momento.' :
     ev.situacao==='finalizado' ? 'Este evento já foi finalizado.' : '';
+  const item=(icone,rotulo,valor,classe='')=>'<div class="detalhe-info-item '+classe+'"><span class="detalhe-icone">'+iconeDetalhe(icone)+'</span><div><span class="detalhe-info-label">'+rotulo+'</span><span class="detalhe-info-valor">'+valor+'</span></div></div>';
+  const total=Number(ev.total_interessados||0);
 
   folha.style.setProperty('--cor',cor(ev));
+  folha.setAttribute('aria-labelledby','detalheTitulo');
   folha.innerHTML=
-    '<div class="detalhe-modal-cabecalho">'+
-      '<h2>'+escapa(ev.nome)+'</h2>'+
-      '<button class="fechar" data-fecha aria-label="Fechar">×</button>'+
+    '<div class="detalhe-modal-cabecalho"><div class="detalhe-identidade">'+
+      '<p class="detalhe-sobretitulo">ENCONTRE SEU PRÓXIMO ROLÊ</p>'+
+      '<h2 id="detalheTitulo">'+escapa(ev.nome)+'</h2></div>'+
+      '<button class="fechar" data-fecha aria-label="Fechar detalhes do evento">×</button>'+
     '</div>'+
     '<div class="detalhe-modal-scroll">'+
-      '<div class="detalhe-lovable-grid">'+
+      '<div class="detalhe-lovable-grid detalhe-grid-v26">'+
         '<div class="detalhe-coluna-principal">'+
           '<img class="detalhe-imagem" src="'+escapa(imagem)+'" alt="'+escapa(ev.nome)+'">'+
-          '<div class="detalhe-tags">'+situacao+(souDono?'<span class="dono">SEU EVENTO</span>':'')+'</div>'+ 
+          '<div class="detalhe-tags">'+situacao+(souDono?'<span class="dono">SEU EVENTO</span>':'')+'</div>'+
           (avisoSituacao?'<div class="alerta-evento">'+escapa(avisoSituacao)+'</div>':'')+
-          '<p class="detalhe-descricao">'+escapa(ev.descricao||'Sem descrição.')+'</p>'+ 
-          '<div id="areaComentarios" class="comentarios detalhe-comentarios"></div>'+ 
-        '</div>'+ 
-        '<aside class="detalhe-coluna-lateral">'+
+          '<h3 class="detalhe-secao-titulo">Sobre este rolê</h3>'+
+          '<p class="detalhe-descricao">'+escapa(ev.descricao||'O organizador ainda não adicionou uma descrição.')+'</p>'+
+        '</div>'+
+        '<aside class="detalhe-coluna-lateral" aria-label="Informações e participação">'+
           '<div class="detalhe-info-card">'+
-            '<div class="detalhe-info-item"><span class="detalhe-icone">▣</span><span>'+escapa(dataDetalhe(d))+'</span></div>'+ 
-            '<div class="detalhe-info-item"><span class="detalhe-icone">◷</span><span>'+escapa(hora(ev))+'</span></div>'+ 
-            '<div class="detalhe-info-item"><span class="detalhe-icone">⌖</span><span>'+endereco+'</span></div>'+ 
-            '<div class="detalhe-info-item"><span class="detalhe-icone">▧</span><span>'+(ev.gratuito?'Grátis':'R$ '+Number(ev.valor||0).toFixed(2).replace('.',','))+'</span></div>'+ 
-            '<div class="detalhe-info-item"><span class="detalhe-icone">♙</span><span>'+(ev.total_interessados||0)+' interessados'+capacidade+'</span></div>'+ 
-          '</div>'+ 
+            item('calendario','Data',escapa(dataDetalhe(d)),'detalhe-info-data')+
+            item('hora','Horário',escapa(hora(ev)))+
+            item('local','Local',endereco,'detalhe-info-local')+
+            item('ingresso','Entrada',ev.gratuito?'Grátis':'R$ '+Number(ev.valor||0).toFixed(2).replace('.',','))+
+            item('pessoas','Quem vai',total+' '+(total===1?'pessoa interessada':'pessoas interessadas')+capacidade)+
+          '</div>'+
           '<div class="detalhe-organizador-card" id="detalheOrganizador">'+
-            '<p class="detalhe-label">ORGANIZADOR</p>'+ 
+            '<p class="detalhe-label">ORGANIZADOR</p>'+
             '<button class="detalhe-organizador-perfil" data-perfil-publico="'+escapa(ev.criador_id)+'">'+
-              '<span class="detalhe-organizador-avatar">'+escapa(iniciaisCard(ev.criador_nome||'Organizador'))+'</span>'+ 
-              '<span><strong>'+escapa(ev.criador_nome||'Organizador')+'</strong><small>carregando perfil...</small></span>'+ 
-            '</button>'+ 
-          '</div>'+ 
-        '</aside>'+ 
-      '</div>'+ 
-    '</div>'+ 
+              '<span class="detalhe-organizador-avatar">'+escapa(iniciaisCard(ev.criador_nome||'Organizador'))+'</span>'+
+              '<span><strong>'+escapa(ev.criador_nome||'Organizador')+'</strong><small>carregando perfil...</small></span>'+
+            '</button>'+
+          '</div>'+
+        '</aside>'+
+        '<div id="areaComentarios" class="comentarios detalhe-comentarios"></div>'+
+      '</div>'+
+    '</div>'+
     '<div class="detalhe-rodape-fixo">'+
       '<div class="detalhe-rodape-esquerda">'+
-        ((ev.latitude!=null && ev.longitude!=null)?'<button class="btn-linha detalhe-acao-secundaria" data-ver-mapa="'+ev.id+'">⌖ Ver no mapa</button>':'')+
-        (souDono?'<button class="btn-linha detalhe-acao-secundaria" data-editar="'+ev.id+'">Editar</button><button class="btn-linha detalhe-acao-secundaria" data-excluir="'+ev.id+'">Excluir</button>':'')+
-      '</div>'+ 
+        ((ev.latitude!=null && ev.longitude!=null)?'<button class="btn-linha detalhe-acao-secundaria" data-ver-mapa="'+ev.id+'">'+iconeDetalhe('local')+'Ver no mapa</button>':'')+
+        (souDono?'<button class="btn-linha detalhe-acao-secundaria" data-editar="'+ev.id+'">'+iconeDetalhe('editar')+'Editar</button><button class="btn-linha detalhe-acao-secundaria" data-excluir="'+ev.id+'">'+iconeDetalhe('excluir')+'Excluir</button>':'')+
+      '</div>'+
       '<div class="detalhe-rodape-direita">'+
-        (!souDono?'<button class="btn-linha" data-denunciar data-denuncia-tipo="evento" data-denuncia-id="'+ev.id+'" data-denuncia-rotulo="'+escapa(ev.nome)+'">⚑ Denunciar</button>':'')+
-        '<button class="btn-escuro" data-interesse="'+ev.id+'"'+(encerrado?' disabled':'')+'>'+(temInteresse?'☆ Tenho interesse':'☆ Tenho interesse')+'</button>'+ 
-      '</div>'+ 
+        (!souDono?'<button class="btn-linha" data-denunciar data-denuncia-tipo="evento" data-denuncia-id="'+ev.id+'" data-denuncia-rotulo="'+escapa(ev.nome)+'">'+iconeDetalhe('bandeira')+'Denunciar</button>':'')+
+        '<button class="btn-escuro" data-interesse="'+ev.id+'" aria-pressed="'+temInteresse+'"'+(encerrado?' disabled':'')+'>'+iconeDetalhe('estrela')+(temInteresse?'Interesse marcado':'Tenho interesse')+'</button>'+
+      '</div>'+
     '</div>';
   abrir('modalDetalhe');
   carregarComentarios(ev.id);
@@ -2033,4 +2053,5 @@ window.addEventListener('load', ()=>{
     }, 650);
   }
 });
+
 
