@@ -27,7 +27,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     const s=document.createElement('script');s.src=src;s.async=false;s.dataset[`role${marcador.replace(/-([a-z0-9])/g,(_,c)=>c.toUpperCase())}`]='1';document.head.appendChild(s);
   }
   if(eh('index.html','perfil.html')){estilo('css/participacao-v25.css','v25-2');script('js/participacao-v25.js','v25-2')}
-  if(eh('index.html','perfil.html')){if(eh('index.html'))script('js/estabilidade-v25.js','v25-stability');script('js/qr-compat-v25.js','v25-qr-compat');if(eh('index.html'))script('js/qr-evento-v25.js','v25-event-qr');estilo('css/checkin-v25.css','v25-3');script('js/checkin-v25.js','v25-3')}
+  if(eh('index.html','perfil.html')){if(eh('index.html'))script('js/estabilidade-v25.js','v25-stability');script('js/qr-compat-v25.js','v25-qr-compat');if(eh('index.html'))script('js/qr-evento-v25.js','v25-event-qr');estilo('css/checkin-v25.css','v25-3');script('js/checkin-v25.js?v=20260910-audit1','v25-3')}
   estilo('css/pwa-v25.css','v25-4-pwa');script('js/pwa-v25.js','v25-4-pwa');
   if(eh('index.html')){estilo('css/inteligencia-v25.css','v25-4-inteligencia');script('js/inteligencia-v25.js','v25-4-inteligencia')}
   if(eh('perfil.html')){estilo('css/push-v25.css','v25-4-push');script('js/push-v25.js','v25-4-push')}
