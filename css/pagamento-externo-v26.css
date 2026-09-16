@@ -1,0 +1,91 @@
+/* ============================================================
+   ROLÊ V26 — pagamento externo / ingresso
+   MVP: o Rolê exibe preço e redireciona para checkout externo.
+   ============================================================ */
+
+.pagamento-externo-ajuda{
+  margin-top:8px;
+  padding:11px 12px;
+  border:1px solid rgba(240,184,62,.18);
+  border-radius:11px;
+  background:rgba(240,184,62,.045);
+  color:rgba(244,239,231,.64);
+  font-size:.76rem;
+  line-height:1.48;
+}
+.pagamento-externo-ajuda strong{color:#f0b83e}
+.pagamento-externo-ajuda[data-pago="false"]{display:none}
+
+.detalhe-compra-externa{
+  display:grid;
+  gap:10px;
+  padding:15px;
+  margin-bottom:12px;
+  border:1px solid rgba(240,184,62,.24);
+  border-radius:14px;
+  background:
+    linear-gradient(180deg,rgba(240,184,62,.07),rgba(240,184,62,.025)),
+    rgba(14,12,9,.78);
+  box-shadow:0 12px 30px rgba(0,0,0,.16);
+}
+.detalhe-compra-externa-topo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.detalhe-compra-externa-label{
+  margin:0;
+  color:#f0b83e;
+  font:700 .66rem/1 'Space Mono',monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.detalhe-compra-externa-preco{
+  color:#fff;
+  font-weight:800;
+  font-size:.95rem;
+  white-space:nowrap;
+}
+.detalhe-compra-externa p{
+  margin:0;
+  color:rgba(244,239,231,.62);
+  font-size:.76rem;
+  line-height:1.45;
+}
+.detalhe-compra-externa a{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 15px;
+  border:1px solid #f0b83e;
+  border-radius:10px;
+  background:linear-gradient(180deg,#ffcc57,#f0b83e);
+  color:#171005;
+  text-decoration:none;
+  font-weight:800;
+  font-size:.82rem;
+  transition:transform .12s ease,filter .18s ease,box-shadow .18s ease;
+}
+.detalhe-compra-externa a::after{content:"↗";font-size:.9rem}
+.detalhe-compra-externa a:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+  box-shadow:0 9px 24px rgba(240,184,62,.16);
+}
+.detalhe-compra-externa-aviso{
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  color:rgba(244,239,231,.48)!important;
+  font-size:.68rem!important;
+}
+.detalhe-compra-externa-aviso::before{content:"ⓘ";color:#f0b83e}
+
+@media(max-width:640px){
+  .detalhe-compra-externa{padding:13px}
+  .detalhe-compra-externa-topo{align-items:flex-start;flex-direction:column}
+  .detalhe-compra-externa a{width:100%}
+}
