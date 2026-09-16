@@ -136,6 +136,8 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
     estiloLocal('css/polimento-v26.css?v=20260907-1340','v26-polimento-final');
     estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-publicar-visual','v26-home-publicar-organizador');
+    estiloLocal('css/pagamento-externo-v26.css?v=20260916-0018','v26-pagamento-externo');
+    scriptLocal('js/pagamento-externo-v26.js?v=20260916-0018','v26-pagamento-externo');
   }
 })();
 
