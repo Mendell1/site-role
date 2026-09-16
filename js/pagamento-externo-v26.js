@@ -45,7 +45,7 @@
     const labelPreco = document.querySelector('label[for="f_preco"]');
     if(labelPreco) labelPreco.textContent = 'Valor do ingresso (0 = grátis)';
 
-    let secao = preco.closest('.duas')?.previousElementSibling;
+    const secao = preco.closest('.duas')?.previousElementSibling;
     if(secao?.classList?.contains('publicar-secao') && secao.textContent.trim()==='Participação'){
       secao.textContent = 'Participação e ingresso';
     }
@@ -103,23 +103,34 @@
     const folha = document.getElementById('folhaDetalhe');
     if(!folha) return;
 
-    const antigo = folha.querySelector('.detalhe-compra-externa');
-    if(antigo) antigo.remove();
-
     let ev = null;
     try{
       if(typeof detalheAtual !== 'undefined') ev = detalheAtual;
     }catch(_){ ev = null; }
 
-    if(!ev || ev.gratuito || Number(ev.valor || 0) <= 0) return;
+    const antigo = folha.querySelector('.detalhe-compra-externa');
+    if(!ev || ev.gratuito || Number(ev.valor || 0) <= 0){
+      if(antigo) antigo.remove();
+      return;
+    }
+
     const href = urlHttpValida(ev.contato);
-    if(!href) return;
+    if(!href){
+      if(antigo) antigo.remove();
+      return;
+    }
+
+    // Evita que o MutationObserver re-renderize o próprio bloco em loop.
+    if(antigo && antigo.dataset.eventoId === String(ev.id) && antigo.dataset.href === href) return;
+    if(antigo) antigo.remove();
 
     const lateral = folha.querySelector('.detalhe-coluna-lateral');
     if(!lateral) return;
 
     const box = document.createElement('section');
     box.className = 'detalhe-compra-externa';
+    box.dataset.eventoId = String(ev.id);
+    box.dataset.href = href;
 
     const topo = document.createElement('div');
     topo.className = 'detalhe-compra-externa-topo';
