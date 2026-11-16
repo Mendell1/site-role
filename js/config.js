@@ -57,7 +57,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html','perfil.html')){
     estilo('css/participacao-v25.css','v25-2');
-    script('js/participacao-v25.js?v=20260910-detail1','v25-2');
+    script('js/participacao-v25.js?v=20261116-plurais','v25-2');
   }
 
   if(eh('index.html','perfil.html')){

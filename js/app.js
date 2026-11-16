@@ -382,7 +382,7 @@ async function hidratarOrganizadorDetalhe(id){
     '<p class="detalhe-label">ORGANIZADOR</p>'+ 
     '<button class="detalhe-organizador-perfil" data-perfil-publico="'+escapa(p.id)+'">'+
       (p.foto_url?'<span class="detalhe-organizador-avatar"><img src="'+escapa(p.foto_url)+'" alt=""></span>':'<span class="detalhe-organizador-avatar">'+escapa(iniciaisCard(p.nome))+'</span>')+
-      '<span><strong>'+escapa(p.nome)+'</strong><small>'+Number(p.total_eventos||0)+' eventos no mural</small></span>'+ 
+      '<span><strong>'+escapa(p.nome)+'</strong><small>'+Number(p.total_eventos||0)+(Number(p.total_eventos||0)===1?' evento':' eventos')+' no mural</small></span>'+
     '</button>'+ 
     (p.contato?'<p class="detalhe-contato">Contato: '+escapa(p.contato)+'</p>':'');
 }
