@@ -145,7 +145,7 @@ function renderCards(lista, destinoId, vazioId){
         '<ul class="evento-meta">'+
           '<li><span aria-hidden="true">▣</span> '+escapa(dataLista(d))+' <span class="meta-sep">◷</span> '+escapa(hora(ev))+'</li>'+
           '<li><span aria-hidden="true">⌖</span> '+escapa([ev.bairro,ev.cidade].filter(Boolean).join(', ') || 'Local a confirmar')+'</li>'+
-          '<li><span aria-hidden="true">♙</span> '+(ev.total_interessados||0)+' pessoas com interesse</li>'+
+          '<li><span aria-hidden="true">♙</span> '+(ev.total_interessados||0)+' '+(Number(ev.total_interessados||0)===1?'pessoa com interesse':'pessoas com interesse')+'</li>'+
         '</ul>'+
         '<div class="evento-rodape">'+
           '<div class="organizador-card" role="presentation">'+

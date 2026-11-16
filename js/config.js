@@ -84,7 +84,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
 
   if(eh('index.html','perfil.html','organizador.html')){
     estilo('css/v25-7.css','v25-7');
-    script('js/metricas-organizador-v25.js','v25-7-metricas');
+    script('js/metricas-organizador-v25.js?v=20261116-perfil2','v25-7-metricas');
   }
 
   if(eh('index.html','perfil.html','admin.html','organizador.html')){
@@ -93,7 +93,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 
   if(eh('perfil.html')){
-    estiloLocal('css/perfil-identidade-v26.css?v=20261116-mobile1','v26-perfil-identidade');
+    estiloLocal('css/perfil-identidade-v26.css?v=20261116-perfil2','v26-perfil-identidade');
     estiloLocal('css/perfil-mockup-v26.css?v=20260907-1410','v26-perfil-mockup');
     scriptLocal('js/perfil-mockup-v26.js?v=20260907-1455','v26-perfil-mockup');
     estiloLocal('css/perfil-pass2-v26.css?v=20260907-1435','v26-perfil-pass2');

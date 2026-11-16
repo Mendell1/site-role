@@ -133,7 +133,7 @@
     painel.className='perfil-painel';
     painel.dataset.pane='painel-v25-7';
     painel.hidden=true;
-    painel.innerHTML='<div class="v257-dashboard"><div class="v257-dashboard-topo"><div><span class="v257-kicker">V25.7 · IMPACTO</span><h2>Painel do organizador</h2><p>Acompanhe descoberta, intenção e presença nos seus eventos.</p></div><button type="button" class="btn-linha" id="btnAtualizarPainelV257">Atualizar dados</button></div><div id="conteudoPainelV257"><p class="dica">Abra esta aba para carregar as métricas.</p></div></div>';
+    painel.innerHTML='<div class="v257-dashboard"><div class="v257-dashboard-topo"><div><span class="v257-kicker">IMPACTO</span><h2>Painel do organizador</h2><p>Acompanhe descoberta, intenção e presença nos seus eventos.</p></div><button type="button" class="btn-linha" id="btnAtualizarPainelV257">Atualizar dados</button></div><div id="conteudoPainelV257"><p class="dica">Abra esta aba para carregar as métricas.</p></div></div>';
     const primeiro=main.querySelector('.perfil-painel');
     if(primeiro&&primeiro.nextSibling) main.insertBefore(painel,primeiro.nextSibling);
     else main.appendChild(painel);
@@ -153,6 +153,15 @@
     return valor==null?'—':Number(valor).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
   }
 
+  function quantidade(valor,singular,plural){
+    const n=Number(valor||0);
+    return fmtN.format(n)+' '+(n===1?singular:plural);
+  }
+
+  function flexao(valor,singular,plural){
+    return Number(valor||0)===1?singular:plural;
+  }
+
   function renderPainel(dados){
     const alvo=document.getElementById('conteudoPainelV257');
     if(!alvo) return;
@@ -170,20 +179,20 @@
         kpi('Interessados',fmtN.format(Number(t.interessados||0)))+
         kpi('Inscritos',fmtN.format(Number(t.inscritos||0)),fmtN.format(Number(t.espera||0))+' na fila')+
         kpi('Check-ins',fmtN.format(Number(t.checkins||0)),pct(t.taxa_comparecimento)+' de comparecimento')+
-        kpi('Compartilhamentos',fmtN.format(Number(t.compartilhamentos||0)),'share, WhatsApp, QR e copiar link')+
+        kpi('Compartilhamentos',fmtN.format(Number(t.compartilhamentos||0)),'compartilhar, WhatsApp, QR e copiar link')+
       '</section>'+
       '<section class="v257-reputacao-painel">'+
-        '<div class="v257-reputacao-icone">🏅</div><div><span class="v257-kicker">HISTÓRICO DO ORGANIZADOR</span><h3>'+esc(rep.nivel||'Novo organizador')+'</h3><p>'+fmtN.format(Number(rep.eventos_realizados||0))+' evento(s) realizado(s) · '+fmtN.format(Number(rep.eventos_cancelados||0))+' cancelado(s)'+(rep.taxa_realizacao==null?'':' · '+pct(rep.taxa_realizacao)+' de realização')+'.</p></div>'+
+        '<div class="v257-reputacao-icone">🏅</div><div><span class="v257-kicker">HISTÓRICO DO ORGANIZADOR</span><h3>'+esc(rep.nivel||'Novo organizador')+'</h3><p>'+quantidade(rep.eventos_realizados,'evento realizado','eventos realizados')+' · '+quantidade(rep.eventos_cancelados,'cancelado','cancelados')+(rep.taxa_realizacao==null?'':' · '+pct(rep.taxa_realizacao)+' de realização')+'.</p></div>'+
       '</section>'+
       '<section class="v257-funil"><div><span class="v257-kicker">FUNIL</span><h3>Da descoberta à presença</h3></div><div class="v257-funil-linha">'+
-        '<span><b>'+fmtN.format(Number(t.visualizacoes||0))+'</b> visualizações</span><i>→</i><span><b>'+fmtN.format(totalInteracao)+'</b> ações</span><i>→</i><span><b>'+fmtN.format(Number(t.inscritos||0))+'</b> inscritos</span><i>→</i><span><b>'+fmtN.format(Number(t.checkins||0))+'</b> presentes</span>'+
+        '<span><b>'+fmtN.format(Number(t.visualizacoes||0))+'</b> '+flexao(t.visualizacoes,'visualização','visualizações')+'</span><i>→</i><span><b>'+fmtN.format(totalInteracao)+'</b> '+flexao(totalInteracao,'ação','ações')+'</span><i>→</i><span><b>'+fmtN.format(Number(t.inscritos||0))+'</b> '+flexao(t.inscritos,'inscrito','inscritos')+'</span><i>→</i><span><b>'+fmtN.format(Number(t.checkins||0))+'</b> '+flexao(t.checkins,'presente','presentes')+'</span>'+
       '</div></section>'+
-      '<section class="v257-eventos"><div class="v257-secao-titulo"><div><span class="v257-kicker">POR EVENTO</span><h3>Desempenho detalhado</h3></div><span class="contagem">'+eventos.length+' EVENTO(S)</span></div>'+
+      '<section class="v257-eventos"><div class="v257-secao-titulo"><div><span class="v257-kicker">POR EVENTO</span><h3>Desempenho detalhado</h3></div><span class="contagem">'+quantidade(eventos.length,'EVENTO','EVENTOS')+'</span></div>'+
         (eventos.length?eventos.map(ev=>{
           const largura=Math.max(3,Math.round(Number(ev.visualizacoes||0)/maxVisual*100));
           const rec=ev.serie_id?' · série '+esc(ev.recorrencia_ordem||'')+'/'+esc(ev.recorrencia_total||''):'';
           return '<article class="v257-evento-linha"><div class="v257-evento-identidade"><a href="index.html?evento='+encodeURIComponent(ev.id)+'"><strong>'+esc(ev.nome)+'</strong></a><span>'+esc(dataPt(ev.data_evento))+rec+'</span><div class="v257-barra"><i style="width:'+largura+'%"></i></div></div><div class="v257-evento-metricas">'+
-            '<span><b>'+fmtN.format(Number(ev.visualizacoes||0))+'</b> views</span><span><b>'+fmtN.format(Number(ev.favoritos||0))+'</b> fav.</span><span><b>'+fmtN.format(Number(ev.interessados||0))+'</b> interesse</span><span><b>'+fmtN.format(Number(ev.inscritos||0))+'</b> inscritos</span><span><b>'+fmtN.format(Number(ev.checkins||0))+'</b> presentes</span><span><b>'+fmtN.format(Number(ev.compartilhamentos||0))+'</b> shares</span><span><b>'+pct(ev.taxa_comparecimento)+'</b> presença</span></div></article>';
+            '<span><b>'+fmtN.format(Number(ev.visualizacoes||0))+'</b> '+flexao(ev.visualizacoes,'visualização','visualizações')+'</span><span><b>'+fmtN.format(Number(ev.favoritos||0))+'</b> '+flexao(ev.favoritos,'favorito','favoritos')+'</span><span><b>'+fmtN.format(Number(ev.interessados||0))+'</b> '+flexao(ev.interessados,'interessado','interessados')+'</span><span><b>'+fmtN.format(Number(ev.inscritos||0))+'</b> '+flexao(ev.inscritos,'inscrito','inscritos')+'</span><span><b>'+fmtN.format(Number(ev.checkins||0))+'</b> '+flexao(ev.checkins,'presente','presentes')+'</span><span><b>'+fmtN.format(Number(ev.compartilhamentos||0))+'</b> '+flexao(ev.compartilhamentos,'compartilhamento','compartilhamentos')+'</span><span><b>'+pct(ev.taxa_comparecimento)+'</b> presença</span></div></article>';
         }).join(''):'<div class="v257-vazio"><strong>Publique seu primeiro evento</strong><p>As métricas aparecem aqui conforme as pessoas descobrem e participam.</p></div>')+
       '</section>';
   }
@@ -226,7 +235,7 @@
       if(document.querySelector('.v257-reputacao-publica')) return;
       const card=document.createElement('section');
       card.className='v257-reputacao-publica '+classeNivel(rep.nivel);
-      card.innerHTML='<div class="v257-reputacao-selo">🏅</div><div><span class="v257-kicker">REPUTAÇÃO POR HISTÓRICO</span><strong>'+esc(rep.nivel||'Novo organizador')+'</strong><p>'+fmtN.format(Number(rep.eventos_realizados||0))+' evento(s) realizado(s) · '+fmtN.format(Number(rep.eventos_cancelados||0))+' cancelado(s)'+(rep.taxa_realizacao==null?'':' · '+pct(rep.taxa_realizacao)+' de realização')+'.</p></div><div class="v257-reputacao-ajuda" title="Baseado no histórico público de eventos, não em avaliações por estrelas.">i</div>';
+      card.innerHTML='<div class="v257-reputacao-selo">🏅</div><div><span class="v257-kicker">REPUTAÇÃO POR HISTÓRICO</span><strong>'+esc(rep.nivel||'Novo organizador')+'</strong><p>'+quantidade(rep.eventos_realizados,'evento realizado','eventos realizados')+' · '+quantidade(rep.eventos_cancelados,'cancelado','cancelados')+(rep.taxa_realizacao==null?'':' · '+pct(rep.taxa_realizacao)+' de realização')+'.</p></div><div class="v257-reputacao-ajuda" title="Baseado no histórico público de eventos, não em avaliações por estrelas.">i</div>';
       hero.insertAdjacentElement('afterend',card);
     };
     colocar();

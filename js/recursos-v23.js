@@ -153,7 +153,7 @@
         '<ul class="evento-meta">'+
           '<li><span aria-hidden="true">▣</span> '+escapeHtml(dataCurta(ev))+' <span class="meta-sep">◷</span> '+escapeHtml(horaEvento(ev))+'</li>'+ 
           '<li><span aria-hidden="true">⌖</span> '+escapeHtml([ev.bairro,ev.cidade].filter(Boolean).join(', ')||'Local não informado')+'</li>'+ 
-          '<li><span aria-hidden="true">♙</span> '+Number(ev.total_interessados||0)+' pessoas com interesse</li>'+ 
+          '<li><span aria-hidden="true">♙</span> '+Number(ev.total_interessados||0)+' '+(Number(ev.total_interessados||0)===1?'pessoa com interesse':'pessoas com interesse')+'</li>'+
         '</ul>'+ 
         '<div class="perto-resumo-v23"><span>Ordenado pela sua distância</span><span class="perto-ver-v23">Ver evento →</span></div>'+ 
       '</div>'+ 
