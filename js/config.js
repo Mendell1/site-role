@@ -128,7 +128,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     script('js/v26-home-precision.js','v26-1-precision');
 
     estilo('css/icons-v26.css?v=20260910-categorias-menu','v26-icons');
-    script('js/icons-v26.js?v=20261116-categoria1','v26-icons');
+    script('js/icons-v26.js?v=20261116-categoria2','v26-icons');
     estilo('css/icons-v26-hotfix.css','v26-icons-hotfix');
 
     estiloLocal('css/hero-oficial-v26-v2.css?v=20260907-0225','v26-hero-oficial-v2');

@@ -108,7 +108,7 @@
         if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();trigger.focus();}
       });
       document.addEventListener('click',event=>{if(!wrapper.contains(event.target))close();});
-      wrapper.addEventListener('focusout',event=>{if(!wrapper.contains(event.relatedTarget))close();});
+      document.addEventListener('focusin',event=>{if(!wrapper.contains(event.target))close();});
       group.hidden=true;
       wrapper.append(trigger,group);select.after(wrapper);
       select.hidden=true;
