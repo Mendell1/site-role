@@ -48,7 +48,7 @@
         '</div>'+ 
         '<div class="admin-kpis-v23">'+
           kpi('Usuários',totais.usuarios,'+'+numero(periodo.usuarios)+' no período')+
-          kpi('Eventos visíveis',totais.eventos_ativos,'de '+numero(totais.eventos)+' cadastrados')+
+          kpi('Eventos visíveis',totais.eventos_ativos,'de '+numero(totais.eventos)+' '+(Number(totais.eventos)===1?'evento cadastrado':'eventos cadastrados'))+
           kpi('Interesses',totais.interesses,'+'+numero(periodo.interesses)+' no período')+
           kpi('Denúncias pendentes',totais.denuncias_pendentes,numero(totais.denuncias)+' no total')+
         '</div>'+ 
