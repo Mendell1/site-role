@@ -118,6 +118,7 @@ async function iniciar(){
     el('bloqueio').hidden = false;
     return;
   }
+  el('btnEntrar').hidden = false;
 
   const { data: perfil } = await db.from('perfis')
     .select('id, nome, papel').eq('id', session.user.id).single();

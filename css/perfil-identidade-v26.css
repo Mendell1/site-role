@@ -475,6 +475,23 @@ body.pagina-perfil-lovable .estado-sem-sessao-card{
   background:rgba(255,255,255,.015)!important;
   color:var(--perfil-paper)!important;
 }
+body.pagina-perfil-lovable .estado-sem-sessao-card p{
+  color:rgba(244,239,231,.74)!important;
+}
+body.pagina-perfil-lovable .estado-sem-sessao:not([hidden]){
+  min-height:calc(100vh - 84px);
+  display:grid;
+  align-items:center;
+  justify-items:center;
+  padding-block:46px;
+}
+body.pagina-perfil-lovable .estado-sem-sessao-card{
+  width:min(100%,540px);
+  margin-inline:auto;
+}
+@media(min-width:761px){
+  body.pagina-perfil-lovable #btnMenuMobile{display:none!important}
+}
 
 /* Modais do perfil sem quebrar o restante do site. */
 body.pagina-perfil-lovable .cortina .folha{

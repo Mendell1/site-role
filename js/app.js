@@ -290,8 +290,12 @@ function renderMural(novoId){
   campo('btnMais').hidden = EVENTOS.length >= estado.total;
 
   if(!EVENTOS.length){
-    grade.innerHTML='<div class="vazio"><strong>Nada por aqui ainda</strong>'+
-      (estado.aba==='meus'?'Você ainda não publicou nenhum evento.':'Tente limpar os filtros ou buscar por outro nome.')+'<br><button type="button" data-limpar-filtros>Limpar filtros</button></div>';
+    const filtrado=Boolean(estado.cat || estado.busca || estado.atalhos.size || estado.aba==='favoritos' || estado.aba==='interesse' || document.querySelector('[data-v254-recomendados][aria-pressed="true"]') || window.RoleMapaRaioV256?.ativo);
+    const meu=estado.aba==='meus';
+    grade.innerHTML='<div class="vazio role-vazio"><span class="role-vazio-simbolo" aria-hidden="true">✳</span>'+
+      '<strong>'+(meu?'Seu primeiro evento começa aqui':filtrado?'Nenhum evento com esses filtros':'A cidade está se preparando')+'</strong>'+
+      '<p>'+(meu?'Publique um evento e convide seu bairro para participar.':filtrado?'Experimente outra busca ou remova os filtros para ver mais opções.':'Ainda não há eventos futuros publicados. Conheça o Rolê e volte em breve para descobrir novidades.')+'</p>'+
+      (meu?'<button type="button" data-criar-vazio>Publicar meu evento</button>':filtrado?'<button type="button" data-limpar-filtros>Limpar filtros</button>':'<a href="#comoFunciona">Conheça o Rolê <span aria-hidden="true">↗</span></a>')+'</div>';
     return;
   }
 
@@ -937,7 +941,11 @@ function renderAgendaCalendario(porDia){
   const mes=estado.mesCalendario;
   const dias=[...porDia.keys()].sort((a,b)=>a-b);
   if(!dias.length){
-    agenda.innerHTML='<div class="agenda-vazia"><strong>Nenhum evento neste mês</strong><p>Escolha outro mês ou limpe os filtros para ampliar a busca.</p><button type="button" data-limpar-filtros>Limpar filtros</button><button type="button" data-agenda-hoje>Ir para o mês atual</button></div>';
+    const filtrado=Boolean(estado.cat || estado.busca || estado.atalhos.size || estado.aba!=='todos' || document.querySelector('[data-v254-recomendados][aria-pressed="true"]') || window.RoleMapaRaioV256?.ativo);
+    const mesAtual=mes.getFullYear()===hoje.getFullYear() && mes.getMonth()===hoje.getMonth();
+    agenda.innerHTML='<div class="agenda-vazia"><strong>Nenhum evento neste mês</strong><p>'+(filtrado?'Tente outra busca ou remova os filtros.':'Experimente outro mês ou volte em breve para descobrir novos eventos.')+'</p>'+
+      (filtrado?'<button type="button" data-limpar-filtros>Limpar filtros</button>':'')+
+      (mesAtual?'':'<button type="button" data-agenda-hoje>Ir para o mês atual</button>')+'</div>';
     return;
   }
   agenda.innerHTML=dias.map(dia=>{
@@ -1042,6 +1050,7 @@ campo('busca').addEventListener('input',()=>{
    CLIQUES DO MURAL / MODAIS
    ============================================================ */
 campo('grade').addEventListener('click',async e=>{
+  if(e.target.closest('[data-criar-vazio]')){ campo('btnCriar').click(); return; }
   const f=e.target.closest('[data-fav]');
   if(f){ e.stopPropagation(); await alternarFav(f.dataset.fav); return; }
   const i=e.target.closest('[data-interesse]');

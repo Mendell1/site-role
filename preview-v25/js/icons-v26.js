@@ -32,7 +32,7 @@
     more:'<circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/>'
   };
 
-  const PNG = {culture:'assets/icons/categoria-cultura.png',food:'assets/icons/categoria-gastronomia.png'};
+  const PNG = {culture:'preview-v25/assets/icons/categoria-cultura.png',food:'preview-v25/assets/icons/categoria-gastronomia.png'};
 
   function icon(name,extra=''){
     if(PNG[name]) return `<img class="v26-ui-icon v26-icon-${name} v26-icon-png ${extra}" src="${PNG[name]}" alt="" aria-hidden="true" draggable="false">`;

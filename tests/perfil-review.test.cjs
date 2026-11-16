@@ -62,7 +62,7 @@ test('Erro de consulta não apaga favoritos já carregados',async()=>{
   const fav=new Set(['evento-antigo']),interest=new Set();
   const chain={select(){return this},eq(){return Promise.resolve({error:{message:'offline'}})}};
   const ctx=vm.createContext({favoritos:fav,interesses:interest,meuId:()=>profile.id,Sessao:{logado:()=>true},db:{from:()=>chain}});
-  vm.runInContext(part,ctx);assert.equal(await ctx.carregarMeusVinculos(),false);assert.equal(fav.has('evento-antigo'),true);
+  vm.runInContext('let revisaoEventosPerfil=0;\n'+part,ctx);assert.equal(await ctx.carregarMeusVinculos(),false);assert.equal(fav.has('evento-antigo'),true);
 });
 function element(tab,pane){
   const attrs={},classes=new Set();
