@@ -109,9 +109,6 @@
       });
       document.addEventListener('click',event=>{if(!wrapper.contains(event.target))close();});
       wrapper.addEventListener('focusout',event=>{if(!wrapper.contains(event.relatedTarget))close();});
-      group.addEventListener('click',event=>{
-        if(event.target.matches('input')){close();trigger.focus();}
-      });
       group.hidden=true;
       wrapper.append(trigger,group);select.after(wrapper);
       select.hidden=true;
@@ -119,6 +116,8 @@
         if(!event.target.matches('input[type="radio"]'))return;
         select.value=event.target.value;
         select.dispatchEvent(new Event('change',{bubbles:true}));
+        close();
+        trigger.focus();
       });
       select.addEventListener('change',categoriaFormulario);
       new MutationObserver(categoriaFormulario).observe(document.getElementById('modalCriar'),{attributes:true,attributeFilter:['class','hidden','style']});
