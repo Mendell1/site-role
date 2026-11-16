@@ -61,6 +61,11 @@ body.role-moderacao .v259-kicker{color:#e5b75f!important}
 body.role-moderacao button:focus-visible,body.role-moderacao a:focus-visible,body.role-moderacao input:focus-visible,body.role-moderacao select:focus-visible{outline:2px solid #f0bd54!important;outline-offset:3px}
 body.role-moderacao [hidden]{display:none!important}
 @media(max-width:760px){
+body.role-moderacao:has(#bloqueio:not([hidden])) .topo .direita{display:none!important}
+body.role-moderacao #bloqueio:not([hidden]){width:calc(100% - 32px);max-width:500px;box-sizing:border-box;margin:72px auto 0;padding:32px 24px;border:1px solid #4b3c27!important;border-radius:16px;background:#211b14!important;color:#f4efe7!important;box-shadow:0 24px 55px rgba(0,0,0,.28)!important}
+body.role-moderacao #bloqueio h2{color:#f4efe7;font-size:25px;line-height:1.2}
+body.role-moderacao #bloqueio p{color:#c9bda9;font-size:14px}
+body.role-moderacao #bloqueio .btn-escuro{min-height:44px;padding:12px 18px;border-radius:9px;background:#f0b83e;color:#171005;font:700 12px Archivo,sans-serif}
 body.role-moderacao .topo-inner{padding:14px 16px!important;flex-wrap:wrap}
 body.role-moderacao .direita{gap:8px!important;flex-wrap:wrap}
 body.role-moderacao .painel{padding:0 16px 32px!important;margin-top:24px!important}

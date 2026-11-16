@@ -492,6 +492,9 @@ body.pagina-perfil-lovable .estado-sem-sessao-card{
 @media(min-width:761px){
   body.pagina-perfil-lovable #btnMenuMobile{display:none!important}
 }
+@media(max-width:760px){
+  body.pagina-perfil-lovable:has(.estado-sem-sessao:not([hidden])) .topo-mobile-acoes{display:none!important}
+}
 
 /* Modais do perfil sem quebrar o restante do site. */
 body.pagina-perfil-lovable .cortina .folha{

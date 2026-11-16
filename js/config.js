@@ -93,7 +93,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 
   if(eh('perfil.html')){
-    estiloLocal('css/perfil-identidade-v26.css?v=20261116-1','v26-perfil-identidade');
+    estiloLocal('css/perfil-identidade-v26.css?v=20261116-mobile1','v26-perfil-identidade');
     estiloLocal('css/perfil-mockup-v26.css?v=20260907-1410','v26-perfil-mockup');
     scriptLocal('js/perfil-mockup-v26.js?v=20260907-1455','v26-perfil-mockup');
     estiloLocal('css/perfil-pass2-v26.css?v=20260907-1435','v26-perfil-pass2');
@@ -138,6 +138,7 @@ if (SUPABASE_URL.startsWith('COLE')) {
     estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-publicar-visual','v26-home-publicar-organizador');
     estiloLocal('css/pagamento-externo-v26.css?v=20260916-0018','v26-pagamento-externo');
     scriptLocal('js/pagamento-externo-v26.js?v=20260916-0018','v26-pagamento-externo');
+    estiloLocal('css/mobile-polimento-v26.css?v=20261116-1','v26-mobile-polimento');
   }
 })();
 

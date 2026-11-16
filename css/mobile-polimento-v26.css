@@ -1,0 +1,56 @@
+/* Ajustes de leitura e toque da identidade original em telas pequenas. */
+@media(min-width:761px){
+  body.v26-home #btnMenuMobile{display:none!important}
+}
+
+@media(max-width:760px){
+  body.v26-home .topo.menu-aberto #btnCadastroTopo:not([hidden]){
+    display:flex!important;
+    justify-content:center;
+    background:linear-gradient(180deg,#ffcc57,#f0b83e);
+    border-color:#f0b83e;
+    color:#171005;
+    font-weight:700;
+  }
+}
+
+@media(max-width:700px){
+  body.visual-lovable.v26-home .hero::after{
+    content:"";
+    display:block!important;
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:linear-gradient(90deg,rgba(7,6,5,.76),rgba(7,6,5,.58) 68%,rgba(7,6,5,.42));
+  }
+  body.visual-lovable.v26-home .hero-conteudo{z-index:2!important}
+  body.visual-lovable.v26-home .hero :is(.hero-kicker,h1,.hero-desc){text-shadow:0 2px 15px rgba(0,0,0,.85)}
+  body.visual-lovable.v26-home #painelFiltros{background:rgba(26,21,16,.97)!important;backdrop-filter:blur(16px)}
+
+  body.v26-home .cats{scrollbar-width:none!important}
+  body.v26-home .cats::-webkit-scrollbar,
+  body.v26-home .abas::-webkit-scrollbar,
+  body.v26-home .visoes::-webkit-scrollbar{display:none!important}
+  body.v26-home .cat{min-height:44px!important}
+  body.v26-home .mural-toolbar{min-width:0}
+  body.v26-home .abas{min-width:0;scrollbar-width:none!important}
+  body.v26-home .visoes{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    box-sizing:border-box;
+  }
+  body.v26-home .visao{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0;width:100%;padding-inline:4px!important;white-space:nowrap}
+  body.v26-home .evento-meta{font-size:11.5px!important;line-height:1.5!important}
+  body.v26-home .v261-card-desc{font-size:12px!important;line-height:1.5!important}
+  body.v26-home .fav-card,body.v26-home .interesse-card{min-height:42px;min-width:42px}
+  body.v26-home .rodape-links{width:100%;gap:4px 16px}
+  body.v26-home .rodape-links button{min-height:42px;padding:8px 0;font-size:11px;line-height:1.35;text-align:left}
+}
+
+@media(max-width:360px){
+  body.v26-home .visao{font-size:10.5px!important;gap:4px}
+}
