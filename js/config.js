@@ -118,20 +118,26 @@ if (SUPABASE_URL.startsWith('COLE')) {
   }
 
   if(eh('index.html')){
-    script('js/v26-home.js?v=20261116-1','v26-1-home');
+    estilo('css/v26-home.css','v26-1-home');
+    script('js/v26-home.js?v=20261116-identidade1','v26-1-home');
 
+    estilo('css/v26-home-fidelity.css','v26-1-fidelity');
     script('js/v26-home-fidelity.js','v26-1-fidelity');
 
+    estilo('css/v26-home-precision.css','v26-1-precision');
     script('js/v26-home-precision.js','v26-1-precision');
 
     estilo('css/icons-v26.css?v=20260910-categorias-menu','v26-icons');
     script('js/icons-v26.js?v=20261116-1','v26-icons');
     estilo('css/icons-v26-hotfix.css','v26-icons-hotfix');
 
+    estiloLocal('css/hero-oficial-v26-v2.css?v=20260907-0225','v26-hero-oficial-v2');
+    scriptLocal('js/assets-oficial-v26.js?v=20260907-0225','v26-assets-oficial');
+    estiloLocal('css/alinhamento-v26.css?v=20260907-0345','v26-alinhamento-final');
+    estiloLocal('css/polimento-v26.css?v=20261116-identidade1','v26-polimento-final');
     estiloLocal('css/home-publicar-organizador-v26.css?v=20260910-publicar-visual','v26-home-publicar-organizador');
     estiloLocal('css/pagamento-externo-v26.css?v=20260916-0018','v26-pagamento-externo');
     scriptLocal('js/pagamento-externo-v26.js?v=20260916-0018','v26-pagamento-externo');
-    estiloLocal('css/modernizacao-2026.css?v=20261116-1','role-modernizacao');
   }
 })();
 

@@ -132,3 +132,11 @@ body.v26-home .mural-toolbar::before{
   body.v26-home .faixa{margin-bottom:12px!important}
   body.v26-home .mural{padding-top:0!important}
 }
+
+/* O estado sem eventos acompanha a identidade escura e dourada. */
+body.v26-home .role-vazio{padding:42px 24px}
+body.v26-home .role-vazio-simbolo{display:grid;place-items:center;width:50px;height:50px;margin:0 auto 14px;border:1px solid rgba(240,184,62,.28);border-radius:12px;background:rgba(240,184,62,.09);color:#f0b83e;font-size:27px}
+body.v26-home .role-vazio p{max-width:430px;margin:8px auto 0;color:rgba(244,239,231,.64);font-size:13px;line-height:1.6}
+body.v26-home .role-vazio a,body.v26-home .role-vazio [data-criar-vazio]{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:17px;padding:10px 16px;border:1px solid #cf9f45;border-radius:9px;background:#f0bf55;color:#241d12;font:700 12px/1.3 'Archivo',sans-serif;text-decoration:none;cursor:pointer}
+body.v26-home .role-vazio a:hover,body.v26-home .role-vazio [data-criar-vazio]:hover{background:#ffd174}
+body.v26-home .role-vazio a:focus-visible,body.v26-home .role-vazio [data-criar-vazio]:focus-visible{outline:3px solid #f5cd75;outline-offset:3px}

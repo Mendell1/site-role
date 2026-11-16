@@ -44,16 +44,17 @@
     conteudo.parentNode.insertBefore(grid,conteudo);
     grid.appendChild(conteudo);
 
-    const arte=criar('aside','role-hero-visual',
-      '<div class="role-hero-foto role-hero-foto-principal"><img src="assets/evento-feira.jpg" alt="" loading="eager"></div>'+
-      '<div class="role-hero-foto role-hero-foto-secundaria"><img src="assets/evento-musica.jpg" alt="" loading="eager"></div>'+
-      '<div class="role-hero-selo"><span>Viva a cidade</span><strong>do seu jeito.</strong></div>'
+    const arte=criar('aside','v26-hero-arte',
+      '<span class="v26-wordmark">ROLÊ</span>'+
+      '<div class="v26-slogan">Mais Eventos<br>Mais Pessoas<br>Mais Cidade</div>'+
+      '<div class="v26-palavras"><span>Cultura</span><span>Encontros</span><span>Ideias</span><span>Pessoas</span><span>Bairros</span><span>Movimento</span></div>'+
+      '<div class="v26-cityline"><span></span><span></span><span></span><span></span><span></span><span></span></div>'
     );
     arte.setAttribute('aria-hidden','true');
     grid.appendChild(arte);
 
     const busca=document.getElementById('busca');
-    if(busca) busca.placeholder='Busque um evento ou bairro';
+    if(busca) busca.placeholder='Ex: grátis sábado à noite perto de Itaquera';
   }
 
   function garantirCabecalhoLista(){
