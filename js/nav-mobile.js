@@ -7,11 +7,13 @@
   const fechar = () => {
     topo.classList.remove('menu-aberto');
     botao.setAttribute('aria-expanded', 'false');
+    botao.setAttribute('aria-label', 'Abrir menu');
   };
 
   const alternar = () => {
     const aberto = topo.classList.toggle('menu-aberto');
     botao.setAttribute('aria-expanded', String(aberto));
+    botao.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
   };
 
   botao.addEventListener('click', (event) => {
